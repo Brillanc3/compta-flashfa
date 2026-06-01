@@ -1,4 +1,4 @@
-# compta-flashfa
+# Compta-FlashFA - Gestion Comptable CCA
 
 Application de gestion / comptabilité **FlashFA** : un backend Node.js (Fastify + Prisma)
 à architecture *sharded* temps réel, et un frontend React (Vite + MUI).
@@ -269,3 +269,5 @@ compta-flashfa/
 cd backend
 npm test           # vitest
 ```
+
+Tags: compta, cca, flashfa, compta-flashfa, accounting
