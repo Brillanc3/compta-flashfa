@@ -1,0 +1,8 @@
+{
+  "username": "chattest_bot",
+  "password": "ChatBot99!",
+  "userId": 1942,
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE5NDIsInVzZXJuYW1lIjoiY2hhdHRlc3RfYm90IiwiY2hhcmFjdGVySWQiOm51bGwsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3Nzk0MTE4NjEsImV4cCI6MTc3OTQxMjc2MX0.rzX3tO2ToRt2yx1pXq9Wp6ETv2qIJpLsepF_LaZDk9k",
+  "refreshToken": "2d7eed9a828c92ca794e83a9287ec063a12e8e6de130a94c22195ce5ae23e28e",
+  "savedAt": "2026-05-22T01:04:21.412Z"
+}

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 236.84 236.5">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #889fc1;
+      }
+
+      .cls-2 {
+        fill: #4d6798;
+      }
+
+      .cls-3 {
+        fill: #798fbb;
+      }
+
+      .cls-4 {
+        fill: #a0b0cd;
+      }
+
+      .cls-5 {
+        fill: #4e6898;
+      }
+
+      .cls-6, .cls-7 {
+        fill: #3f557b;
+      }
+
+      .cls-6, .cls-8 {
+        isolation: isolate;
+        opacity: 1;
+      }
+
+      .cls-8, .cls-9 {
+        fill: #54729c;
+      }
+    </style>
+  </defs>
+  <g id="es4O1eliXzP1" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
+    <g>
+      <path id="es4O1eliXzP5" class="cls-7" d="M205.18,136.75l20.28,28.61-47.22,12.51,26.94-41.12h0Z"/>
+      <path id="es4O1eliXzP6" class="cls-3" d="M199.81,204.83l25.66-39.47-25.18,6.67-.47,32.8h0Z"/>
+      <path id="es4O1eliXzP7" class="cls-9" d="M199.81,204.83l-21.56-26.96,22.01-5.84-.45,32.8h0Z"/>
+      <path id="es4O1eliXzP8" class="cls-7" d="M199.81,204.83l-21.56-26.96-11.28,47.55,32.84-20.59h0Z"/>
+    </g>
+    <g>
+      <path id="es4O1eliXzP10" class="cls-7" d="M225.46,69.91l11.37,42.69-20.83-10.05,9.46-32.64Z"/>
+      <path id="es4O1eliXzP11" class="cls-9" d="M207.98,129.61l28.85-17.01-20.83-10.05-8.02,27.06h0Z"/>
+      <path id="es4O1eliXzP12" class="cls-3" d="M207.98,129.61l28.85-17.01-7.75,45.77-21.1-28.77Z"/>
+    </g>
+    <g>
+      <path id="es4O1eliXzP14" class="cls-9" d="M169.38,182.54l-37.36,14.16,25.98,32.73,11.38-46.89h0Z"/>
+      <path id="es4O1eliXzP15" class="cls-7" d="M126.46,202.78l-2.16,33.72,33.71-7.07-25.98-32.73-5.56,6.08h0Z"/>
+      <path id="es4O1eliXzP16" class="cls-5" d="M126.46,202.78l-2.16,33.72-28.25-2.94,30.41-30.78Z"/>
+    </g>
+    <g>
+      <path id="es4O1eliXzP18" class="cls-7" d="M182.49,119.82l17.79,12.22-28.6,41.21,10.8-53.43h0Z"/>
+      <path id="es4O1eliXzP19" class="cls-2" d="M182.49,119.82l-48.96,3.69,38.16,49.75,10.8-53.43h0Z"/>
+      <path id="es4O1eliXzP20" class="cls-7" d="M132.98,188.95l.54-65.44,38.16,49.75-38.7,15.7Z"/>
+    </g>
+    <g>
+      <path id="es4O1eliXzP22" class="cls-5" d="M165.47,46.04l22.42,9.05-1.04,16.05-21.38-25.09Z"/>
+      <path id="es4O1eliXzP23" class="cls-7" d="M165.47,46.04l-33.98,12.55,55.36,12.55-21.38-25.09Z"/>
+      <path id="es4O1eliXzP24" class="cls-9" d="M133.53,116.98l-2.03-58.4,55.36,12.55-53.33,45.85Z"/>
+      <path id="es4O1eliXzP25" class="cls-1" d="M133.53,116.98l52.06-4.37,1.26-41.48-53.33,45.85h0Z"/>
+      <path id="es4O1eliXzP26" class="cls-9" d="M210.52,97.48l-24.93,15.12,1.26-41.48,23.67,26.35Z"/>
+      <path id="es4O1eliXzP27" class="cls-7" d="M210.52,97.48l-24.93,15.12,17.25,13.57,7.69-28.7Z"/>
+      <path id="es4O1eliXzP28" class="cls-3" d="M218.68,66.69l-8.16,30.79-23.67-26.35,1.04-16.05s30.79,11.61,30.79,11.61Z"/>
+    </g>
+    <g>
+      <path id="es4O1eliXzP30" class="cls-5" d="M145.99,2.57l22.7,36.85,20.25-17.18L145.99,2.57Z"/>
+      <path id="es4O1eliXzP31" class="cls-7" d="M188.53,46.84l-19.84-7.42,20.25-17.18-.41,24.6Z"/>
+      <path id="es4O1eliXzP32" class="cls-3" d="M188.53,46.84l30.15,11.94-29.74-36.54-.41,24.6Z"/>
+    </g>
+    <path id="es4O1eliXzP33" class="cls-7" d="M124.24,194.97l-45.88-8.41,11.09,44.87,34.79-36.45Z"/>
+    <g>
+      <path id="es4O1eliXzP35" class="cls-2" d="M125.24,188.16l1.86-63.14-42.52,15.44,40.66,47.71Z"/>
+      <path id="es4O1eliXzP36" class="cls-7" d="M125.24,188.16l-46.58-8.05,5.92-39.66,40.66,47.71Z"/>
+    </g>
+    <g>
+      <path id="es4O1eliXzP38" class="cls-5" d="M36.18,168.13l35.82,18.06-29.76,23.58-6.06-41.65Z"/>
+      <path id="es4O1eliXzP39" class="cls-7" d="M82.67,231.37l-10.66-45.18-29.76,23.58,40.42,21.6Z"/>
+    </g>
+    <g>
+      <path id="es4O1eliXzP41" class="cls-1" d="M54.08,86.39l23.86,50.36-36.96-19.33s13.1-31.03,13.1-31.03Z"/>
+      <path id="es4O1eliXzP42" class="cls-2" d="M36.14,159.79l41.8-23.04-36.96-19.33-4.85,42.37h0Z"/>
+      <path id="es4O1eliXzP43" class="cls-7" d="M36.14,159.79l41.8-23.04-5.66,41.68-36.14-18.64Z"/>
+    </g>
+    <g>
+      <path id="es4O1eliXzP45" class="cls-9" d="M59.09,79.5l65.21-19.95,2.8,58.2-68.01-38.24Z"/>
+      <path id="es4O1eliXzP46" class="cls-1" d="M59.09,79.5l24.34,53.56,43.67-15.31-68.01-38.24Z"/>
+    </g>
+    <g>
+      <path id="es4O1eliXzP48" class="cls-7" d="M75.66,6.77l-6.91,26.67,31.11-1.91s-24.2-24.76-24.2-24.76Z"/>
+      <path id="es4O1eliXzP49" class="cls-2" d="M75.66,6.77l25.69,11.48-1.49,13.28s-24.2-24.76-24.2-24.76Z"/>
+      <path id="es4O1eliXzP50" class="cls-3" d="M120.93,25.66l-19.58-7.41-1.49,13.28s21.07-5.87,21.07-5.87Z"/>
+      <path id="es4O1eliXzP51" class="cls-4" d="M120.93,25.66l1.25,27.51-22.32-21.64,21.07-5.87Z"/>
+      <path id="es4O1eliXzP52" class="cls-9" d="M59.42,72.53l62.75-19.35-22.32-21.64-40.43,41Z"/>
+      <path id="es4O1eliXzP53" class="cls-1" d="M59.42,72.53l9.32-39.09,31.11-1.91-40.43,41Z"/>
+      <path id="es4O1eliXzP54" class="cls-7" d="M120.93,25.66l1.25,27.51,38.32-12.6-39.57-14.91h0Z"/>
+      <path id="es4O1eliXzP55" class="cls-1" d="M75.66,6.77l25.69,11.48L136.22,0s-60.57,6.77-60.57,6.77Z"/>
+      <path id="es4O1eliXzP56" class="cls-5" d="M160.5,40.58l-59.15-22.32L136.22,0l24.27,40.58Z"/>
+    </g>
+    <g>
+      <path id="es4O1eliXzP58" class="cls-7" d="M32.26,126.92l-27.89,30.8,24.58,4.37,3.31-35.17Z"/>
+      <path id="es4O1eliXzP59" class="cls-2" d="M34.29,201.7l-29.92-43.97,24.58,4.37,5.35,39.61Z"/>
+    </g>
+    <path id="es4O1eliXzP60" class="cls-7" d="M0,97.06l31.36,21.43-29.34,30.35L0,97.06Z"/>
+    <g>
+      <path id="es4O1eliXzP62" class="cls-7" d="M20.04,53.38l30.03,24.5,8.2-31.84s-38.22,7.34-38.22,7.34Z"/>
+      <path id="es4O1eliXzP63" class="cls-3" d="M20.04,53.31l30.03,24.5-20.82,11.66-9.21-36.16Z"/>
+      <path id="es4O1eliXzP64" class="cls-5" d="M34.54,112.48l15.53-34.79-20.82,11.66,5.3,23.14Z"/>
+      <path id="es4O1eliXzP65" class="cls-9" d="M34.54,112.46L2.09,90.31l27.16-.99,5.3,23.14h0Z"/>
+      <path id="es4O1eliXzP66" class="cls-7" d="M20.04,53.31L2.09,90.46l27.16-.99s-9.21-36.16-9.21-36.16Z"/>
+    </g>
+    <g>
+      <path id="es4O1eliXzP68" class="cls-8" d="M50.71,22.24l10.18,15.05-35.66,7.03s25.48-22.08,25.48-22.08Z"/>
+      <path id="es4O1eliXzP69" class="cls-6" d="M50.71,22.24l10.18,15.05,6.38-26.18s-16.56,11.12-16.56,11.12Z"/>
+    </g>
+  </g>
+</svg>

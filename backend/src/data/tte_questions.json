@@ -1,0 +1,552 @@
+{
+  "general": [
+    {
+      "id": 1,
+      "q": "Quelle est la durée maximale d'un contrat At Will dans le secteur privé ?",
+      "a": [
+        "1 semaine",
+        "2 semaines",
+        "1 mois",
+        "Illimitée"
+      ],
+      "c": 1,
+      "ref": "Article 2-3.6"
+    },
+    {
+      "id": 3,
+      "q": "Quel est l'âge minimum légal pour travailler à San Andreas ?",
+      "a": [
+        "16 ans",
+        "18 ans",
+        "21 ans",
+        "25 ans"
+      ],
+      "c": 2,
+      "ref": "Article 2-3.3"
+    },
+    {
+      "id": 4,
+      "q": "Quel est le plafond de rémunération hebdomadaire (hors primes) pour un gérant ?",
+      "a": [
+        "20 000$",
+        "30 000$",
+        "50 000$",
+        "Sans limite"
+      ],
+      "c": 0,
+      "ref": "Article 4-1.9"
+    },
+    {
+      "id": 5,
+      "q": "Dans quel délai un licenciement doit-il être suivi du versement du solde de tout compte ?",
+      "a": [
+        "24h",
+        "48h",
+        "72h",
+        "1 semaine"
+      ],
+      "c": 2,
+      "ref": "Article 2-4.4"
+    },
+    {
+      "id": 6,
+      "q": "Quelle est la durée maximale d'un stage ?",
+      "a": [
+        "2 jours",
+        "4 jours",
+        "1 semaine",
+        "2 semaines"
+      ],
+      "c": 1,
+      "ref": "Article 2-3.5"
+    },
+    {
+      "id": 7,
+      "q": "Quel est le taux d'imposition pour la Tranche 2 (50 001$ à 100 000$) ?",
+      "a": [
+        "10%",
+        "19%",
+        "28%",
+        "36%"
+      ],
+      "c": 1,
+      "ref": "Article 4-3.2"
+    },
+    {
+      "id": 10,
+      "q": "Un don versé est déductible des impôts à hauteur de :",
+      "a": [
+        "10%, sous condition",
+        "20%, sous condition",
+        "30%, sous condition",
+        "50%, sous condition"
+      ],
+      "c": 1,
+      "ref": "Article 3-1.4"
+    },
+    {
+      "id": 51,
+      "q": "Quel est le nombre maximal de salariés autorisés par entreprise ?",
+      "a": [
+        "30",
+        "50",
+        "80",
+        "100"
+      ],
+      "c": 2,
+      "ref": "Article 2-3.4"
+    },
+    {
+      "id": 52,
+      "q": "Quel est le montant maximal d'une prime hebdomadaire par salarié ?",
+      "a": [
+        "1 000$",
+        "2 500$",
+        "5 000$",
+        "10 000$"
+      ],
+      "c": 2,
+      "ref": "Article 4-1.10"
+    },
+    {
+      "id": 53,
+      "q": "Quelle est la durée de validité minimale d'une facture à conserver ?",
+      "a": [
+        "2 semaines",
+        "4 semaines",
+        "6 semaines",
+        "8 semaines"
+      ],
+      "c": 2,
+      "ref": "Article 2-6.3"
+    },
+    {
+      "id": 54,
+      "q": "Le prix de vente d'une prestation ne peut excéder combien de fois son coût de revient ?",
+      "a": [
+        "1.5 fois",
+        "2.0 fois",
+        "2.5 fois",
+        "3.0 fois"
+      ],
+      "c": 2,
+      "ref": "Article 4-1.6"
+    },
+    {
+      "id": 55,
+      "q": "Quelle est la majoration appliquée pour 24h de retard sur la déclaration fiscale ?",
+      "a": [
+        "5%",
+        "10%",
+        "15%",
+        "20%"
+      ],
+      "c": 1,
+      "ref": "Article 4-4.1"
+    },
+    {
+      "id": 56,
+      "q": "Quelle est la durée maximale d'un préavis de grève ?",
+      "a": [
+        "12h",
+        "24h",
+        "48h",
+        "72h"
+      ],
+      "c": 1,
+      "ref": "Article 2-5.1"
+    },
+    {
+      "id": 57,
+      "q": "Un gérant peut-il nommer un co-gérant ?",
+      "a": [
+        "Non",
+        "Oui, mais un seul",
+        "Oui, jusqu'à deux",
+        "Oui, sans limite"
+      ],
+      "c": 1,
+      "ref": "Article 2-2.2"
+    },
+    {
+      "id": 58,
+      "q": "Les frais de nourriture sont déductibles dans la limite de quel montant par employé ?",
+      "a": [
+        "250$",
+        "500$",
+        "750$",
+        "1 000$"
+      ],
+      "c": 2,
+      "ref": "Article 4-2.10"
+    },
+    {
+      "id": 60,
+      "q": "Quel est le taux d'imposition pour un don reçu de plus de 50 000$ ?",
+      "a": [
+        "10%",
+        "20%",
+        "30%",
+        "46%"
+      ],
+      "c": 2,
+      "ref": "Article 3-1.5"
+    },
+    {
+      "id": 61,
+      "q": "Quand soumettre la déclaration fiscal avant les sanctions ?",
+      "a": [
+        "Avant le mercredi 12h",
+        "Avant le mardi 21h",
+        "Avant le mardi 23h59",
+        "Avant le lundi 23h59"
+      ],
+      "c": 1,
+      "ref": "Article 4-3.3"
+    },
+    {
+      "id": 62,
+      "q": "Quel est le montant maximal déductible pour les frais de bouche par employé et par semaine ?",
+      "a": [
+        "250$",
+        "500$",
+        "750$",
+        "1 000$"
+      ],
+      "c": 2,
+      "ref": "Article 4-2.10"
+    },
+    {
+      "id": 63,
+      "q": "Quelle est la majoration appliquée 24 et 48h de retard sur le paiement des impôts ?",
+      "a": [
+        "10%",
+        "20%",
+        "30%",
+        "40%"
+      ],
+      "c": 1,
+      "ref": "Article 4-4.1"
+    },
+    {
+      "id": 64,
+      "q": "A combien de fois je peux vendre mon produit final ?",
+      "a": [
+        "x2",
+        "2.5",
+        "Sans limite",
+        "3"
+      ],
+      "c": 1,
+      "ref": "Article 2-6.2"
+    },
+    {
+      "id": 65,
+      "q": "Quel est le pourcentage de déduction fiscale pour un don versé supérieur à 50 000$ ?",
+      "a": [
+        "10%",
+        "20%",
+        "30%",
+        "0%"
+      ],
+      "c": 1,
+      "ref": "Article 3-1.2"
+    },
+    {
+      "id": 66,
+      "q": "Les subventions sont-ils imposables ?",
+      "a": [
+        "Oui, max 100k",
+        "Non",
+        "Oui, à hauteur de 10%",
+        "Oui sans limite"
+      ],
+      "c": 1,
+      "ref": "Article 4-2.16"
+    },
+    {
+      "id": 67,
+      "q": "Quel est la date limite pour payer ses impôts ?",
+      "a": [
+        "Mercredi avant 22h",
+        "Avant la prochaine semaine",
+        "Jeudi avant 00h",
+        "Mercredi avant 21h"
+      ],
+      "c": 3,
+      "ref": "Article 4-3.4"
+    },
+    {
+      "id": 68,
+      "q": "Un gérant peut-il déduire l'achat d'un véhicule dit 'de plaisir' sans limite de prix ?",
+      "a": [
+        "Oui",
+        "Non, limité à 100k$",
+        "Non, limité à 25% du compte après charges",
+        "Oui, si justifié"
+      ],
+      "c": 2,
+      "ref": "Article 4-2.12"
+    },
+    {
+      "id": 69,
+      "q": "Quelle est la durée de conservation minimale des factures en cas de contrôle fiscal ?",
+      "a": [
+        "2 semaines",
+        "4 semaines",
+        "6 semaines",
+        "1 an"
+      ],
+      "c": 2,
+      "ref": "Article 2-6.3"
+    }
+  ],
+  "s1": [
+    {
+      "id": 11,
+      "q": "Secteur 1 : Quel est le plafond pour un nouvel employé (< 1 semaine) ?",
+      "a": [
+        "11 000$",
+        "13 000$",
+        "15 000$",
+        "18 000$"
+      ],
+      "c": 0,
+      "ref": "Article 4-1.9.2"
+    },
+    {
+      "id": 12,
+      "q": "Secteur 1 : Quel est le plafond après 3 semaines d'ancienneté ?",
+      "a": [
+        "13 000$",
+        "15 000$",
+        "18 000$",
+        "20 000$"
+      ],
+      "c": 1,
+      "ref": "Article 4-1.9.2"
+    },
+    {
+      "id": 13,
+      "q": "Secteur 1 : Quel est le plafond pour les postes de gestion ?",
+      "a": [
+        "15 000$",
+        "18 000$",
+        "20 000$",
+        "25 000$"
+      ],
+      "c": 1,
+      "ref": "Article 4-1.9.2"
+    },
+    {
+      "id": 14,
+      "q": "Secteur 1 : Quel est le plafond après 2 semaines d'ancienneté ?",
+      "a": [
+        "11 000$",
+        "13 000$",
+        "15 000$",
+        "18 000$"
+      ],
+      "c": 1,
+      "ref": "Article 4-1.9.2"
+    },
+    {
+      "id": 15,
+      "q": "Secteur 1 : Combien de personnes maximum peuvent percevoir le salaire de direction ?",
+      "a": [
+        "1 personne",
+        "2 personnes",
+        "3 personnes",
+        "5 personnes"
+      ],
+      "c": 1,
+      "ref": "Article 4-1.9.2"
+    }
+  ],
+  "s2": [
+    {
+      "id": 21,
+      "q": "Secteur 2 : Quel est le plafond hebdomadaire pour un employé (sans ancienneté requis) ?",
+      "a": [
+        "15 000$",
+        "19 000$",
+        "20 000$",
+        "25 000$"
+      ],
+      "c": 1,
+      "ref": "Article 4-1.9.2"
+    },
+    {
+      "id": 22,
+      "q": "Secteur 2 : Quel est le plafond pour les postes de gestion ?",
+      "a": [
+        "19 000$",
+        "20 000$",
+        "25 000$",
+        "30 000$"
+      ],
+      "c": 1,
+      "ref": "Article 4-1.9.2"
+    },
+    {
+      "id": 23,
+      "q": "Secteur 2 : Quelle entreprise fait partie de ce secteur ?",
+      "a": [
+        "Ferme Grapeseed",
+        "Benny's",
+        "Pawnshop",
+        "Weazel News"
+      ],
+      "c": 1,
+      "ref": "Article 4-1.9.2"
+    },
+    {
+      "id": 24,
+      "q": "Secteur 2 : Quel est le plafond de paiement maximum possible (salaire + reste à payer) ?",
+      "a": [
+        "30 000$",
+        "38 000$",
+        "40 000$",
+        "50 000$"
+      ],
+      "c": 1,
+      "ref": "Article 4-1.9.2"
+    },
+    {
+      "id": 25,
+      "q": "Secteur 2 : Les entreprises de ce secteur peuvent-elles déduire les frais d'essence ?",
+      "a": [
+        "Non",
+        "Uniquement les garages",
+        "Oui, pour les véhicules d'entreprise",
+        "Seulement le patron"
+      ],
+      "c": 2,
+      "ref": "Article 4-2.12"
+    }
+  ],
+  "s3": [
+    {
+      "id": 31,
+      "q": "Secteur 3 : Quel est le plafond hebdomadaire pour un employé ?",
+      "a": [
+        "15 000$",
+        "19 000$",
+        "20 000$",
+        "25 000$"
+      ],
+      "c": 1,
+      "ref": "Article 4-1.9.2"
+    },
+    {
+      "id": 32,
+      "q": "Secteur 3 : Quel est le plafond pour la direction ?",
+      "a": [
+        "19 000$",
+        "20 000$",
+        "25 000$",
+        "30 000$"
+      ],
+      "c": 1,
+      "ref": "Article 4-1.9.2"
+    },
+    {
+      "id": 33,
+      "q": "Secteur 3 : Quelle entreprise fait partie de ce secteur ?",
+      "a": [
+        "Dynasty 8",
+        "Flywheels",
+        "Custom Café",
+        "Life Invader"
+      ],
+      "c": 2,
+      "ref": "Article 4-1.9.1"
+    },
+    {
+      "id": 34,
+      "q": "Secteur 3 : Quel est le plafond de paiement maximum possible en cas de licenciement ou de démission après le dimanche soir, après clôture de la comptabilité et déclaration fiscale effectuée ?",
+      "a": [
+        "30 000$",
+        "38 000$",
+        "40 000$",
+        "60 000$"
+      ],
+      "c": 1,
+      "ref": "Article 4-1.9.3"
+    },
+    {
+      "id": 35,
+      "q": "Secteur 3 : Un employé peut-il percevoir 19 000$ dès sa première semaine ?",
+      "a": [
+        "Non, minimum 2 semaines",
+        "Oui, si justifié par le CA",
+        "Uniquement en gestion",
+        "Non, limité à 15 000$"
+      ],
+      "c": 1,
+      "ref": "Article 4-1.9.2"
+    }
+  ],
+  "s4": [
+    {
+      "id": 41,
+      "q": "Secteur 4 : Quel pourcentage minimum des revenus un artiste doit-il percevoir ?",
+      "a": [
+        "20%",
+        "50%",
+        "60%",
+        "80%"
+      ],
+      "c": 2,
+      "ref": "Article 4-1.12"
+    },
+    {
+      "id": 42,
+      "q": "Secteur 4 : Quel est le plafond hebdomadaire pour un artiste ?",
+      "a": [
+        "20 000$",
+        "40 000$",
+        "60 000$",
+        "100 000$"
+      ],
+      "c": 2,
+      "ref": "Article 4-1.9.2 & Article 4-1.12"
+    },
+    {
+      "id": 43,
+      "q": "Secteur 4 : Quel est le plafond pour les fonctions de gestion ?",
+      "a": [
+        "19 000$",
+        "20 000$",
+        "25 000$",
+        "30 000$"
+      ],
+      "c": 1,
+      "ref": "Article 4-1.9.2"
+    },
+    {
+      "id": 44,
+      "q": "Secteur 4 : Quel est le montant maximum par production pour un ingénieur du son ?",
+      "a": [
+        "3 000$",
+        "5 000$",
+        "7 000$",
+        "10 000$"
+      ],
+      "c": 2,
+      "ref": "Article 4-1.12"
+    },
+    {
+      "id": 45,
+      "q": "Secteur 4 : Quel est le plafond de paiement maximum pour un artiste (Reste à payer inclus) ?",
+      "a": [
+        "60 000$",
+        "80 000$",
+        "100 000$",
+        "120 000$"
+      ],
+      "c": 3,
+      "ref": "Article 4-1.12"
+    }
+  ]
+}

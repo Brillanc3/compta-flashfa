@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Activation des notifications</title>
+  <style>
+    body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #1a1a2e; color: #fff; }
+    .box { text-align: center; padding: 2rem; }
+    button { padding: .75rem 1.5rem; border: none; border-radius: 8px; background: #7289da; color: #fff; font-size: 1rem; cursor: pointer; }
+    button:hover { background: #5b6eae; }
+    p { opacity: .7; }
+  </style>
+</head>
+<body>
+  <div class="box" id="content">
+    <h2>Activer les notifications</h2>
+    <p>Recevez des alertes pour vos mentions et messages directs.</p>
+    <button id="btn">Activer</button>
+  </div>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const VAPID_KEY = params.get('vapidKey') || '';
+    const API_BASE = params.get('api') || '';
+
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const rawData = atob(base64);
+      return new Uint8Array([...rawData].map(c => c.charCodeAt(0)));
+    }
+
+    document.getElementById('btn').addEventListener('click', async () => {
+      const content = document.getElementById('content');
+      try {
+        content.innerHTML = '<p>Enregistrement en cours...</p>';
+        const perm = await Notification.requestPermission();
+        if (perm !== 'granted') {
+          content.innerHTML = '<p>Permission refusee. Vous pouvez l\'activer dans les parametres du navigateur.</p>';
+          return;
+        }
+        const reg = await navigator.serviceWorker.register('/sw.js');
+        await navigator.serviceWorker.ready;
+        const sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(VAPID_KEY),
+        });
+        const subJson = sub.toJSON();
+        await fetch(`${API_BASE}/tchatv2/push/subscribe`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            endpoint: subJson.endpoint,
+            p256dh: subJson.keys.p256dh,
+            auth: subJson.keys.auth,
+            deviceType: 'web',
+          }),
+        });
+        if (window.opener) {
+          window.opener.postMessage({ type: 'PUSH_SUBSCRIBED' }, '*');
+        }
+        content.innerHTML = '<p>Notifications activees ! Vous pouvez fermer cette fenetre.</p>';
+        setTimeout(() => window.close(), 2000);
+      } catch (err) {
+        console.error('[push-subscribe]', err);
+        content.innerHTML = `<p>Erreur : ${err.message}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>

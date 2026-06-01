@@ -1,0 +1,10 @@
+const PERMISSIONS = {
+  VIEW:   'API.VIEW',
+  MANAGE: 'API.MANAGE',
+};
+
+const HIERARCHY = {
+  [PERMISSIONS.MANAGE]: [PERMISSIONS.VIEW],
+};
+
+module.exports = { PERMISSIONS, HIERARCHY };

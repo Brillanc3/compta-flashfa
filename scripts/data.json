@@ -1,0 +1,2050 @@
+{
+  "handlers": {
+    "create": {
+      "file": "billCreate.handler.js",
+      "currentFieldsUsed": [
+        "billId",
+        "fromPropername",
+        "toPropername",
+        "toDiscord",
+        "characterIdTo",
+        "amount",
+        "reason",
+        "fromDiscord",
+        "characterIdFrom"
+      ],
+      "hasCharacterId": true,
+      "hasDiscordId": true,
+      "hasNameFields": [
+        "fromPropername",
+        "toPropername"
+      ],
+      "sampleDataKeys": [
+        "accountIdFrom",
+        "amount",
+        "billId",
+        "characterIdFrom",
+        "characterIdTo",
+        "createdTimeFormatted",
+        "fromDiscord",
+        "fromName",
+        "fromPropername",
+        "groupId",
+        "reason",
+        "toDiscord",
+        "toName",
+        "toPropername"
+      ],
+      "sampleLogs": [
+        {
+          "id": 2375339,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889618,
+            "accountIdFrom": 34617,
+            "groupId": 4946,
+            "amount": 240,
+            "toName": "skaudd",
+            "characterIdFrom": 131519,
+            "characterIdTo": 127777,
+            "toDiscord": "495599989129740289",
+            "fromPropername": "Choden Tenzin",
+            "fromDiscord": "273825199936241664",
+            "createdTimeFormatted": "06h37 03/05/2026",
+            "reason": "x2 menu complet",
+            "toPropername": "Issa Blackys",
+            "fromName": "mileaf"
+          }
+        },
+        {
+          "id": 2375329,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889617,
+            "accountIdFrom": 34617,
+            "groupId": 4946,
+            "amount": 240,
+            "toName": "SkyUnitedFR",
+            "characterIdFrom": 131519,
+            "characterIdTo": 95792,
+            "toDiscord": "314871330400894977",
+            "fromPropername": "Choden Tenzin",
+            "fromDiscord": "273825199936241664",
+            "createdTimeFormatted": "06h36 03/05/2026",
+            "reason": "x2 menu complet",
+            "toPropername": "Daft Corleone",
+            "fromName": "mileaf"
+          }
+        },
+        {
+          "id": 2375274,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889614,
+            "accountIdFrom": 34617,
+            "groupId": 4946,
+            "amount": 32,
+            "toName": "Zeymix_off",
+            "characterIdFrom": 131519,
+            "characterIdTo": 92870,
+            "toDiscord": "803022969433620512",
+            "fromPropername": "Choden Tenzin",
+            "fromDiscord": "273825199936241664",
+            "createdTimeFormatted": "06h08 03/05/2026",
+            "reason": "x2 brique citron",
+            "toPropername": "Demetrius Flenory",
+            "fromName": "mileaf"
+          }
+        },
+        {
+          "id": 2375271,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889613,
+            "accountIdFrom": 34617,
+            "groupId": 4946,
+            "amount": 180,
+            "toName": "Zeymix_off",
+            "characterIdFrom": 131519,
+            "characterIdTo": 92870,
+            "toDiscord": "803022969433620512",
+            "fromPropername": "Choden Tenzin",
+            "fromDiscord": "273825199936241664",
+            "createdTimeFormatted": "06h08 03/05/2026",
+            "reason": "x2 menu du jour",
+            "toPropername": "Demetrius Flenory",
+            "fromName": "mileaf"
+          }
+        },
+        {
+          "id": 2375263,
+          "companyId": 20,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889612,
+            "accountIdFrom": 36208,
+            "groupId": 368,
+            "amount": 350,
+            "toName": "Opptix_maroccia",
+            "characterIdFrom": 128626,
+            "characterIdTo": 122161,
+            "toDiscord": "274825598717919233",
+            "fromPropername": "Amira Al-mirghani",
+            "fromDiscord": "818851938308456449",
+            "createdTimeFormatted": "06h07 03/05/2026",
+            "reason": "moyen",
+            "toPropername": "Rewan Adler",
+            "fromName": "Margot Noestra"
+          }
+        }
+      ]
+    },
+    "setStatus": {
+      "file": "duty.handler.js",
+      "currentFieldsUsed": [
+        "characterId",
+        "discord",
+        "properName",
+        "status"
+      ],
+      "hasCharacterId": true,
+      "hasDiscordId": true,
+      "hasNameFields": [
+        "properName"
+      ],
+      "sampleDataKeys": [
+        "characterId",
+        "discord",
+        "groupId",
+        "name",
+        "properName",
+        "source",
+        "status"
+      ],
+      "sampleLogs": [
+        {
+          "id": 2375322,
+          "companyId": 11,
+          "isProcessed": true,
+          "category": "duty",
+          "parsedData": {
+            "characterId": 114888,
+            "groupId": 397,
+            "name": "ilhan",
+            "status": false,
+            "discord": "1196090187210559549",
+            "properName": "Mason Walker",
+            "source": 3110
+          }
+        },
+        {
+          "id": 2375248,
+          "companyId": 19,
+          "isProcessed": true,
+          "category": "duty",
+          "parsedData": {
+            "characterId": 125038,
+            "groupId": 6467,
+            "name": "Astaroth",
+            "status": false,
+            "discord": "966652711930056744",
+            "properName": "Ezra'ya Saint",
+            "source": 1269
+          }
+        },
+        {
+          "id": 2375246,
+          "companyId": 19,
+          "isProcessed": true,
+          "category": "duty",
+          "parsedData": {
+            "characterId": 125038,
+            "groupId": 6467,
+            "name": "Astaroth",
+            "status": true,
+            "discord": "966652711930056744",
+            "properName": "Ezra'ya Saint",
+            "source": 1269
+          }
+        },
+        {
+          "id": 2375245,
+          "companyId": 19,
+          "isProcessed": true,
+          "category": "duty",
+          "parsedData": {
+            "characterId": 125038,
+            "groupId": 6467,
+            "name": "Astaroth",
+            "status": false,
+            "discord": "966652711930056744",
+            "properName": "Ezra'ya Saint",
+            "source": 1269
+          }
+        },
+        {
+          "id": 2375244,
+          "companyId": 19,
+          "isProcessed": true,
+          "category": "duty",
+          "parsedData": {
+            "characterId": 125038,
+            "groupId": 6467,
+            "name": "Astaroth",
+            "status": true,
+            "discord": "966652711930056744",
+            "properName": "Ezra'ya Saint",
+            "source": 1269
+          }
+        }
+      ]
+    },
+    "leaveGroup": {
+      "file": "leaveGroup.handler.js",
+      "currentFieldsUsed": [
+        "properName",
+        "discord",
+        "discordId",
+        "characterId"
+      ],
+      "hasCharacterId": true,
+      "hasDiscordId": true,
+      "hasNameFields": [
+        "properName"
+      ],
+      "sampleDataKeys": [
+        "characterId",
+        "discord",
+        "name",
+        "properName",
+        "source"
+      ],
+      "sampleLogs": [
+        {
+          "id": 2372971,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "characterId": 128246,
+            "name": "Jl_Lilian",
+            "discord": "619881506457911318",
+            "properName": "Lawrence Michael",
+            "source": 641
+          }
+        },
+        {
+          "id": 2362992,
+          "companyId": 15,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "characterId": 116712,
+            "name": "crash",
+            "discord": "1346977499560677446",
+            "properName": "Liams Brawn",
+            "source": 2986
+          }
+        },
+        {
+          "id": 2362865,
+          "companyId": 15,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "characterId": 116712,
+            "name": "crash",
+            "discord": "1346977499560677446",
+            "properName": "Liams Brawn",
+            "source": 2986
+          }
+        },
+        {
+          "id": 2356841,
+          "companyId": 3,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "characterId": 63591,
+            "name": "LallyHope",
+            "discord": "488292600659312640",
+            "properName": "Liyah Dinaz",
+            "source": 429
+          }
+        },
+        {
+          "id": 2356109,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "characterId": 130817,
+            "name": "lxrd",
+            "discord": "533773325084655617",
+            "properName": "Benício Rios",
+            "source": 671
+          }
+        }
+      ]
+    },
+    "acceptInvit": {
+      "file": "acceptInvit.handler.js",
+      "currentFieldsUsed": [
+        "properName",
+        "discord",
+        "characterId"
+      ],
+      "hasCharacterId": true,
+      "hasDiscordId": true,
+      "hasNameFields": [
+        "properName"
+      ],
+      "sampleDataKeys": [
+        "characterId",
+        "discord",
+        "name",
+        "properName",
+        "source"
+      ],
+      "sampleLogs": [
+        {
+          "id": 2371367,
+          "companyId": 20,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "characterId": 128626,
+            "name": "Margot Noestra",
+            "discord": "818851938308456449",
+            "properName": "Amira Al-mirghani",
+            "source": 3684
+          }
+        },
+        {
+          "id": 2366886,
+          "companyId": 20,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "characterId": 133941,
+            "name": "nadou00973",
+            "discord": "703352353998372946",
+            "properName": "Zaylee Allery",
+            "source": 3056
+          }
+        },
+        {
+          "id": 2366856,
+          "companyId": 20,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "characterId": 100457,
+            "name": "PEPS",
+            "discord": "300946025806561282",
+            "properName": "Elijah Williams",
+            "source": 2930
+          }
+        },
+        {
+          "id": 2366811,
+          "companyId": 20,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "characterId": 131882,
+            "name": "Alpha",
+            "discord": "514769610046701578",
+            "properName": "Aiden Peña",
+            "source": 1744
+          }
+        },
+        {
+          "id": 2366546,
+          "companyId": 11,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "characterId": 134799,
+            "name": "Yuka Baka",
+            "discord": "273173441224376320",
+            "properName": "Ryan Scott",
+            "source": 3554
+          }
+        }
+      ]
+    },
+    "kickMember": {
+      "file": "kickMember.handler.js",
+      "currentFieldsUsed": [
+        "targetProperName",
+        "properName"
+      ],
+      "hasCharacterId": false,
+      "hasDiscordId": false,
+      "hasNameFields": [
+        "targetProperName",
+        "properName"
+      ],
+      "sampleDataKeys": [
+        "characterId",
+        "discord",
+        "name",
+        "properName",
+        "source",
+        "targetCharacterId",
+        "targetProperName"
+      ],
+      "sampleLogs": [
+        {
+          "id": 2361208,
+          "companyId": 20,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "characterId": 72869,
+            "properName": "Paloma Da costa",
+            "targetProperName": "Albert Cherman",
+            "name": "Bebou",
+            "discord": "951771410999701524",
+            "targetCharacterId": 123938,
+            "source": 2926
+          }
+        },
+        {
+          "id": 2357272,
+          "companyId": 23,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "characterId": 74454,
+            "properName": "Arya Brooks Murphy",
+            "targetProperName": "Ken Krooger",
+            "name": "Pataphix",
+            "discord": "288034964094844940",
+            "targetCharacterId": 41861,
+            "source": 1420
+          }
+        },
+        {
+          "id": 2347972,
+          "companyId": 23,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "characterId": 122885,
+            "properName": "Vahé Ravenwood",
+            "name": "Piink",
+            "source": 6935,
+            "discord": "981557397711650826",
+            "targetProperName": "Théa Thompson",
+            "targetCharacterId": 127812
+          }
+        },
+        {
+          "id": 2347851,
+          "companyId": 23,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "characterId": 122885,
+            "properName": "Vahé Ravenwood",
+            "name": "Piink",
+            "source": 6935,
+            "discord": "981557397711650826",
+            "targetProperName": "Rhissa Samy",
+            "targetCharacterId": 82648
+          }
+        },
+        {
+          "id": 2334367,
+          "companyId": 15,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "characterId": 73137,
+            "properName": "Amir El-farouk",
+            "name": "Youss",
+            "source": 4813,
+            "discord": "386117397137850368",
+            "targetProperName": "Hector Mendez",
+            "targetCharacterId": 111456
+          }
+        }
+      ]
+    },
+    "addmoney": {
+      "file": "addMoney.handler.js",
+      "currentFieldsUsed": [
+        "amount",
+        "reason",
+        "before",
+        "after",
+        "characterId",
+        "characterID",
+        "charId",
+        "charID",
+        "discord",
+        "discordId",
+        "discordID",
+        "properName",
+        "name",
+        "playerName"
+      ],
+      "hasCharacterId": true,
+      "hasDiscordId": true,
+      "hasNameFields": [
+        "properName",
+        "name",
+        "playerName"
+      ],
+      "sampleDataKeys": [
+        "accountId",
+        "after",
+        "amount",
+        "before",
+        "characterId",
+        "discord",
+        "iban",
+        "name",
+        "properName",
+        "reason",
+        "source"
+      ],
+      "sampleLogs": [
+        {
+          "id": 2375348,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "accountId": 34617,
+            "before": 8567099,
+            "iban": "LTDSEOUL",
+            "reason": "Redistribution N°16587",
+            "after": 8567199,
+            "amount": 100
+          }
+        },
+        {
+          "id": 2375340,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "characterId": 127777,
+            "accountId": 34617,
+            "name": "skaudd",
+            "before": 8566859,
+            "properName": "Issa Blackys",
+            "iban": "LTDSEOUL",
+            "amount": 240,
+            "discord": "495599989129740289",
+            "reason": "Paiement facture N°1889618",
+            "after": 8567099,
+            "source": 4147
+          }
+        },
+        {
+          "id": 2375330,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "characterId": 95792,
+            "accountId": 34617,
+            "name": "SkyUnitedFR",
+            "before": 8566619,
+            "properName": "Daft Corleone",
+            "iban": "LTDSEOUL",
+            "amount": 240,
+            "discord": "314871330400894977",
+            "reason": "Paiement facture N°1889617",
+            "after": 8566859,
+            "source": 4361
+          }
+        },
+        {
+          "id": 2375323,
+          "companyId": 22,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "accountId": 69437,
+            "before": 466290,
+            "iban": "LTDGROV",
+            "reason": "Redistribution N°16502",
+            "after": 466450,
+            "amount": 160
+          }
+        },
+        {
+          "id": 2375279,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "accountId": 34617,
+            "before": 8566569,
+            "iban": "LTDSEOUL",
+            "reason": "Redistribution N°16478",
+            "after": 8566619,
+            "amount": 50
+          }
+        }
+      ]
+    },
+    "add": {
+      "file": "inventory.handler.js",
+      "currentFieldsUsed": [
+        "owner",
+        "item",
+        "count",
+        "metadata",
+        "properName",
+        "characterId",
+        "discord"
+      ],
+      "hasCharacterId": true,
+      "hasDiscordId": true,
+      "hasNameFields": [
+        "properName"
+      ],
+      "sampleDataKeys": [
+        "characterId",
+        "count",
+        "discord",
+        "item",
+        "metadata",
+        "name",
+        "owner",
+        "properName",
+        "source"
+      ],
+      "sampleLogs": [
+        {
+          "id": 2375346,
+          "companyId": 10,
+          "isProcessed": true,
+          "category": "inventory",
+          "parsedData": {
+            "characterId": 131988,
+            "name": "mikouiz",
+            "discord": "368811222180823042",
+            "count": 60,
+            "item": "charbon",
+            "metadata": {
+              "formatname": "milo",
+              "createdByCharacter": 131988,
+              "createdBy": "368811222180823042",
+              "craftingTable": 576,
+              "origin": "Craft",
+              "uuid": "b6cd3f12-d3e2-4184-9739-4fc5e7f2bccb",
+              "createdDate": 1777783163
+            },
+            "properName": "Milo Jenkins",
+            "owner": "action-39805-0-3",
+            "source": 4684
+          }
+        },
+        {
+          "id": 2375344,
+          "companyId": 10,
+          "isProcessed": true,
+          "category": "inventory",
+          "parsedData": {
+            "characterId": 131988,
+            "name": "mikouiz",
+            "discord": "368811222180823042",
+            "count": 60,
+            "item": "charbon",
+            "metadata": {
+              "formatname": "milo",
+              "createdByCharacter": 131988,
+              "createdBy": "368811222180823042",
+              "craftingTable": 576,
+              "origin": "Craft",
+              "uuid": "b6cd3f12-d3e2-4184-9739-4fc5e7f2bccb",
+              "createdDate": 1777783126.2
+            },
+            "properName": "Milo Jenkins",
+            "owner": "action-39805-0-3",
+            "source": 4684
+          }
+        },
+        {
+          "id": 2375342,
+          "companyId": 10,
+          "isProcessed": true,
+          "category": "inventory",
+          "parsedData": {
+            "characterId": 131988,
+            "name": "mikouiz",
+            "discord": "368811222180823042",
+            "count": 60,
+            "item": "charbon",
+            "metadata": {
+              "createdByCharacter": 131988,
+              "createdBy": "368811222180823042",
+              "craftingTable": 576,
+              "origin": "Craft",
+              "uuid": "b6cd3f12-d3e2-4184-9739-4fc5e7f2bccb",
+              "createdDate": 1777783083.4
+            },
+            "properName": "Milo Jenkins",
+            "owner": "action-39805-0-3",
+            "source": 4684
+          }
+        },
+        {
+          "id": 2375334,
+          "companyId": 10,
+          "isProcessed": true,
+          "category": "inventory",
+          "parsedData": {
+            "characterId": 131988,
+            "name": "mikouiz",
+            "discord": "368811222180823042",
+            "count": 164,
+            "item": "raw_coal",
+            "metadata": {
+              "harvestedByCharacter": 131988,
+              "formatname": "milo",
+              "harvestedBy": "368811222180823042",
+              "uuid": "93f8f2d5-84ad-4ced-9eec-2a5473b2042a",
+              "createdDate": 1777782529.8765433
+            },
+            "properName": "Milo Jenkins",
+            "owner": "action-39805-0-3",
+            "source": 4684
+          }
+        },
+        {
+          "id": 2375333,
+          "companyId": 10,
+          "isProcessed": true,
+          "category": "inventory",
+          "parsedData": {
+            "characterId": 131988,
+            "name": "mikouiz",
+            "discord": "368811222180823042",
+            "count": 100,
+            "item": "raw_coal",
+            "metadata": {
+              "harvestedByCharacter": 131988,
+              "formatname": "milo",
+              "harvestedBy": "368811222180823042",
+              "uuid": "93f8f2d5-84ad-4ced-9eec-2a5473b2042a",
+              "createdDate": 1777782472.33862
+            },
+            "properName": "Milo Jenkins",
+            "owner": "action-39805-0-3",
+            "source": 4684
+          }
+        }
+      ]
+    },
+    "remove": {
+      "file": "inventory.handler.js",
+      "currentFieldsUsed": [
+        "owner",
+        "item",
+        "count",
+        "metadata",
+        "properName",
+        "characterId",
+        "discord"
+      ],
+      "hasCharacterId": true,
+      "hasDiscordId": true,
+      "hasNameFields": [
+        "properName"
+      ],
+      "sampleDataKeys": [
+        "characterId",
+        "count",
+        "discord",
+        "item",
+        "metadata",
+        "name",
+        "owner",
+        "properName",
+        "source"
+      ],
+      "sampleLogs": [
+        {
+          "id": 2375347,
+          "companyId": 10,
+          "isProcessed": true,
+          "category": "inventory",
+          "parsedData": {
+            "characterId": 131988,
+            "name": "mikouiz",
+            "discord": "368811222180823042",
+            "count": 100,
+            "item": "raw_coal",
+            "metadata": {
+              "harvestedByCharacter": 131988,
+              "formatname": "milo",
+              "harvestedBy": "368811222180823042",
+              "uuid": "93f8f2d5-84ad-4ced-9eec-2a5473b2042a",
+              "createdDate": 1777782529.8765433
+            },
+            "properName": "Milo Jenkins",
+            "owner": "action-39805-0-3",
+            "source": 4684
+          }
+        },
+        {
+          "id": 2375345,
+          "companyId": 10,
+          "isProcessed": true,
+          "category": "inventory",
+          "parsedData": {
+            "characterId": 131988,
+            "name": "mikouiz",
+            "discord": "368811222180823042",
+            "count": 100,
+            "item": "raw_coal",
+            "metadata": {
+              "harvestedByCharacter": 131988,
+              "formatname": "milo",
+              "harvestedBy": "368811222180823042",
+              "uuid": "93f8f2d5-84ad-4ced-9eec-2a5473b2042a",
+              "createdDate": 1777782529.8765433
+            },
+            "properName": "Milo Jenkins",
+            "owner": "action-39805-0-3",
+            "source": 4684
+          }
+        },
+        {
+          "id": 2375343,
+          "companyId": 10,
+          "isProcessed": true,
+          "category": "inventory",
+          "parsedData": {
+            "characterId": 131988,
+            "name": "mikouiz",
+            "discord": "368811222180823042",
+            "count": 100,
+            "item": "raw_coal",
+            "metadata": {
+              "harvestedByCharacter": 131988,
+              "formatname": "milo",
+              "harvestedBy": "368811222180823042",
+              "uuid": "93f8f2d5-84ad-4ced-9eec-2a5473b2042a",
+              "createdDate": 1777782529.8765433
+            },
+            "properName": "Milo Jenkins",
+            "owner": "action-39805-0-3",
+            "source": 4684
+          }
+        },
+        {
+          "id": 2375338,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "inventory",
+          "parsedData": {
+            "characterId": 131519,
+            "name": "mileaf",
+            "discord": "273825199936241664",
+            "count": 2,
+            "item": "tiramisu_fraise",
+            "metadata": {
+              "formatname": "Menucomplet 120$ ",
+              "createdByCharacter": 109345,
+              "craftingTable": 435,
+              "createdBy": "1077166280408305724",
+              "origin": "Craft",
+              "uuid": "a55bfae3-0293-4dff-bbca-82d8865a826e",
+              "createdDate": 1769847156.597111
+            },
+            "properName": "Choden Tenzin",
+            "owner": "action-27162-0-6",
+            "source": 4305
+          }
+        },
+        {
+          "id": 2375337,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "inventory",
+          "parsedData": {
+            "characterId": 131519,
+            "name": "mileaf",
+            "discord": "273825199936241664",
+            "count": 2,
+            "item": "jus_ananas",
+            "metadata": {
+              "formatname": "Menu complet120$",
+              "createdByCharacter": 68159,
+              "createdBy": "384335158095904768",
+              "craftingTable": 362,
+              "origin": "Craft",
+              "uuid": "4c9436e7-2fb2-4b5f-8453-a057578d1853",
+              "createdDate": 1776980529.5730028
+            },
+            "properName": "Choden Tenzin",
+            "owner": "action-27162-0-6",
+            "source": 4305
+          }
+        }
+      ]
+    },
+    "upRank": {
+      "file": "rankChange.handler.js",
+      "currentFieldsUsed": [
+        "targetCharacterId",
+        "newGroupRankId"
+      ],
+      "hasCharacterId": true,
+      "hasDiscordId": false,
+      "hasNameFields": [],
+      "sampleDataKeys": [
+        "characterId",
+        "discord",
+        "name",
+        "newGroupRankId",
+        "oldGroupRankId",
+        "properName",
+        "source",
+        "targetCharacterId"
+      ],
+      "sampleLogs": [
+        {
+          "id": 2361580,
+          "companyId": 23,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "properName": "Vahé Ravenwood",
+            "characterId": 122885,
+            "newGroupRankId": 24146,
+            "name": "Piink",
+            "oldGroupRankId": 24142,
+            "discord": "981557397711650826",
+            "targetCharacterId": 97723,
+            "source": 1459
+          }
+        },
+        {
+          "id": 2361578,
+          "companyId": 23,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "properName": "Vahé Ravenwood",
+            "characterId": 122885,
+            "newGroupRankId": 24142,
+            "name": "Piink",
+            "oldGroupRankId": 24144,
+            "discord": "981557397711650826",
+            "targetCharacterId": 97723,
+            "source": 1459
+          }
+        },
+        {
+          "id": 2361575,
+          "companyId": 23,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "properName": "Vahé Ravenwood",
+            "characterId": 122885,
+            "newGroupRankId": 24144,
+            "name": "Piink",
+            "oldGroupRankId": 24478,
+            "discord": "981557397711650826",
+            "targetCharacterId": 97723,
+            "source": 1459
+          }
+        },
+        {
+          "id": 2361573,
+          "companyId": 23,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "properName": "Vahé Ravenwood",
+            "characterId": 122885,
+            "newGroupRankId": 25129,
+            "name": "Piink",
+            "oldGroupRankId": 25130,
+            "discord": "981557397711650826",
+            "targetCharacterId": 97723,
+            "source": 1459
+          }
+        },
+        {
+          "id": 2361571,
+          "companyId": 23,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "properName": "Vahé Ravenwood",
+            "characterId": 122885,
+            "newGroupRankId": 24478,
+            "name": "Piink",
+            "oldGroupRankId": 25129,
+            "discord": "981557397711650826",
+            "targetCharacterId": 97723,
+            "source": 1459
+          }
+        }
+      ]
+    },
+    "downRank": {
+      "file": "rankChange.handler.js",
+      "currentFieldsUsed": [
+        "targetCharacterId",
+        "newGroupRankId"
+      ],
+      "hasCharacterId": true,
+      "hasDiscordId": false,
+      "hasNameFields": [],
+      "sampleDataKeys": [
+        "characterId",
+        "discord",
+        "name",
+        "newGroupRankId",
+        "oldGroupRankId",
+        "properName",
+        "source",
+        "targetCharacterId"
+      ],
+      "sampleLogs": [
+        {
+          "id": 2369871,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "properName": "Emiliano Lima",
+            "characterId": 107638,
+            "newGroupRankId": 22625,
+            "name": "Limm",
+            "oldGroupRankId": 25275,
+            "discord": "454670923417780228",
+            "targetCharacterId": 131716,
+            "source": 3852
+          }
+        },
+        {
+          "id": 2369870,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "properName": "Emiliano Lima",
+            "characterId": 107638,
+            "newGroupRankId": 25275,
+            "name": "Limm",
+            "oldGroupRankId": 22518,
+            "discord": "454670923417780228",
+            "targetCharacterId": 131716,
+            "source": 3852
+          }
+        },
+        {
+          "id": 2369868,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "properName": "Emiliano Lima",
+            "characterId": 107638,
+            "newGroupRankId": 22518,
+            "name": "Limm",
+            "oldGroupRankId": 14643,
+            "discord": "454670923417780228",
+            "targetCharacterId": 131716,
+            "source": 3852
+          }
+        },
+        {
+          "id": 2369866,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "properName": "Emiliano Lima",
+            "characterId": 107638,
+            "newGroupRankId": 14643,
+            "name": "Limm",
+            "oldGroupRankId": 15031,
+            "discord": "454670923417780228",
+            "targetCharacterId": 131716,
+            "source": 3852
+          }
+        },
+        {
+          "id": 2369863,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xgroup",
+          "parsedData": {
+            "properName": "Emiliano Lima",
+            "characterId": 107638,
+            "newGroupRankId": 15031,
+            "name": "Limm",
+            "oldGroupRankId": 22420,
+            "discord": "454670923417780228",
+            "targetCharacterId": 131716,
+            "source": 3852
+          }
+        }
+      ]
+    },
+    "garage": {
+      "file": "garage.handler.js",
+      "currentFieldsUsed": [
+        "vehicleId",
+        "characterId",
+        "discord",
+        "properName",
+        "markerId"
+      ],
+      "hasCharacterId": true,
+      "hasDiscordId": true,
+      "hasNameFields": [
+        "properName"
+      ],
+      "sampleDataKeys": [
+        "actionId",
+        "characterId",
+        "discord",
+        "markerId",
+        "name",
+        "properName",
+        "source",
+        "vehicleId"
+      ],
+      "sampleLogs": [
+        {
+          "id": 2375086,
+          "companyId": 10,
+          "isProcessed": true,
+          "category": "xaction",
+          "parsedData": {
+            "markerId": 40279,
+            "characterId": 131988,
+            "actionId": 39806,
+            "vehicleId": 995806,
+            "properName": "Milo Jenkins",
+            "discord": "368811222180823042",
+            "name": "mikouiz",
+            "source": 4684
+          }
+        },
+        {
+          "id": 2375084,
+          "companyId": 10,
+          "isProcessed": true,
+          "category": "xaction",
+          "parsedData": {
+            "markerId": 40279,
+            "characterId": 131988,
+            "actionId": 39806,
+            "vehicleId": 992739,
+            "properName": "Milo Jenkins",
+            "discord": "368811222180823042",
+            "name": "mikouiz",
+            "source": 4684
+          }
+        },
+        {
+          "id": 2374962,
+          "companyId": 12,
+          "isProcessed": true,
+          "category": "xaction",
+          "parsedData": {
+            "markerId": 12481,
+            "characterId": 89886,
+            "actionId": 12293,
+            "vehicleId": 994491,
+            "properName": "Anas Benaissa",
+            "discord": "1359504170998304949",
+            "name": "anask",
+            "source": 3293
+          }
+        },
+        {
+          "id": 2374960,
+          "companyId": 12,
+          "isProcessed": true,
+          "category": "xaction",
+          "parsedData": {
+            "markerId": 12481,
+            "characterId": 89886,
+            "actionId": 12293,
+            "vehicleId": 994286,
+            "properName": "Anas Benaissa",
+            "discord": "1359504170998304949",
+            "name": "anask",
+            "source": 3293
+          }
+        },
+        {
+          "id": 2374955,
+          "companyId": 12,
+          "isProcessed": true,
+          "category": "xaction",
+          "parsedData": {
+            "markerId": 12481,
+            "characterId": 89886,
+            "actionId": 12293,
+            "vehicleId": 994727,
+            "properName": "Anas Benaissa",
+            "discord": "1359504170998304949",
+            "name": "anask",
+            "source": 3293
+          }
+        }
+      ]
+    },
+    "putInside": {
+      "file": "garage.handler.js",
+      "currentFieldsUsed": [
+        "vehicleId",
+        "characterId",
+        "discord",
+        "properName",
+        "markerId"
+      ],
+      "hasCharacterId": true,
+      "hasDiscordId": true,
+      "hasNameFields": [
+        "properName"
+      ],
+      "sampleDataKeys": [
+        "actionId",
+        "characterId",
+        "discord",
+        "markerId",
+        "name",
+        "properName",
+        "saved",
+        "source",
+        "vehicleId"
+      ],
+      "sampleLogs": [
+        {
+          "id": 2375208,
+          "companyId": 9,
+          "isProcessed": true,
+          "category": "xaction",
+          "parsedData": {
+            "characterId": 93010,
+            "vehicleId": 997810,
+            "discord": "508075895702028319",
+            "saved": true,
+            "markerId": 759,
+            "actionId": 680,
+            "properName": "Massimo Adelantado",
+            "name": "Massimo",
+            "source": 4626
+          }
+        },
+        {
+          "id": 2375198,
+          "companyId": 10,
+          "isProcessed": true,
+          "category": "xaction",
+          "parsedData": {
+            "characterId": 121865,
+            "vehicleId": 948295,
+            "discord": "1133458258372345886",
+            "saved": true,
+            "markerId": 40279,
+            "actionId": 39806,
+            "properName": "Toma Pachysse",
+            "name": "ayppeer",
+            "source": 4641
+          }
+        },
+        {
+          "id": 2375144,
+          "companyId": 10,
+          "isProcessed": true,
+          "category": "xaction",
+          "parsedData": {
+            "characterId": 131193,
+            "vehicleId": 988902,
+            "discord": "391279274595713024",
+            "saved": true,
+            "markerId": 40279,
+            "actionId": 39806,
+            "properName": "Cameron Davis",
+            "name": "chantillyss",
+            "source": 4423
+          }
+        },
+        {
+          "id": 2375085,
+          "companyId": 10,
+          "isProcessed": true,
+          "category": "xaction",
+          "parsedData": {
+            "characterId": 131988,
+            "vehicleId": 992739,
+            "discord": "368811222180823042",
+            "saved": true,
+            "markerId": 40279,
+            "actionId": 39806,
+            "properName": "Milo Jenkins",
+            "name": "mikouiz",
+            "source": 4684
+          }
+        },
+        {
+          "id": 2374964,
+          "companyId": 12,
+          "isProcessed": true,
+          "category": "xaction",
+          "parsedData": {
+            "characterId": 89886,
+            "vehicleId": 994491,
+            "discord": "1359504170998304949",
+            "saved": false,
+            "markerId": 12481,
+            "actionId": 12293,
+            "properName": "Anas Benaissa",
+            "name": "anask",
+            "source": 3293
+          }
+        }
+      ]
+    },
+    "cancel": {
+      "file": "cancelBill.handler.js",
+      "currentFieldsUsed": [
+        "billId",
+        "source",
+        "cancellerPropername",
+        "cancellerDiscord",
+        "characterIdCanceller"
+      ],
+      "hasCharacterId": true,
+      "hasDiscordId": true,
+      "hasNameFields": [
+        "cancellerPropername"
+      ],
+      "sampleDataKeys": [
+        "accountIdFrom",
+        "amount",
+        "billId",
+        "cancellerDiscord",
+        "cancellerName",
+        "cancellerPropername",
+        "category",
+        "characterIdCanceller",
+        "characterIdFrom",
+        "characterIdTo",
+        "createdTimeFormatted",
+        "formattedTime",
+        "fromDiscord",
+        "fromName",
+        "fromPropername",
+        "groupId",
+        "logType",
+        "reason",
+        "text",
+        "time",
+        "toDiscord",
+        "toName",
+        "toPropername"
+      ],
+      "sampleLogs": [
+        {
+          "id": 2374764,
+          "companyId": 11,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889576,
+            "characterIdCanceller": 130235,
+            "characterIdFrom": 130235,
+            "time": 1777776252,
+            "reason": "cc",
+            "text": "Facture annulée",
+            "formattedTime": "04h44 03/05/2026",
+            "logType": "cancel",
+            "accountIdFrom": 61107,
+            "groupId": 397,
+            "category": "xbill",
+            "cancellerName": "coin67768",
+            "amount": 350,
+            "toName": "eva_nah",
+            "toPropername": "Amélia Willow",
+            "characterIdTo": 122830,
+            "toDiscord": "1007388699895541780",
+            "fromPropername": "Julio Mendoza",
+            "fromDiscord": "998284683513188402",
+            "createdTimeFormatted": "04h42 03/05/2026",
+            "cancellerDiscord": "998284683513188402",
+            "cancellerPropername": "Julio Mendoza",
+            "fromName": "coin67768"
+          }
+        },
+        {
+          "id": 2374742,
+          "companyId": 11,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889572,
+            "characterIdCanceller": 130235,
+            "characterIdFrom": 130235,
+            "time": 1777776089,
+            "reason": "cc",
+            "text": "Facture annulée",
+            "formattedTime": "04h41 03/05/2026",
+            "logType": "cancel",
+            "accountIdFrom": 61107,
+            "groupId": 397,
+            "category": "xbill",
+            "cancellerName": "coin67768",
+            "amount": 1350,
+            "toName": "eva_nah",
+            "toPropername": "Amélia Willow",
+            "characterIdTo": 122830,
+            "toDiscord": "1007388699895541780",
+            "fromPropername": "Julio Mendoza",
+            "fromDiscord": "998284683513188402",
+            "createdTimeFormatted": "04h40 03/05/2026",
+            "cancellerDiscord": "998284683513188402",
+            "cancellerPropername": "Julio Mendoza",
+            "fromName": "coin67768"
+          }
+        },
+        {
+          "id": 2373298,
+          "companyId": 20,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889354,
+            "characterIdCanceller": 133941,
+            "characterIdFrom": 133941,
+            "time": 1777767632,
+            "reason": "coupe + couleur x2 + palette",
+            "text": "Facture annulée",
+            "formattedTime": "02h20 03/05/2026",
+            "logType": "cancel",
+            "accountIdFrom": 36208,
+            "groupId": 368,
+            "category": "xbill",
+            "cancellerName": "nadou00973",
+            "amount": 800,
+            "toName": "Nyxia",
+            "toPropername": "Latoya Sanford",
+            "characterIdTo": 116944,
+            "toDiscord": "1296233929820475549",
+            "fromPropername": "Zaylee Allery",
+            "fromDiscord": "703352353998372946",
+            "createdTimeFormatted": "02h19 03/05/2026",
+            "cancellerDiscord": "703352353998372946",
+            "cancellerPropername": "Zaylee Allery",
+            "fromName": "nadou00973"
+          }
+        },
+        {
+          "id": 2371949,
+          "companyId": 11,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889169,
+            "characterIdCanceller": 131825,
+            "characterIdFrom": 131825,
+            "time": 1777763857,
+            "reason": "x1 Royal Bacon",
+            "text": "Facture annulée",
+            "formattedTime": "01h17 03/05/2026",
+            "logType": "cancel",
+            "accountIdFrom": 61107,
+            "groupId": 397,
+            "category": "xbill",
+            "cancellerName": "Yro",
+            "amount": 100,
+            "toName": "ilhan",
+            "toPropername": "Mason Walker",
+            "characterIdTo": 114888,
+            "toDiscord": "1196090187210559549",
+            "fromPropername": "Mi-Rae Sora",
+            "fromDiscord": "910567908076322896",
+            "createdTimeFormatted": "01h17 03/05/2026",
+            "cancellerDiscord": "910567908076322896",
+            "cancellerPropername": "Mi-Rae Sora",
+            "fromName": "Yro"
+          }
+        },
+        {
+          "id": 2371940,
+          "companyId": 5,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889168,
+            "characterIdCanceller": 77926,
+            "characterIdFrom": 77926,
+            "time": 1777763852,
+            "reason": "Full",
+            "text": "Facture annulée",
+            "formattedTime": "01h17 03/05/2026",
+            "logType": "cancel",
+            "accountIdFrom": 206,
+            "groupId": 4,
+            "category": "xbill",
+            "cancellerName": "Medic",
+            "amount": 600,
+            "toName": "Slayt",
+            "toPropername": "Cody Moon",
+            "characterIdTo": 120960,
+            "toDiscord": "342016156649127936",
+            "fromPropername": "Liam Whitmore",
+            "fromDiscord": "333930756571136001",
+            "createdTimeFormatted": "01h17 03/05/2026",
+            "cancellerDiscord": "333930756571136001",
+            "cancellerPropername": "Liam Whitmore",
+            "fromName": "Medic"
+          }
+        }
+      ]
+    },
+    "withdraw": {
+      "file": "withdraw.handler.js",
+      "currentFieldsUsed": [
+        "amount",
+        "reason",
+        "before",
+        "after"
+      ],
+      "hasCharacterId": false,
+      "hasDiscordId": false,
+      "hasNameFields": [],
+      "sampleDataKeys": [
+        "accountId",
+        "after",
+        "amount",
+        "before",
+        "characterId",
+        "discord",
+        "iban",
+        "name",
+        "properName",
+        "reason",
+        "source"
+      ],
+      "sampleLogs": [
+        {
+          "id": 2374052,
+          "companyId": 17,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "characterId": 129865,
+            "accountId": 68670,
+            "name": "skynox3tv",
+            "before": 1015855,
+            "properName": "Blake Anderson",
+            "iban": "FLYWHEEL",
+            "amount": 252,
+            "discord": "286285517639778305",
+            "reason": "Paiement custom usine Blake Anderson",
+            "after": 1015603,
+            "source": 39
+          }
+        },
+        {
+          "id": 2373166,
+          "companyId": 17,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "characterId": 104654,
+            "accountId": 68670,
+            "name": "Tsubaka",
+            "before": 1011815,
+            "properName": "Ángel Lobo ",
+            "iban": "FLYWHEEL",
+            "amount": 2164,
+            "discord": "295593446406750209",
+            "reason": "Paiement custom usine Ángel Lobo ",
+            "after": 1009651,
+            "source": 71
+          }
+        },
+        {
+          "id": 2372560,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "characterId": 55767,
+            "accountId": 34617,
+            "name": "skresko",
+            "before": 8529851,
+            "properName": "derek blake",
+            "iban": "LTDSEOUL",
+            "amount": 800,
+            "discord": "587222944980402176",
+            "reason": "Achat boutique N°215",
+            "after": 8529051,
+            "source": 2378
+          }
+        },
+        {
+          "id": 2372274,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "characterId": 55767,
+            "accountId": 34617,
+            "name": "skresko",
+            "before": 8536356,
+            "properName": "derek blake",
+            "iban": "LTDSEOUL",
+            "amount": 8000,
+            "discord": "587222944980402176",
+            "reason": "Paiement facture N°1889199",
+            "after": 8528356,
+            "source": 2378
+          }
+        },
+        {
+          "id": 2372116,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "characterId": 55767,
+            "accountId": 34617,
+            "name": "skresko",
+            "before": 8538134,
+            "properName": "derek blake",
+            "iban": "LTDSEOUL",
+            "amount": 4000,
+            "discord": "587222944980402176",
+            "reason": "Paiement facture N°1889178",
+            "after": 8534134,
+            "source": 2378
+          }
+        }
+      ]
+    },
+    "paid": {
+      "file": "paidBill.handler.js",
+      "currentFieldsUsed": [
+        "billId"
+      ],
+      "hasCharacterId": false,
+      "hasDiscordId": false,
+      "hasNameFields": [],
+      "sampleDataKeys": [
+        "accountIdFrom",
+        "amount",
+        "billId",
+        "characterIdFrom",
+        "characterIdTo",
+        "createdTimeFormatted",
+        "fromDiscord",
+        "fromName",
+        "fromPropername",
+        "groupId",
+        "reason",
+        "toDiscord",
+        "toName",
+        "toPropername"
+      ],
+      "sampleLogs": [
+        {
+          "id": 2375341,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889618,
+            "accountIdFrom": 34617,
+            "groupId": 4946,
+            "amount": 240,
+            "toName": "skaudd",
+            "characterIdFrom": 131519,
+            "characterIdTo": 127777,
+            "toDiscord": "495599989129740289",
+            "fromPropername": "Choden Tenzin",
+            "fromDiscord": "273825199936241664",
+            "createdTimeFormatted": "06h37 03/05/2026",
+            "reason": "x2 menu complet",
+            "toPropername": "Issa Blackys",
+            "fromName": "mileaf"
+          }
+        },
+        {
+          "id": 2375331,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889617,
+            "accountIdFrom": 34617,
+            "groupId": 4946,
+            "amount": 240,
+            "toName": "SkyUnitedFR",
+            "characterIdFrom": 131519,
+            "characterIdTo": 95792,
+            "toDiscord": "314871330400894977",
+            "fromPropername": "Choden Tenzin",
+            "fromDiscord": "273825199936241664",
+            "createdTimeFormatted": "06h36 03/05/2026",
+            "reason": "x2 menu complet",
+            "toPropername": "Daft Corleone",
+            "fromName": "mileaf"
+          }
+        },
+        {
+          "id": 2375273,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889613,
+            "accountIdFrom": 34617,
+            "groupId": 4946,
+            "amount": 180,
+            "toName": "Zeymix_off",
+            "characterIdFrom": 131519,
+            "characterIdTo": 92870,
+            "toDiscord": "803022969433620512",
+            "fromPropername": "Choden Tenzin",
+            "fromDiscord": "273825199936241664",
+            "createdTimeFormatted": "06h08 03/05/2026",
+            "reason": "x2 menu du jour",
+            "toPropername": "Demetrius Flenory",
+            "fromName": "mileaf"
+          }
+        },
+        {
+          "id": 2375261,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889611,
+            "accountIdFrom": 34617,
+            "groupId": 4946,
+            "amount": 1400,
+            "toName": "Douns",
+            "characterIdFrom": 131519,
+            "characterIdTo": 127398,
+            "toDiscord": "550672591765897218",
+            "fromPropername": "Choden Tenzin",
+            "fromDiscord": "273825199936241664",
+            "createdTimeFormatted": "06h06 03/05/2026",
+            "reason": "x2 trottinettes",
+            "toPropername": "Makena Ritchford",
+            "fromName": "mileaf"
+          }
+        },
+        {
+          "id": 2375235,
+          "companyId": 20,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889610,
+            "accountIdFrom": 36208,
+            "groupId": 368,
+            "amount": 350,
+            "toName": "CIro di marzio",
+            "characterIdFrom": 128626,
+            "characterIdTo": 130910,
+            "toDiscord": "1367604911574880277",
+            "fromPropername": "Amira Al-mirghani",
+            "fromDiscord": "818851938308456449",
+            "createdTimeFormatted": "06h01 03/05/2026",
+            "reason": "moyen",
+            "toPropername": "Modie Gregory",
+            "fromName": "Margot Noestra"
+          }
+        }
+      ]
+    },
+    "paidCash": {
+      "file": "paidBill.handler.js",
+      "currentFieldsUsed": [
+        "billId"
+      ],
+      "hasCharacterId": false,
+      "hasDiscordId": false,
+      "hasNameFields": [],
+      "sampleDataKeys": [
+        "accountIdFrom",
+        "amount",
+        "billId",
+        "characterIdFrom",
+        "characterIdTo",
+        "createdTimeFormatted",
+        "fromDiscord",
+        "fromName",
+        "fromPropername",
+        "groupId",
+        "reason",
+        "toDiscord",
+        "toName",
+        "toPropername"
+      ],
+      "sampleLogs": [
+        {
+          "id": 2375276,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889614,
+            "accountIdFrom": 34617,
+            "groupId": 4946,
+            "amount": 32,
+            "toName": "Zeymix_off",
+            "characterIdFrom": 131519,
+            "characterIdTo": 92870,
+            "toDiscord": "803022969433620512",
+            "fromPropername": "Choden Tenzin",
+            "fromDiscord": "273825199936241664",
+            "createdTimeFormatted": "06h08 03/05/2026",
+            "reason": "x2 brique citron",
+            "toPropername": "Demetrius Flenory",
+            "fromName": "mileaf"
+          }
+        },
+        {
+          "id": 2375266,
+          "companyId": 20,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889612,
+            "accountIdFrom": 36208,
+            "groupId": 368,
+            "amount": 350,
+            "toName": "Opptix_maroccia",
+            "characterIdFrom": 128626,
+            "characterIdTo": 122161,
+            "toDiscord": "274825598717919233",
+            "fromPropername": "Amira Al-mirghani",
+            "fromDiscord": "818851938308456449",
+            "createdTimeFormatted": "06h07 03/05/2026",
+            "reason": "moyen",
+            "toPropername": "Rewan Adler",
+            "fromName": "Margot Noestra"
+          }
+        },
+        {
+          "id": 2375221,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889608,
+            "accountIdFrom": 34617,
+            "groupId": 4946,
+            "amount": 10,
+            "toName": "monkeydskyfalloff",
+            "characterIdFrom": 131519,
+            "characterIdTo": 131852,
+            "toDiscord": "781994491975958559",
+            "fromPropername": "Choden Tenzin",
+            "fromDiscord": "273825199936241664",
+            "createdTimeFormatted": "05h59 03/05/2026",
+            "reason": "x1 portefeuille",
+            "toPropername": "Serena Lazcano",
+            "fromName": "mileaf"
+          }
+        },
+        {
+          "id": 2374971,
+          "companyId": 11,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889600,
+            "accountIdFrom": 61107,
+            "groupId": 397,
+            "amount": 450,
+            "toName": "NeyZoX44",
+            "characterIdFrom": 114888,
+            "characterIdTo": 129207,
+            "toDiscord": "799962835127107585",
+            "fromPropername": "Mason Walker",
+            "fromDiscord": "1196090187210559549",
+            "createdTimeFormatted": "05h20 03/05/2026",
+            "reason": "x5 chiken",
+            "toPropername": "Alvaro Urbana",
+            "fromName": "ilhan"
+          }
+        },
+        {
+          "id": 2374953,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "xbankaccount",
+          "parsedData": {
+            "billId": 1889599,
+            "accountIdFrom": 34617,
+            "groupId": 4946,
+            "amount": 25,
+            "toName": "kyliann07",
+            "characterIdFrom": 131519,
+            "characterIdTo": 133729,
+            "toDiscord": "404378269971120149",
+            "fromPropername": "Choden Tenzin",
+            "fromDiscord": "273825199936241664",
+            "createdTimeFormatted": "05h17 03/05/2026",
+            "reason": "x5 outils",
+            "toPropername": "Davidi S.kennedy",
+            "fromName": "mileaf"
+          }
+        }
+      ]
+    },
+    "init": {
+      "file": "init.handler.js",
+      "currentFieldsUsed": [],
+      "hasCharacterId": false,
+      "hasDiscordId": false,
+      "hasNameFields": [],
+      "sampleDataKeys": [],
+      "sampleLogs": [
+        {
+          "id": 2373793,
+          "companyId": 2,
+          "isProcessed": true,
+          "category": "init",
+          "parsedData": []
+        },
+        {
+          "id": 2373632,
+          "companyId": 17,
+          "isProcessed": true,
+          "category": "init",
+          "parsedData": []
+        },
+        {
+          "id": 2373618,
+          "companyId": 5,
+          "isProcessed": true,
+          "category": "init",
+          "parsedData": []
+        },
+        {
+          "id": 2373545,
+          "companyId": 15,
+          "isProcessed": true,
+          "category": "init",
+          "parsedData": []
+        },
+        {
+          "id": 2373502,
+          "companyId": 11,
+          "isProcessed": true,
+          "category": "init",
+          "parsedData": []
+        }
+      ]
+    }
+  },
+  "summary": {
+    "totalHandlers": 17,
+    "handlersWithCharacterId": [
+      "create",
+      "setStatus",
+      "leaveGroup",
+      "acceptInvit",
+      "addmoney",
+      "add",
+      "remove",
+      "upRank",
+      "downRank",
+      "garage",
+      "putInside",
+      "cancel"
+    ],
+    "handlersWithDiscordId": [
+      "create",
+      "setStatus",
+      "leaveGroup",
+      "acceptInvit",
+      "addmoney",
+      "add",
+      "remove",
+      "garage",
+      "putInside",
+      "cancel"
+    ],
+    "handlersWithNameFields": [
+      "create",
+      "setStatus",
+      "leaveGroup",
+      "acceptInvit",
+      "kickMember",
+      "addmoney",
+      "add",
+      "remove",
+      "garage",
+      "putInside",
+      "cancel"
+    ]
+  }
+}

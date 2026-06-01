@@ -1,0 +1,3078 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model Setting {
+  id    String @id
+  value String
+}
+
+model User {
+  id                        Int                       @id @default(autoincrement())
+  createdAt                 DateTime                  @default(now())
+  name                      String
+  username                  String                    @unique
+  password                  String
+  status                    UserStatus                @default(ACTIVE)
+  tempPasswordToken         String?                   @unique
+  tempPasswordExpiresAt     DateTime?
+  characterId               Int?
+  discordId                 String?
+  phoneNumber               String?
+  iban                      String?
+  notificationPreferences   String?                   @db.LongText
+  preferences               Json?
+  imageUrl                  String?
+  assignedContracts         AssignedContract[]        @relation("UserAssignedContracts")
+  authoredBills             Bill[]                    @relation("BillAuthor")
+  billableForCompanies      BillableContact[]
+  authoredCalendarEvents    CalendarEvent[]           @relation("EventAuthor")
+  calendarEvents            CalendarEvent[]           @relation("EventSubject")
+  employments               CompanyEmployee[]
+  authoredContractTemplates ContractTemplate[]        @relation("AuthoredContractTemplates")
+  authoredExpenseReports    ExpenseReport[]           @relation("AuthoredExpenseReports")
+  reviewedExpenseReports    ExpenseReport[]           @relation("ReviewedExpenseReports")
+  fidelityCardHistory       FidelityCardHistory[]     @relation("UserPerformedActions")
+  entNotifications          Notification[]            @relation("SentNotifications")
+  receivedNotifications     NotificationRecipient[]   @relation("ReceivedNotifications")
+  createdPartners           Partner[]                 @relation("UserCreatedPartners")
+  partnerServicesRendered   PartnerServiceRendered[]
+  widgets                   UserWidget[]
+  companies                 Company[]                 @relation("UserCompanies")
+  permissions               Permission[]              @relation("UserPermissions")
+  roles                     Role[]                    @relation("UserRoles")
+  inventoryMovements        InventoryMovement[]
+  createdVehicles           Vehicle[]                 @relation("VehicleCreatedBy")
+  updatedVehicles           Vehicle[]                 @relation("VehicleUpdatedBy")
+  vehicleMovements          VehicleMovement[]
+  chatOverrides             ChatChannelUserOverride[]
+  chatCategoryOverrides     ChatCategoryUserOverride[]
+  chatMessages              ChatMessage[]
+  chatDmMessages            ChatDmMessage[]
+  chatDmConversationsA      ChatDmConversation[]      @relation("DmUserA")
+  chatDmConversationsB      ChatDmConversation[]      @relation("DmUserB")
+  chatReadStates            ChatChannelReadState[]
+  presence                  UserPresence[]
+  chatReactions             ChatReaction[]
+  chatPins                  ChatPinnedMessage[] @relation("ChatPinnedByUser")
+  refreshSessions           RefreshSession[]
+  canceledBills             Bill[]                    @relation("BillCanceledBy")
+  createdCustomPages        CustomPage[]              @relation("CustomPageCreatedBy")
+  updatedCustomPages        CustomPage[]              @relation("CustomPageUpdatedBy")
+  updatedCustomPageVersions CustomPageVersion[]       @relation("CustomPageVersionUpdatedBy")
+  customPageAccesses        CustomPageAccess[]
+  accountingNotifiedBills   Bill[]                    @relation("BillAccountingNotifyUser")
+  billComments              BillComment[]             @relation("BillCommentAuthor")
+  clientVariableAccesses    ClientVariableAccess[]
+  clientVariableValues      ClientVariableValue[]     @relation("ClientVariableValueUpdater")
+  clientLinks               Client[]                  @relation("ClientLinkedUser")
+  myCalendarEventsAuthor    MyCalendarEvent[]         @relation("MyCalendarAuthor")
+  myCalendarInvitations     MyCalendarGuest[]
+  myCalendarCategories      MyCalendarCategory[]
+
+  createdInventories        Inventory[]               @relation("InventoryCreatedBy")
+  updatedInventories        Inventory[]               @relation("InventoryUpdatedBy")
+
+  ticketsCreated        Ticket[]                         @relation("TicketCreator")
+  ticketsAssigned       Ticket[]                         @relation("TicketAssignee")
+  ticketClosureRequests Ticket[]                         @relation("TicketClosureRequester")
+  ticketParticipants    TicketParticipant[]
+  ticketMessages        TicketMessage[]                  @relation("TicketMessageAuthor")
+  rankHistoryArchives   RankHistoryArchive[]
+  createdContractShares ContractShare[]                  @relation("ContractShareCreatedBy")
+  sentAssignedContracts AssignedContract[]               @relation("UserSentAssignedContracts")
+  contractSignatures    ContractSignature[]              @relation("UserContractSignatures")
+  electronicSignatures  UserElectronicSignatureVersion[]
+  quizzes               QuizSession[]                    @relation("UserQuizzes")
+  sentQuizzes           QuizSession[]                    @relation("AdminQuizzes")
+  announcements         Announcement[]                   @relation("AnnouncementAuthor")
+
+  createdHostedSites  HostedSite[] @relation("HostedSiteCreatedBy")
+  updatedHostedSites  HostedSite[] @relation("HostedSiteUpdatedBy")
+
+  // TchatV2
+  ownedV2Guilds  V2Guild[]     @relation("V2GuildOwner")
+  v2Members      V2Member[]    @relation("V2Members")
+  v2Messages     V2Message[]   @relation("V2Messages")
+  v2Reactions    V2Reaction[]  @relation("V2Reactions")
+  v2Invites      V2Invite[]    @relation("V2Invites")
+  v2Bans         V2Ban[]       @relation("V2Bans")
+  v2Webhooks     V2Webhook[]   @relation("V2Webhooks")
+  v2AuditLogs    V2AuditLog[]  @relation("V2AuditLogs")
+  v2ReadStates   V2ChannelReadState[] @relation("V2ChannelReadStates")
+  v2MessageEdits    V2MessageEdit[]   @relation("V2MessageEdits")
+  chatMessageEdits  ChatMessageEdit[] @relation("ChatMessageEdits")
+  v2PushSubscriptions V2PushSubscription[] @relation("V2PushSubscriptions")
+  v2DmRecipients      V2DmRecipient[]      @relation("V2DmRecipients")
+  v2PollVotes         V2PollVote[]         @relation("V2PollVotes")
+  v2ForumSubscriptions     V2ForumSubscription[]       @relation("V2ForumSubscriptions")
+  v2ForumPostSubscriptions V2ForumPostSubscription[]   @relation("V2ForumPostSubscriptions")
+  v2UserChannelNotifs      V2UserChannelNotification[] @relation("V2UserChannelNotifications")
+  v2GuildNotifSettings     V2GuildNotifSetting[]       @relation("V2GuildNotifSettings")
+
+  @@unique([discordId, characterId], name: "UniqueDiscordCharacter")
+}
+
+model RefreshSession {
+  id               Int       @id @default(autoincrement())
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           Int
+  deviceId         String
+  refreshTokenHash String
+  createdAt        DateTime  @default(now())
+  expiresAt        DateTime
+  lastUsedAt       DateTime  @default(now())
+  revokedAt        DateTime?
+
+  @@unique([deviceId, refreshTokenHash])
+  @@index([userId])
+  @@index([deviceId])
+}
+
+model Company {
+  id                      Int                       @id @default(autoincrement())
+  name                    String                    @unique
+  onboardingKey           String?                   @unique
+  apiKey                  String?                   @unique
+  isApiActive             Boolean                   @default(false)
+  apiDeactivationReason   String?
+  balance                 Decimal                   @default(0.00) @db.Decimal(15, 2)
+  accountingPrice         Decimal                   @default(0.00) @db.Decimal(10, 2)
+  pendingChanges          String?                   @db.LongText
+  pendingChangesDeadline  DateTime?
+  accountingSuspendedAt   DateTime?
+  isParentCompany         Boolean                   @default(false)
+  groupId                 Int?                      @unique
+  generatedContract       AssignedContract[]        @relation("GeneratedCompany")
+  contractsModifying      AssignedContract[]        @relation("CompanyModifiedByContract")
+  bills                   Bill[]
+  billableContacts        BillableContact[]
+  calendarEvents          CalendarEvent[]
+  clients                 Client[]
+  employees               CompanyEmployee[]
+  activeModules           CompanyModule[]
+  eventCategories         EventCategory[]
+  expenseReports          ExpenseReport[]
+  expenseReportCategories ExpenseReportCategory[]
+  fidelityCardTemplates   FidelityCardTemplate[]
+  logs                    Log[]
+  onboardingCodes         OnboardingCode[]
+  partners                Partner[]
+  partnerServicesRendered PartnerServiceRendered[]
+  partnerServiceTypes     PartnerServiceType[]
+  products                Product[]
+  productDeclarations     ProductDeclaration[]
+  ranks                   Rank[]
+  roles                   Role[]                    @relation("CompanyRoles")
+  transactions            Transaction[]
+  userWidgets             UserWidget[]
+  users                   User[]                    @relation("UserCompanies")
+  inventoryMovements      InventoryMovement[]
+  inventories             Inventory[]
+  vehicles                Vehicle[]
+  vehicleMovements        VehicleMovement[]
+  channels                ChatChannel[]
+  categories              ChatCategory[]
+  userPresences           UserPresence[]
+  contractTemplates       ContractTemplate[]        @relation("CompanyContractTemplates")
+  settings                CompanySettings?
+  cartonSales             CartonSale[]
+  customPages             CustomPage[]
+  hostedSites             HostedSite[]
+  pawnshopProducts        PawnshopProduct[]
+  pawnshopPartners        PawnshopPartner[]
+  pawnshopPurchases       PawnshopPurchase[]
+  pawnshopPartnerPrices   PawnshopPartnerBuyPrice[]
+  pawnshopEstimations     PawnshopEstimation[]
+  pawnshopPublicPageConfig PawnshopPublicPageConfig?
+  accountingTargetBills   Bill[]                    @relation("BillAccountingTargetCompany")
+  contractShares          ContractShare[]
+  sacemPosts              SacemPost[]
+  streamerKeys            StreamerKey[]
+  billComments            BillComment[]               @relation("CompanyBillComments")
+  clientVariables         ClientVariable[]
+  myCalendarEvents        MyCalendarEvent[]
+  myCalendarCategories    MyCalendarCategory[]
+  customServices          CustomService[]
+  apiKeys                 CompanyApiKey[]
+  useTchatV2              Boolean                   @default(false)
+  v2Guild                 V2Guild?                  @relation("V2GuildCompany")
+}
+
+model CompanySettings {
+  id        String   @id @default(cuid())
+  companyId Int      @unique
+  settings  Json     @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("CompanySettings")
+}
+
+model CompanyApiKey {
+  id         Int       @id @default(autoincrement())
+  companyId  Int
+  name       String
+  key        String    @unique
+  scopes     Json
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  lastUsedAt DateTime?
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
+}
+
+enum PresenceStatus {
+  ONLINE
+  IDLE
+  DND
+  INVISIBLE
+  OFFLINE
+}
+
+enum MentionType {
+  USER
+  RANK
+  EVERYONE
+}
+
+model UserPresence {
+  userId    Int
+  companyId Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  status      PresenceStatus @default(OFFLINE)
+  customEmoji String?        @db.VarChar(64)
+  customText  String?        @db.VarChar(128)
+
+  lastHeartbeatAt DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@id([userId, companyId])
+  @@index([companyId, status])
+}
+
+model ChatMention {
+  id        BigInt      @id @default(autoincrement())
+  messageId BigInt
+  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  type     MentionType
+  targetId Int?
+
+  @@index([messageId])
+  @@index([targetId, type])
+}
+
+model ChatReaction {
+  messageId BigInt
+  userId    Int
+  emoji     String @db.VarChar(64)
+
+  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([messageId, userId, emoji])
+  @@index([messageId])
+}
+
+model ChatPinnedMessage {
+  id             BigInt @id @default(autoincrement())
+  channelId      BigInt
+  messageId      BigInt
+  pinnedByUserId Int
+
+  channel  ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  message  ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  pinnedBy User        @relation("ChatPinnedByUser", fields: [pinnedByUserId], references: [id])
+
+  pinnedAt DateTime @default(now())
+
+  @@unique([channelId, messageId])
+  @@index([channelId])
+}
+
+enum ChatChannelType {
+  TEXT
+}
+
+model ChatCategory {
+  id        BigInt  @id
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id])
+
+  name     String
+  position Int
+
+  channels      ChatChannel[]
+  rankOverrides ChatCategoryRankOverride[]
+  userOverrides ChatCategoryUserOverride[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ChatCategoryRankOverride {
+  categoryId BigInt
+  rankId     Int
+
+  category ChatCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  rank     Rank         @relation(fields: [rankId], references: [id])
+
+  allowBits BigInt @default(0)
+  denyBits  BigInt @default(0)
+
+  @@id([categoryId, rankId])
+  @@index([categoryId])
+}
+
+model ChatCategoryUserOverride {
+  categoryId BigInt
+  userId     Int
+
+  category ChatCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  user     User         @relation(fields: [userId], references: [id])
+
+  allowBits BigInt @default(0)
+  denyBits  BigInt @default(0)
+
+  @@id([categoryId, userId])
+  @@index([categoryId])
+}
+
+model ChatChannel {
+  id        BigInt  @id
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id])
+
+  categoryId BigInt?
+  category   ChatCategory? @relation(fields: [categoryId], references: [id])
+
+  name               String
+  topic              String?
+  position           Int
+  isArchived         Boolean         @default(false)
+  type               ChatChannelType @default(TEXT)
+  syncedWithCategory Boolean         @default(true)
+
+  lastMessageId BigInt?
+
+  messages       ChatMessage[]
+  attachments    ChatAttachment[]
+  rankOverrides  ChatChannelRankOverride[]
+  userOverrides  ChatChannelUserOverride[]
+  readStates     ChatChannelReadState[]
+  pinnedMessages ChatPinnedMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ChatMessage {
+  id        BigInt      @id // Snowflake
+  channelId BigInt
+  channel   ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id])
+
+  content     String           @db.MediumText
+  attachments ChatAttachment[]
+
+  createdAt DateTime  @default(now())
+  editedAt  DateTime?
+  deletedAt DateTime?
+
+  replyToId BigInt?
+  replyTo   ChatMessage?  @relation("MessageReplies", fields: [replyToId], references: [id])
+  replies   ChatMessage[] @relation("MessageReplies")
+  mentions  ChatMention[]
+  reactions ChatReaction[]
+  pins      ChatPinnedMessage[]
+  edits     ChatMessageEdit[]
+
+  @@index([channelId, createdAt])
+}
+
+model ChatMessageEdit {
+  id        BigInt      @id
+  messageId BigInt
+  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  content   String      @db.MediumText
+  editorId  Int
+  editor    User        @relation("ChatMessageEdits", fields: [editorId], references: [id], onDelete: Restrict)
+  editedAt  DateTime    @default(now())
+
+  @@index([messageId, editedAt(sort: Desc)])
+}
+
+model ChatAttachment {
+  id BigInt @id
+
+  channelId BigInt
+  channel   ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  messageId BigInt
+  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  publicId String
+
+  mimeType String
+  byteSize Int
+  width    Int?
+  height   Int?
+  diskPath String @db.Text
+
+  createdAt DateTime @default(now())
+
+  @@unique([channelId, publicId])
+  @@index([channelId, createdAt])
+  @@index([messageId])
+}
+
+model BillableContact {
+  userId     Int
+  companyId  Int
+  assignedAt DateTime @default(now())
+  company    Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  isPrio Boolean @default(false)
+
+  @@id([userId, companyId])
+  @@unique([userId], map: "BillableContact_userId_unique")
+  @@index([companyId, isPrio], map: "BillableContact_companyId_isPrio_idx")
+  @@index([companyId], map: "BillableContact_companyId_fkey")
+}
+
+model Role {
+  id               Int             @id @default(autoincrement())
+  name             String
+  companyId        Int?
+  targetedByEvents CalendarEvent[] @relation("TargetedRoleEvents")
+  company          Company?        @relation("CompanyRoles", fields: [companyId], references: [id], onDelete: Cascade)
+  permissions      Permission[]    @relation("RolePermissions")
+  users            User[]          @relation("UserRoles")
+
+  @@unique([companyId, name])
+}
+
+model Permission {
+  id     Int    @id @default(autoincrement())
+  action String @unique
+  roles  Role[] @relation("RolePermissions")
+  users  User[] @relation("UserPermissions")
+}
+
+model CompanyEmployee {
+  id                       Int                   @id @default(autoincrement())
+  status                   CompanyEmployeeStatus @default(PENDING_LINK)
+  failedLinkAttempts       Int                   @default(0)
+  companyId                Int
+  userId                   Int
+  rankId                   Int
+  statusUpdatedAt          DateTime?
+  createdAt                DateTime              @default(now())
+  linkCode                 String?               @unique
+  linkCodeCreatedAt        DateTime?
+  company                  Company               @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  rank                     Rank                  @relation(fields: [rankId], references: [id])
+  user                     User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productDeclarations      ProductDeclaration[]
+  rankHistory              RankHistory[]
+  cartonSales              CartonSale[]
+  authoredBills            Bill[]                @relation("BillAuthorCompanyEmployee")
+  billShares               BillShare[]
+  pawnshopPurchasesCreated   PawnshopPurchase[]     @relation("PawnshopPurchaseCreatedBy")
+  pawnshopEstimationsCreated PawnshopEstimation[]   @relation("PawnshopEstimationCreatedBy")
+  sacemParticipations      SacemParticipation[]
+  salaryOverrides          EmployeeSalaryOverride[]
+  hrEvents                 EmployeeHREvent[]
+  hrEventsCreated          EmployeeHREvent[] @relation("HREventCreatedBy")
+
+  @@unique([companyId, userId])
+  @@index([rankId], map: "CompanyEmployee_rankId_fkey")
+  @@index([userId], map: "CompanyEmployee_userId_fkey")
+}
+
+model EmployeeSalaryOverride {
+  id                Int             @id @default(autoincrement())
+  companyEmployeeId Int
+  year              Int
+  week              Int
+  amount            Float
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  companyEmployee   CompanyEmployee @relation(fields: [companyEmployeeId], references: [id], onDelete: Cascade)
+
+  @@unique([companyEmployeeId, year, week])
+}
+
+model PawnshopPartner {
+  id        Int     @id @default(autoincrement())
+  companyId Int
+  name      String
+  notes     String? @db.Text
+  isActive  Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id])
+
+  prices    PawnshopPartnerBuyPrice[]
+  purchases PawnshopPurchase[]
+}
+
+model PawnshopProduct {
+  id        Int     @id @default(autoincrement())
+  companyId Int
+  name           String
+  sku            String?
+  isActive       Boolean @default(true)
+  inventoryOwner String?
+
+  buyPrice    Decimal @db.Decimal(10, 2)
+  resalePrice Decimal @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id])
+
+  partnerPrices    PawnshopPartnerBuyPrice[]
+  purchaseItems    PawnshopPurchaseItem[]
+  estimationItems  PawnshopEstimationItem[]
+}
+
+model PawnshopPartnerBuyPrice {
+  id        Int @id @default(autoincrement())
+  companyId Int
+  partnerId Int
+  productId Int
+
+  buyPrice  Decimal  @db.Decimal(10, 2)
+  updatedAt DateTime @updatedAt
+
+  company Company         @relation(fields: [companyId], references: [id])
+  partner PawnshopPartner @relation(fields: [partnerId], references: [id])
+  product PawnshopProduct @relation(fields: [productId], references: [id])
+
+  @@unique([partnerId, productId])
+  @@index([companyId])
+  @@index([partnerId])
+  @@index([productId])
+}
+
+model PawnshopPurchase {
+  id        Int @id @default(autoincrement())
+  companyId Int
+  clientId  Int
+
+  createdByEmployeeId Int
+  partnerId           Int?
+
+  status        PawnshopPurchaseStatus  @default(DRAFT)
+  paymentStatus PawnshopPaymentStatus   @default(UNPAID)
+
+  totalBuyAmount    Decimal? @db.Decimal(10, 2)
+  totalResaleAmount Decimal? @db.Decimal(10, 2)
+
+  validatedAt  DateTime?
+  canceledAt   DateTime?
+  cancelReason String?   @db.Text
+  paidAt       DateTime?
+  notes        String?   @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id])
+  client  Client  @relation(fields: [clientId], references: [id])
+
+  createdByEmployee CompanyEmployee @relation("PawnshopPurchaseCreatedBy", fields: [createdByEmployeeId], references: [id])
+
+  partner PawnshopPartner? @relation(fields: [partnerId], references: [id])
+
+  items       PawnshopPurchaseItem[]
+  estimations PawnshopEstimation[]
+
+  @@index([companyId])
+  @@index([clientId])
+  @@index([createdByEmployeeId])
+  @@index([partnerId])
+  @@index([status])
+  @@index([validatedAt])
+}
+
+model PawnshopPurchaseItem {
+  id         Int @id @default(autoincrement())
+  purchaseId Int
+  productId  Int
+
+  quantity Decimal @db.Decimal(10, 3)
+
+  unitBuyPrice Decimal @db.Decimal(10, 2)
+  lineTotal    Decimal @db.Decimal(10, 2)
+
+  unitResalePrice Decimal @db.Decimal(10, 2)
+  resaleLineTotal Decimal @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  inventoryId Int?
+  inventory   Inventory? @relation(fields: [inventoryId], references: [id], onDelete: SetNull)
+
+  purchase PawnshopPurchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  product  PawnshopProduct  @relation(fields: [productId], references: [id])
+
+  @@index([purchaseId])
+  @@index([productId])
+  @@index([inventoryId])
+}
+
+model PawnshopEstimation {
+  id                  Int                      @id @default(autoincrement())
+  companyId           Int
+  clientId            Int?
+  createdByEmployeeId Int
+  status              PawnshopEstimationStatus @default(OPEN)
+  notes               String?                  @db.Text
+  justificatif        String?                  @db.Text
+  isPublicSubmission  Boolean                  @default(false)
+  convertedPurchaseId Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company             Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  client              Client?          @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  createdByEmployee   CompanyEmployee  @relation("PawnshopEstimationCreatedBy", fields: [createdByEmployeeId], references: [id])
+  convertedPurchase   PawnshopPurchase? @relation(fields: [convertedPurchaseId], references: [id], onDelete: SetNull)
+
+  items PawnshopEstimationItem[]
+
+  @@index([companyId])
+  @@index([clientId])
+  @@index([status])
+}
+
+model PawnshopEstimationItem {
+  id                  Int     @id @default(autoincrement())
+  estimationId        Int
+  productId           Int
+  quantity            Decimal @db.Decimal(10, 3)
+  estimatedBuyPrice   Decimal @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  estimation PawnshopEstimation @relation(fields: [estimationId], references: [id], onDelete: Cascade)
+  product    PawnshopProduct    @relation(fields: [productId], references: [id])
+
+  @@index([estimationId])
+  @@index([productId])
+}
+
+model PawnshopPublicPageConfig {
+  id          Int     @id @default(autoincrement())
+  companyId   Int     @unique
+  company     Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  publicSlug  String  @unique
+  isEnabled   Boolean @default(true)
+  shopName    String?
+  logoUrl     String?
+  welcomeText String? @db.Text
+  theme       String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CartonSale {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  occurredAt DateTime
+
+  // Relations
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  transactionId Int         @unique
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  companyEmployeeId Int
+  companyEmployee   CompanyEmployee @relation(fields: [companyEmployeeId], references: [id], onDelete: Cascade)
+
+  // Données métier
+  amount               Decimal @default(0.00) @db.Decimal(15, 2)
+  cartonCount          Int     @default(0)
+  reason               String?
+  redistributionNumber String?
+
+  // Index (perf)
+  @@index([companyId, occurredAt])
+  @@index([companyEmployeeId, occurredAt])
+  @@index([occurredAt])
+}
+
+model Rank {
+  id                  Int                  @id @default(autoincrement())
+  name                String
+  position            Int
+  companyId           Int
+  groupRankId         Int?                 @unique
+  remunerationConfig  Json?
+  salaryCap           Decimal?             @db.Decimal(10, 2)
+  employees           CompanyEmployee[]
+  company             Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  history             RankHistory[]
+  permissionTemplates PermissionTemplate[] @relation("RankPermissionTemplates")
+
+  chatOverrides         ChatChannelRankOverride[]
+  chatCategoryOverrides ChatCategoryRankOverride[]
+  chatPermissionsBits   BigInt                    @default(0)
+  customPageAccesses  CustomPageAccess[]
+  clientVariableAccesses ClientVariableAccess[]
+  v2Roles           V2Role[] @relation("V2RoleCompanyRank")
+
+  @@unique([companyId, name])
+  @@unique([companyId, position])
+}
+
+model RankHistory {
+  id                Int             @id @default(autoincrement())
+  assignedAt        DateTime        @default(now())
+  companyEmployeeId Int
+  rankId            Int?
+  leaveAt           DateTime?
+  rankName          String
+  companyEmployee   CompanyEmployee @relation(fields: [companyEmployeeId], references: [id], onDelete: Cascade)
+  rank              Rank?           @relation(fields: [rankId], references: [id])
+
+  @@index([companyEmployeeId], map: "RankHistory_companyEmployeeId_fkey")
+  @@index([rankId], map: "RankHistory_rankId_fkey")
+}
+
+model RankHistoryArchive {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Snapshot entreprise (l'entreprise peut être supprimée)
+  companyId   Int?
+  companyName String
+
+  // Snapshot rang
+  rankId   Int?
+  rankName String
+
+  assignedAt DateTime
+  leaveAt    DateTime?
+
+  @@index([userId, assignedAt])
+  @@index([companyName])
+}
+
+model ContractTemplate {
+  id        Int          @id @default(autoincrement())
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  type      ContractType @default(ADMIN)
+  title     String
+  content   String       @db.Text
+
+  backgroundImageUrl String?
+
+  ownerUserId       Int?
+  assignedContracts AssignedContract[]
+  ownerUser         User?                   @relation("AuthoredContractTemplates", fields: [ownerUserId], references: [id])
+  fields            ContractTemplateField[]
+
+  articles ContractTemplateArticle[]
+
+  companyId Int?
+  company   Company? @relation("CompanyContractTemplates", fields: [companyId], references: [id], onDelete: Cascade)
+
+  companyNameSnapshot String?
+
+  @@index([ownerUserId], map: "ContractTemplate_ownerUserId_fkey")
+  @@index([companyId])
+  @@index([companyId, type])
+}
+
+model ContractTemplateArticle {
+  id         Int @id @default(autoincrement())
+  templateId Int
+
+  title  String
+  body   String @db.LongText
+  params Json?
+  order  Int    @default(0)
+
+  template ContractTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@index([templateId])
+}
+
+model ContractTemplateField {
+  id         Int               @id @default(autoincrement())
+  key        String
+  fieldType  ContractFieldType @default(TEXT)
+  label      String
+  order      Int               @default(0)
+  options    String?           @db.LongText
+  templateId Int
+  template   ContractTemplate  @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@unique([templateId, key])
+  @@index([templateId, order])
+}
+
+model AssignedContract {
+  id         Int       @id @default(autoincrement())
+  assignedAt DateTime  @default(now())
+  signedAt   DateTime?
+
+  refusedAt     DateTime?
+  refusalReason String?   @db.Text
+
+  publicUuid      String?   @unique
+  publicEnabledAt DateTime?
+  publicRevokedAt DateTime?
+
+  status             ContractStatus @default(PENDING)
+  fieldValues        String?        @db.Text
+  templateId         Int
+  assignedToUserId   Int
+  senderUserId       Int?
+  generatedCompanyId Int?
+  modifiesCompanyId  Int?
+
+  generatedCompanyNameSnapshot String?
+  modifiesCompanyNameSnapshot  String?
+
+  snapshotTitle    String?
+  snapshotMarkdown String? @db.Text
+
+  assignedToUser   User                @relation("UserAssignedContracts", fields: [assignedToUserId], references: [id], onDelete: Cascade)
+  senderUser       User?               @relation("UserSentAssignedContracts", fields: [senderUserId], references: [id], onDelete: SetNull)
+  generatedCompany Company?            @relation("GeneratedCompany", fields: [generatedCompanyId], references: [id])
+  modifiesCompany  Company?            @relation("CompanyModifiedByContract", fields: [modifiesCompanyId], references: [id])
+  template         ContractTemplate    @relation(fields: [templateId], references: [id])
+  signatures       ContractSignature[]
+  shareItems       ContractShareItem[]
+
+  @@index([assignedToUserId, status])
+  @@index([senderUserId, status])
+  @@index([generatedCompanyId], map: "AssignedContract_generatedCompanyId_fkey")
+  @@index([templateId], map: "AssignedContract_templateId_fkey")
+  @@index([modifiesCompanyId])
+}
+
+model ContractShare {
+  id              Int       @id @default(autoincrement())
+  publicId        String    @unique
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  revokedAt       DateTime?
+  passwordHash    String?
+  createdByUserId Int
+  companyId       Int?
+
+  createdByUser User                @relation("ContractShareCreatedBy", fields: [createdByUserId], references: [id], onDelete: Cascade)
+  company       Company?            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  items         ContractShareItem[]
+
+  @@index([createdByUserId, createdAt])
+  @@index([companyId, createdAt])
+  @@index([revokedAt])
+}
+
+model ContractShareItem {
+  shareId            Int
+  assignedContractId Int
+  order              Int @default(0)
+
+  share            ContractShare    @relation(fields: [shareId], references: [id], onDelete: Cascade)
+  assignedContract AssignedContract @relation(fields: [assignedContractId], references: [id], onDelete: Cascade)
+
+  @@id([shareId, assignedContractId])
+  @@index([assignedContractId])
+  @@index([shareId, order])
+}
+
+model UserElectronicSignatureVersion {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  svg       String   @db.LongText
+  createdAt DateTime @default(now())
+
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contractSignatures ContractSignature[]
+
+  @@index([userId, createdAt])
+}
+
+model CustomService {
+  id            Int      @id @default(autoincrement())
+  companyId     Int
+  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  title         String
+  invoiceReason String
+  description   String?  @db.Text
+  price         Decimal  @db.Decimal(10, 2)
+  duration      String   // Ponctuel, Hebdomadaire, etc.
+  startWeek     Int?
+  endWeek       Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([companyId])
+}
+
+model ContractSignature {
+  id                   Int                   @id @default(autoincrement())
+  role                 ContractSignatureRole
+  signedAt             DateTime              @default(now())
+  confirmationText     String
+  assignedContractId   Int
+  signerUserId         Int
+  signatureVersionId   Int?
+  signatureSvgSnapshot String?               @db.LongText
+  signerNameSnapshot   String?
+  signerIpAddress      String?               @db.VarChar(45)
+  signerUserAgent      String?               @db.Text
+
+  assignedContract AssignedContract                @relation(fields: [assignedContractId], references: [id], onDelete: Cascade)
+  signerUser       User                            @relation("UserContractSignatures", fields: [signerUserId], references: [id], onDelete: Cascade)
+  signatureVersion UserElectronicSignatureVersion? @relation(fields: [signatureVersionId], references: [id], onDelete: SetNull)
+
+  @@unique([assignedContractId, role])
+  @@index([signerUserId, signedAt])
+  @@index([signatureVersionId])
+}
+
+model Notification {
+  id         Int                     @id @default(autoincrement())
+  content    String                  @db.LongText
+  type       NotificationType
+  behavior   NotificationBehavior    @default(PERMANENT)
+  createdAt  DateTime                @default(now())
+  senderId   Int?
+  sender     User?                   @relation("SentNotifications", fields: [senderId], references: [id])
+  recipients NotificationRecipient[]
+
+  @@index([senderId], map: "Notification_senderId_fkey")
+}
+
+model NotificationRecipient {
+  id             Int          @id @default(autoincrement())
+  isAcknowledged Boolean      @default(false)
+  notificationId Int
+  userId         Int
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  user           User         @relation("ReceivedNotifications", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([notificationId, userId])
+  @@index([userId], map: "NotificationRecipient_userId_fkey")
+}
+
+model Image {
+  id        Int            @id @default(autoincrement())
+  publicId  String         @unique @default(cuid())
+  filename  String
+  mimetype  String
+  byteSize  Int?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  ownerType ImageOwnerType
+  ownerId   Int
+
+  @@index([ownerId, ownerType])
+}
+
+model OnboardingCode {
+  id        Int       @id @default(autoincrement())
+  code      String    @unique
+  createdAt DateTime  @default(now())
+  expiresAt DateTime?
+  isUsed    Boolean   @default(false)
+  companyId Int
+  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId], map: "OnboardingCode_companyId_fkey")
+}
+
+model Bill {
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now())
+  date           DateTime
+  amount         Decimal  @db.Decimal(15, 2)
+  status         BillType @default(UNPAID)
+  reason         String
+  externalBillId Int      @unique
+  issuerName     String
+  recipientName  String
+
+  authorId Int
+
+  authorCompanyEmployeeId Int?
+
+  companyId Int
+  clientId  Int?
+
+  canceledById Int?
+  canceledBy   User? @relation("BillCanceledBy", fields: [canceledById], references: [id], onDelete: SetNull)
+
+  author User @relation("BillAuthor", fields: [authorId], references: [id])
+
+  authorCompanyEmployee CompanyEmployee? @relation("BillAuthorCompanyEmployee", fields: [authorCompanyEmployeeId], references: [id], onDelete: SetNull)
+
+  client      Client?      @relation(fields: [clientId], references: [id])
+  company     Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  transaction Transaction?
+
+  shares BillShare[]
+  comments BillComment[]
+
+  isParentBill Boolean @default(false)
+
+  recipientDiscordId   String?
+  recipientCharacterId Int?
+
+  accountingTargetCompanyId Int?
+  accountingTargetCompany   Company? @relation("BillAccountingTargetCompany", fields: [accountingTargetCompanyId], references: [id], onDelete: SetNull)
+
+  accountingNotifyUserId Int?
+  accountingNotifyUser   User? @relation("BillAccountingNotifyUser", fields: [accountingNotifyUserId], references: [id], onDelete: SetNull)
+
+  accountingDueAt            DateTime?
+  accountingIssuedNotifiedAt DateTime?
+
+  accountingReminderCount  Int       @default(0)
+  accountingLastReminderAt DateTime?
+
+  hostedSite  HostedSite?
+
+  @@index([authorId], map: "Bill_authorId_fkey")
+  @@index([authorCompanyEmployeeId], map: "Bill_authorCompanyEmployeeId_fkey")
+  @@index([clientId], map: "Bill_clientId_fkey")
+  @@index([companyId], map: "Bill_companyId_fkey")
+  @@index([canceledById], map: "Bill_canceledById_fkey")
+  @@index([accountingTargetCompanyId], map: "Bill_accountingTargetCompanyId_fkey")
+  @@index([accountingNotifyUserId], map: "Bill_accountingNotifyUserId_fkey")
+  @@index([isParentBill, status, accountingDueAt], map: "Bill_isParentBill_status_dueAt_idx")
+}
+
+model BillShare {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  billId            Int
+  companyEmployeeId Int
+
+  percentage Decimal @db.Decimal(5, 2)
+
+  bill            Bill            @relation(fields: [billId], references: [id], onDelete: Cascade)
+  companyEmployee CompanyEmployee @relation(fields: [companyEmployeeId], references: [id], onDelete: Cascade)
+
+  @@unique([billId, companyEmployeeId], map: "BillShare_bill_companyEmployee_unique")
+  @@index([billId], map: "BillShare_billId_fkey")
+  @@index([companyEmployeeId], map: "BillShare_companyEmployeeId_fkey")
+}
+
+model BillComment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  content   String   @db.Text
+
+  billId    Int
+  authorId  Int
+  companyId Int
+
+  bill      Bill     @relation(fields: [billId], references: [id], onDelete: Cascade)
+  author    User     @relation("BillCommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  company   Company  @relation("CompanyBillComments", fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([billId])
+  @@index([authorId])
+  @@index([companyId])
+}
+
+model Transaction {
+  id            Int                 @id @default(autoincrement())
+  createdAt     DateTime            @default(now())
+  date          DateTime
+  amount        Decimal             @db.Decimal(15, 2)
+  balanceBefore Decimal?            @db.Decimal(15, 2)
+  balanceAfter  Decimal?            @db.Decimal(15, 2)
+  description   String
+  categoryId    Int
+  companyId     Int
+  billId        Int?                @unique
+  bill          Bill?               @relation(fields: [billId], references: [id])
+  category      TransactionCategory @relation(fields: [categoryId], references: [id])
+  company       Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  cartonSale    CartonSale?
+  isCsvInjection Boolean?            @default(false)
+
+  @@index([categoryId], map: "Transaction_categoryId_fkey")
+  @@index([companyId], map: "Transaction_companyId_fkey")
+  @@index([companyId, date(sort: Desc)])
+}
+
+model TransactionCategory {
+  id           Int                     @id @default(autoincrement())
+  name         TransactionCategoryName @unique
+  type         TransactionType
+  isDefault    Boolean                 @default(false)
+  isDeductible Boolean                 @default(true)
+  transactions Transaction[]
+}
+
+model Log {
+  id                Int                @id @default(autoincrement())
+  createdAt         DateTime           @default(now())
+  message           String?
+  category          String
+  logType           String
+  text              String?
+  date              String
+  data              String             @db.LongText
+  isProcessed       Boolean            @default(false)
+  processingError   String?            @db.Text
+  companyId         Int
+  company           Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  inventoryMovement InventoryMovement?
+  vehicleMovement   VehicleMovement?
+
+  @@index([companyId], map: "Log_companyId_fkey")
+  @@index([category, logType])
+  @@index([companyId, category, logType, date])
+}
+
+model Module {
+  id                  Int                  @id @default(autoincrement())
+  name                String               @unique
+  description         String
+  companies           CompanyModule[]
+  permissionTemplates PermissionTemplate[]
+}
+
+model PermissionTemplate {
+  id       Int    @id @default(autoincrement())
+  action   String @unique
+  moduleId Int
+  module   Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  ranks    Rank[] @relation("RankPermissionTemplates")
+
+  @@index([moduleId], map: "PermissionTemplate_moduleId_fkey")
+}
+
+model CompanyModule {
+  companyId Int
+  moduleId  Int
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  module    Module  @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@id([companyId, moduleId])
+  @@index([moduleId], map: "CompanyModule_moduleId_fkey")
+}
+
+model FidelityCardTemplate {
+  id           Int                 @id @default(autoincrement())
+  name         String
+  isActive     Boolean             @default(true)
+  baseImageId  String
+  stampImageId String
+  companyId    Int
+  cards        FidelityCard[]
+  company      Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  stampZones   FidelityStampZone[]
+
+  @@unique([companyId, name])
+}
+
+model FidelityStampZone {
+  id         Int                  @id @default(autoincrement())
+  x          Int
+  y          Int
+  order      Int
+  templateId Int
+  template   FidelityCardTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@unique([templateId, order])
+}
+
+model Client {
+  id                Int                    @id @default(autoincrement())
+  name              String
+  createdAt         DateTime               @default(now())
+  phoneNumber       String?
+  address           String?
+  companyId         Int
+  nameSearchable    String?
+  cni               String?
+  cniImagePublicId  String?
+  iban              String?
+  characterId       Int?
+  discordId         String?
+  userId            Int?                   // Lien optionnel vers un User (fusion client↔user)
+  kind              ClientKind             @default(PERSON)
+  linkedCompanyGroupId       Int?          // groupId de la company facturée (pas de FK — snapshot logique)
+  linkedCompanyNameSnapshot  String?       // nom de la company au moment de la facture
+  bills             Bill[]
+  company           Company                @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user              User?                  @relation("ClientLinkedUser", fields: [userId], references: [id], onDelete: SetNull)
+  cards               FidelityCard[]
+  pawnshopPurchases   PawnshopPurchase[]
+  pawnshopEstimations PawnshopEstimation[]
+  variableValues      ClientVariableValue[]
+
+  @@unique([name, companyId])
+  @@index([companyId], map: "Client_companyId_fkey")
+  @@index([characterId])
+  @@index([userId])
+  @@index([linkedCompanyGroupId])
+}
+
+enum ClientKind {
+  PERSON
+  COMPANY
+}
+
+model FidelityCardHistory {
+  id                Int                    @id @default(autoincrement())
+  cardId            Int
+  performedByUserId Int
+  actionType        FidelityCardActionType
+  beforeStampCount  Int?
+  afterStampCount   Int?
+  beforeStatus      FidelityCardStatus?
+  afterStatus       FidelityCardStatus?
+  comment           String?
+  createdAt         DateTime               @default(now())
+  card              FidelityCard           @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  performedBy       User                   @relation("UserPerformedActions", fields: [performedByUserId], references: [id])
+
+  @@index([cardId], map: "FidelityCardHistory_cardId_fkey")
+  @@index([performedByUserId], map: "FidelityCardHistory_performedByUserId_fkey")
+}
+
+model FidelityCard {
+  id            Int                   @id @default(autoincrement())
+  publicLink    String                @unique
+  stampCount    Int                   @default(0)
+  clientId      Int
+  completedAt   DateTime?
+  createdAt     DateTime              @default(now())
+  deactivatedAt DateTime?
+  status        FidelityCardStatus    @default(ACTIVE)
+  templateId    Int
+  updatedAt     DateTime              @updatedAt
+  client        Client                @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  template      FidelityCardTemplate  @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  history       FidelityCardHistory[]
+
+  @@index([templateId], map: "FidelityCard_templateId_fkey")
+}
+
+model Ticket {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  category TicketCategory
+  subject  String
+  status   TicketStatus   @default(OPEN)
+
+  createdById Int
+  createdBy   User @relation("TicketCreator", fields: [createdById], references: [id], onDelete: Cascade)
+
+  assigneeId Int?
+  assignee   User? @relation("TicketAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+
+  assigneeJoinedAt DateTime?
+  lastMessageAt    DateTime?
+
+  closedAt DateTime?
+
+  closureRequestedAt   DateTime?
+  closureRequestedById Int?
+  closureRequestedBy   User?     @relation("TicketClosureRequester", fields: [closureRequestedById], references: [id], onDelete: SetNull)
+  closureDeadlineAt    DateTime?
+
+  participants TicketParticipant[]
+  messages     TicketMessage[]
+
+  @@index([createdById, updatedAt])
+  @@index([assigneeId, updatedAt])
+  @@index([category, status, updatedAt])
+  @@index([status, updatedAt])
+  @@index([closureDeadlineAt])
+}
+
+model TicketParticipant {
+  ticketId Int
+  userId   Int
+  role     TicketParticipantRole @default(USER)
+  joinedAt DateTime              @default(now())
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([ticketId, userId])
+  @@index([userId])
+}
+
+model TicketMessage {
+  id       Int    @id @default(autoincrement())
+  ticketId Int
+  ticket   Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  authorId Int
+  author   User @relation("TicketMessageAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+
+  kind      TicketMessageKind @default(USER)
+  content   String            @db.MediumText
+  createdAt DateTime          @default(now())
+
+  @@index([ticketId, createdAt])
+  @@index([authorId])
+}
+
+enum TicketCategory {
+  BILLS
+  SUPPORT
+  OTHERS
+}
+
+enum TicketStatus {
+  OPEN
+  ASSIGNED
+  WAITING_AGENT
+  WAITING_USER
+  CLOSURE_REQUESTED
+  CLOSED
+}
+
+enum TicketMessageKind {
+  USER
+  ADMIN
+  SYSTEM
+}
+
+enum TicketParticipantRole {
+  USER
+  ADMIN
+}
+
+model Product {
+  id            Int                  @id @default(autoincrement())
+  createdAt     DateTime             @default(now())
+  name          String
+  description   String?              @db.Text
+  companyId     Int
+  price         Decimal              @db.Decimal(10, 2)
+  isActive      Boolean              @default(true)
+  deactivatedAt DateTime?
+  company       Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  declarations  ProductDeclaration[]
+
+  @@unique([companyId, name])
+  @@index([companyId], map: "Product_companyId_fkey")
+}
+
+model ProductDeclaration {
+  id                  Int             @id @default(autoincrement())
+  createdAt           DateTime        @default(now())
+  productId           Int
+  companyId           Int
+  employeeId          Int
+  amount              Decimal         @db.Decimal(10, 2)
+  declaredAt          DateTime        @default(now())
+  fixedPart           Decimal?        @db.Decimal(10, 2)
+  percentPart         Decimal?        @db.Decimal(5, 2)
+  percentValue        Decimal?        @db.Decimal(10, 2)
+  priceAtSale         Decimal?        @db.Decimal(10, 2)
+  productNameSnapshot String
+  quantity            Decimal         @db.Decimal(10, 2)
+  company             Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  employee            CompanyEmployee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  product             Product         @relation(fields: [productId], references: [id])
+
+  @@index([companyId], map: "ProductDeclaration_companyId_fkey")
+  @@index([productId], map: "ProductDeclaration_productId_fkey")
+  @@index([employeeId], map: "ProductDeclaration_employeeId_fkey")
+}
+
+model WidgetDefinition {
+  id                 Int           @id @default(autoincrement())
+  type               String        @unique
+  name               String
+  description        String?
+  requiredPermission String?       @db.LongText
+  availableVariants  String?       @db.LongText
+  targetContext      WidgetContext @default(COMPANY)
+  userWidgets        UserWidget[]
+}
+
+model UserWidget {
+  id                 Int              @id @default(autoincrement())
+  layout             String           @db.LongText
+  config             String?          @db.LongText
+  userId             Int
+  companyId          Int?
+  widgetDefinitionId Int
+  company            Company?         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  widgetDefinition   WidgetDefinition @relation(fields: [widgetDefinitionId], references: [id], onDelete: Cascade)
+
+  @@index([companyId], map: "UserWidget_companyId_fkey")
+  @@index([userId], map: "UserWidget_userId_fkey")
+  @@index([widgetDefinitionId], map: "UserWidget_widgetDefinitionId_fkey")
+}
+
+model ExpenseReport {
+  id         Int                   @id @default(autoincrement())
+  amount     Decimal               @db.Decimal(10, 2)
+  comment    String                @db.Text
+  date       DateTime
+  createdAt  DateTime              @default(now())
+  updatedAt  DateTime              @updatedAt
+  status     ExpenseReportStatus   @default(PENDING)
+  authorId   Int
+  companyId  Int
+  reviewerId Int?
+  categoryId Int
+  author     User                  @relation("AuthoredExpenseReports", fields: [authorId], references: [id], onDelete: Cascade)
+  category   ExpenseReportCategory @relation(fields: [categoryId], references: [id])
+  company    Company               @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  reviewer   User?                 @relation("ReviewedExpenseReports", fields: [reviewerId], references: [id])
+
+  @@index([authorId])
+  @@index([companyId])
+  @@index([reviewerId])
+  @@index([categoryId])
+  @@index([companyId, status])
+}
+
+enum ExpenseReportStatus {
+  PENDING
+  REIMBURSED
+  REJECTED
+}
+
+model ExpenseReportCategory {
+  id        Int             @id @default(autoincrement())
+  name      String
+  companyId Int
+  reports   ExpenseReport[]
+  company   Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, name])
+  @@index([companyId])
+}
+
+model EventCategory {
+  id        Int             @id @default(autoincrement())
+  name      String
+  color     String          @default("#FFFFFF")
+  companyId Int
+  events    CalendarEvent[]
+  company   Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, name])
+}
+
+model CalendarEvent {
+  id              Int            @id @default(autoincrement())
+  title           String
+  description     String?        @db.Text
+  startTime       DateTime
+  endTime         DateTime?
+  isAllDay        Boolean        @default(false)
+  rrule           String?        @db.VarChar(255)
+  createdAt       DateTime       @default(now())
+  createdBySystem Boolean        @default(false)
+  userId          Int
+  authorId        Int
+  categoryId      Int?
+  companyId       Int?
+  targetRoleId    Int?
+  author          User           @relation("EventAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  category        EventCategory? @relation(fields: [categoryId], references: [id])
+  company         Company?       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  targetRole      Role?          @relation("TargetedRoleEvents", fields: [targetRoleId], references: [id])
+  user            User           @relation("EventSubject", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, startTime, endTime])
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([companyId])
+  @@index([targetRoleId])
+}
+
+// =============================
+// Custom Pages (WordPress-like)
+// =============================
+
+enum CustomPageType {
+  IFRAME
+  CUSTOM
+}
+
+enum CustomPageVersionKind {
+  DRAFT
+  PUBLISHED
+}
+
+enum CustomPageAccessKind {
+  USER
+  RANK
+}
+
+model CustomPage {
+  id        Int            @id @default(autoincrement())
+  companyId Int
+  type      CustomPageType
+  slug      String
+  title     String
+  isPublic  Boolean        @default(false)
+
+  // Version actuelle brouillon / publiée
+  draftVersionId     Int? @unique
+  publishedVersionId Int? @unique
+
+  navTitle      String?
+  navIcon       String?
+  showInSidebar Boolean @default(false)
+  navOrder      Int     @default(0)
+  navGroup      String?
+
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  createdById Int
+  updatedById Int
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  versions CustomPageVersion[] @relation("CustomPageToVersions")
+
+  draftVersion     CustomPageVersion? @relation("DraftVersion", fields: [draftVersionId], references: [id], onDelete: SetNull)
+  publishedVersion CustomPageVersion? @relation("PublishedVersion", fields: [publishedVersionId], references: [id], onDelete: SetNull)
+
+  accesses CustomPageAccess[]
+
+  createdBy User @relation("CustomPageCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  updatedBy User @relation("CustomPageUpdatedBy", fields: [updatedById], references: [id], onDelete: Restrict)
+
+  @@unique([companyId, slug])
+  @@index([companyId])
+  @@index([companyId, updatedAt])
+  @@index([companyId, publishedAt])
+  @@index([companyId, showInSidebar, navOrder])
+}
+
+model CustomPageVersion {
+  id     Int                   @id @default(autoincrement())
+  pageId Int
+  kind   CustomPageVersionKind
+
+  // Contenu selon type:
+  // - CUSTOM  -> content
+  // - IFRAME  -> iframeUrl
+  content   String? @db.LongText
+  iframeUrl String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  updatedById Int
+
+  // Relation vers la page (toutes versions)
+  page CustomPage @relation("CustomPageToVersions", fields: [pageId], references: [id], onDelete: Cascade)
+
+  // Back-relations (optionnelles) si cette version est “pointeur” draft/published
+  draftFor     CustomPage? @relation("DraftVersion")
+  publishedFor CustomPage? @relation("PublishedVersion")
+
+  updatedBy User @relation("CustomPageVersionUpdatedBy", fields: [updatedById], references: [id], onDelete: Restrict)
+
+  @@index([pageId])
+  @@index([pageId, kind])
+  @@index([updatedById])
+}
+
+model CustomPageAccess {
+  id     Int                  @id @default(autoincrement())
+  pageId Int
+  kind   CustomPageAccessKind
+
+  userId Int?
+  rankId Int?
+
+  page CustomPage @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rank Rank? @relation(fields: [rankId], references: [id], onDelete: Cascade)
+
+  @@unique([pageId, kind, userId])
+  @@unique([pageId, kind, rankId])
+  @@index([pageId])
+  @@index([pageId, kind])
+}
+
+model Partner {
+  id          Int                      @id @default(autoincrement())
+  companyId   Int
+  name        String
+  description String?
+  logoUrl     String?
+  isActive    Boolean                  @default(true)
+  createdAt   DateTime                 @default(now())
+  createdBy   Int?
+  company     Company                  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creator     User?                    @relation("UserCreatedPartners", fields: [createdBy], references: [id])
+  rendered    PartnerServiceRendered[]
+  services    PartnerServiceType[]
+
+  @@unique([companyId, name])
+  @@index([companyId])
+  @@index([createdBy], map: "Partner_createdBy_fkey")
+}
+
+model PartnerServiceType {
+  id           Int                      @id @default(autoincrement())
+  companyId    Int
+  partnerId    Int
+  name         String
+  partnerPrice Decimal                  @db.Decimal(10, 2)
+  isActive     Boolean                  @default(true)
+  createdAt    DateTime                 @default(now())
+  rendered     PartnerServiceRendered[]
+  company      Company                  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  partner      Partner                  @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  @@unique([partnerId, name])
+  @@index([companyId])
+  @@index([partnerId])
+}
+
+model PartnerServiceRendered {
+  id            Int                @id @default(autoincrement())
+  companyId     Int
+  partnerId     Int
+  serviceTypeId Int
+  userId        Int?
+  quantity      Int
+  unitPrice     Decimal            @db.Decimal(10, 2)
+  total         Decimal            @db.Decimal(10, 2)
+  date          DateTime           @default(now())
+  createdAt     DateTime           @default(now())
+  company       Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  partner       Partner            @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  serviceType   PartnerServiceType @relation(fields: [serviceTypeId], references: [id], onDelete: Cascade)
+  user          User?              @relation(fields: [userId], references: [id])
+
+  @@index([companyId])
+  @@index([partnerId])
+  @@index([serviceTypeId])
+  @@index([userId])
+}
+
+model InventoryMovement {
+  id         Int                   @id @default(autoincrement())
+  createdAt  DateTime              @default(now())
+  occurredAt DateTime
+  companyId  Int
+  logId      Int                   @unique
+  type       InventoryMovementType // ADD / REMOVE
+  owner      String? // ex: "action-73-0-2"
+  ownerRefId Int?
+  ownerRef   Inventory? @relation("InventoryMovements", fields: [ownerRefId], references: [id])
+
+  // 🔹 Infos item
+  itemCode  String // ex: "pez_cubano"
+  itemLabel String? // ex: "Pez Cubano"
+  quantity  Int
+
+  // 🔹 Lien vers ton User interne (facultatif si non résolu)
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id])
+
+  properName String?
+
+  // 🔹 Metadata brute de l'item si utile (uuid, origin, etc.)
+  metadata String? @db.LongText
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  log     Log     @relation(fields: [logId], references: [id], onDelete: Cascade)
+
+  // Index pour les recherches front
+  @@index([companyId, occurredAt])
+  @@index([companyId, userId, occurredAt])
+  @@index([companyId, itemCode, occurredAt])
+  @@index([companyId, properName, occurredAt])
+  @@index([companyId, owner, occurredAt])
+  @@index([ownerRefId])
+}
+
+model Inventory {
+  id Int @id @default(autoincrement())
+
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  owner String // The raw owner string, e.g., "action-73-0-2"
+  name  String // The custom name
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdById Int?
+  updatedById Int?
+
+  createdBy User? @relation("InventoryCreatedBy", fields: [createdById], references: [id])
+  updatedBy User? @relation("InventoryUpdatedBy", fields: [updatedById], references: [id])
+
+  movements         InventoryMovement[]    @relation("InventoryMovements")
+  pawnshopItems     PawnshopPurchaseItem[]
+
+  @@unique([companyId, owner])
+  @@index([companyId])
+}
+
+model Vehicle {
+  id Int @id @default(autoincrement())
+
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  vehicleId   Int      @unique // ID FiveM unique
+  plate       String? // immatriculation
+  displayName String? // nom du véhicule défini par l’entreprise
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  createdById Int?
+  updatedById Int?
+
+  createdBy User? @relation("VehicleCreatedBy", fields: [createdById], references: [id])
+  updatedBy User? @relation("VehicleUpdatedBy", fields: [updatedById], references: [id])
+
+  movements VehicleMovement[]
+
+  @@index([companyId])
+}
+
+model VehicleMovement {
+  id Int @id @default(autoincrement())
+
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  occurredAt DateTime
+  type       VehicleMovementType
+
+  vehicleId    Int // ID FiveM
+  vehicleRefId Int?
+  vehicleRef   Vehicle? @relation(fields: [vehicleRefId], references: [id])
+
+  markerId   Int?
+  properName String?
+
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id])
+
+  logId Int @unique
+  log   Log @relation(fields: [logId], references: [id], onDelete: Cascade)
+
+  metadata String? @db.LongText
+
+  @@index([companyId, occurredAt])
+  @@index([companyId, vehicleId])
+}
+
+model ChatChannelRankOverride {
+  channelId BigInt
+  rankId    Int
+
+  channel ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  rank    Rank        @relation(fields: [rankId], references: [id])
+
+  allowBits BigInt @default(0)
+  denyBits  BigInt @default(0)
+
+  @@id([channelId, rankId])
+  @@index([channelId])
+}
+
+model ChatChannelUserOverride {
+  channelId BigInt
+  userId    Int
+
+  channel ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user    User        @relation(fields: [userId], references: [id])
+
+  allowBits BigInt @default(0)
+  denyBits  BigInt @default(0)
+
+  @@id([channelId, userId])
+  @@index([channelId])
+}
+
+model ChatChannelReadState {
+  channelId BigInt
+  userId    Int
+
+  channel ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user    User        @relation(fields: [userId], references: [id])
+
+  lastReadMessageId BigInt?
+  lastReadAt        DateTime?
+
+  @@id([channelId, userId])
+  @@index([userId], name: "ChatChannelReadState_userId_idx")
+}
+
+model ChatDmConversation {
+  id BigInt @id // Snowflake
+
+  userAId Int
+  userA   User @relation("DmUserA", fields: [userAId], references: [id])
+
+  userBId Int
+  userB   User @relation("DmUserB", fields: [userBId], references: [id])
+
+  messages ChatDmMessage[]
+
+  @@unique([userAId, userBId])
+}
+
+model ChatDmMessage {
+  id             BigInt             @id
+  conversationId BigInt
+  conversation   ChatDmConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id])
+
+  content String
+
+  createdAt DateTime @default(now())
+}
+
+enum VehicleMovementType {
+  OUT // sortie du garage
+  IN // rangement du garage
+}
+
+enum FidelityCardStatus {
+  ACTIVE
+  COMPLETED
+  DISABLED
+}
+
+enum FidelityCardActionType {
+  CARD_CREATED
+  STAMP_ADDED
+  STAMP_REMOVED
+  STATUS_CHANGED
+  MANUAL_ADJUSTMENT
+}
+
+enum ReportTargetType {
+  MESSAGE
+  CONVERSATION
+}
+
+enum TransactionType {
+  REVENUE
+  EXPENSE
+}
+
+enum TransactionCategoryName {
+  CHIFFRE_AFFAIRES
+  AUTRES_ENTREES
+  DONS_RECUS
+  DECORATION
+  SUBVENTIONS_RECUES
+  SALAIRES
+  MATIERES_PREMIERES
+  AVOCATS
+  FRAIS_COMPTABLE
+  LOCATIONS
+  FRAIS_VEHICULES
+  NOURRITURE
+  DONS_EFFECTUES
+  LOCATIONS_NON_DEDUC
+  CHARGES_VEHICULES_NON_DEDUC
+  AUTRES_NON_DEDUC
+  IMPOTS
+}
+
+enum NotificationType {
+  SYSTEM
+  USER_SPECIFIC
+  GROUP
+  COMPANY_WIDE
+}
+
+enum NotificationBehavior {
+  PERMANENT
+  TEMPORARY
+  BLOCKING
+}
+
+enum UserStatus {
+  PENDING_FINALIZATION
+  ACTIVE
+  DISABLED
+  ADMIN_DISABLED
+  BLOCKED
+  SUSPENDED
+}
+
+enum CompanyEmployeeStatus {
+  PENDING_LINK
+  ACTIVE
+  FIRE
+  RESIGNED
+}
+
+enum ImageOwnerType {
+  USER
+  COMPANY
+  CLIENT_VARIABLE
+  MY_CALENDAR_EVENT
+  COMPANY_LOADING
+  COMPANY_BANNER
+  COMPANY_ICON
+  CLIENT_CNI
+  ADMIN
+}
+
+enum BillType {
+  UNPAID
+  PAID_CASH
+  PAID_CARD
+  CANCELED
+}
+
+enum ContractType {
+  ADMIN
+  COMPANY
+  LAWYER
+}
+
+enum ContractFieldType {
+  TEXT
+  NUMBER
+  DATE
+  MODULE_SELECTION
+  PRICE
+}
+
+enum ContractStatus {
+  PENDING
+  SIGNED
+  REJECTED
+  CANCELED
+}
+
+enum ContractSignatureRole {
+  SENDER
+  RECIPIENT
+}
+
+enum WidgetContext {
+  COMPANY
+  ADMIN_USER
+  GLOBAL
+}
+
+enum InventoryMovementType {
+  ADD
+  REMOVE
+}
+
+enum PawnshopPurchaseStatus {
+  DRAFT
+  VALIDATED
+  CANCELED
+}
+
+// MariaDB: inline enum sur la colonne — défini dans migration.sql
+enum PawnshopPaymentStatus {
+  UNPAID
+  PAID_TRANSFER
+}
+
+enum PawnshopEstimationStatus {
+  OPEN
+  CONVERTED
+  REJECTED
+}
+
+model SacemPost {
+  id        Int      @id @default(autoincrement())
+  companyId Int
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  messageId String   @unique // Discord Message ID
+  title     String?
+  category  String?
+  postedAt  DateTime // Date parsed from "Posté le"
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  participations SacemParticipation[]
+  payments       SacemPayment[]
+
+  @@index([companyId])
+}
+
+model SacemPayment {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  post      SacemPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  amount         Decimal  @db.Decimal(15, 2)
+  receivedAt     DateTime // Date parsed from the header "Date: ..."
+  reactionsCount Int      @default(0) // Parsed from "Paie par réaction : $300xN"
+  
+  createdAt DateTime @default(now())
+
+  @@index([postId])
+}
+
+model SacemParticipation {
+  id         Int             @id @default(autoincrement())
+  postId     Int
+  post       SacemPost       @relation(fields: [postId], references: [id], onDelete: Cascade)
+  employeeId Int
+  employee   CompanyEmployee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  
+  percentage Decimal @db.Decimal(5, 2) // Employee participation % in this specific post
+
+  @@unique([postId, employeeId])
+}
+
+model StreamerKey {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  label       String?
+  companyId   Int
+  isEmergency Boolean  @default(false)
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime?
+
+  @@index([companyId])
+}
+
+// ============================================================
+// CLIENT VARIABLES — Paramètres d'affichage personnalisés
+// ============================================================
+
+enum ClientVariableType {
+  BOOLEAN
+  TEXT
+}
+
+model ClientVariable {
+  id               Int                @id @default(autoincrement())
+  companyId        Int
+  slug             String             // identifiant unique par company (ex: "vip")
+  label            String             // affiché dans l'UI (ex: "VIP")
+  type             ClientVariableType @default(BOOLEAN)
+  config           Json               @default("{}") // icônes, couleurs, textes selon valeur
+  order            Int                @default(0)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  showInPerks        Boolean            @default(false)  // Afficher dans "Mes avantages" si le client a cette variable
+  showInCatalog      Boolean            @default(false)  // Afficher dans le catalogue public (indépendamment du client)
+  perksDescription   String?            @db.LongText      // Description markdown affichée dans la page avantages
+  perksPrice         Decimal?           @db.Decimal(10, 2)
+  perksPriceDuration String?
+  perksIconUrl       String?
+
+  company  Company               @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  accesses ClientVariableAccess[]
+  values   ClientVariableValue[]
+
+  @@unique([companyId, slug])
+  @@index([companyId])
+  @@index([companyId, order])
+}
+
+model ClientVariableAccess {
+  id         Int    @id @default(autoincrement())
+  variableId Int
+  kind       CustomPageAccessKind // réutilise USER / RANK
+
+  userId Int?
+  rankId Int?
+
+  variable ClientVariable @relation(fields: [variableId], references: [id], onDelete: Cascade)
+  user     User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rank     Rank?          @relation(fields: [rankId], references: [id], onDelete: Cascade)
+
+  @@unique([variableId, kind, userId])
+  @@unique([variableId, kind, rankId])
+  @@index([variableId])
+  @@index([variableId, kind])
+}
+
+model ClientVariableValue {
+  id         Int      @id @default(autoincrement())
+  variableId Int
+  clientId   Int
+  value      String?  @db.Text // NULL = non défini
+  updatedAt  DateTime @updatedAt
+
+  updatedByUserId Int?
+  updatedBy       User?          @relation("ClientVariableValueUpdater", fields: [updatedByUserId], references: [id], onDelete: SetNull)
+  variable        ClientVariable @relation(fields: [variableId], references: [id], onDelete: Cascade)
+  client          Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@unique([variableId, clientId])
+  @@index([clientId])
+  @@index([variableId])
+}
+
+// =============================
+// MyCalendar Module
+// =============================
+
+model MyCalendarEvent {
+  id              Int      @id @default(autoincrement())
+  title           String
+  description     String?  @db.Text // Markdown
+  startTime       DateTime
+  endTime         DateTime
+  color           String?  @default("#3b82f6")
+  repetition      String?  // RRule string
+  
+  authorId        Int
+  author          User     @relation("MyCalendarAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  
+  companyId       Int?
+  company         Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  categoryId      Int?
+  category        MyCalendarCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  
+  imageUrl        String?
+  isPredefined    Boolean  @default(false)
+  
+  guests          MyCalendarGuest[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([companyId])
+  @@index([startTime, endTime])
+}
+
+model MyCalendarCategory {
+  id        Int      @id @default(autoincrement())
+  name      String
+  color     String   @default("#FFFFFF")
+  
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  companyId Int?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  events    MyCalendarEvent[]
+
+  @@index([userId])
+  @@index([companyId])
+}
+
+model MyCalendarGuest {
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  userId    Int
+  status    MyCalendarGuestStatus @default(PENDING)
+  
+  event     MyCalendarEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+  @@index([userId])
+}
+
+enum MyCalendarGuestStatus {
+  PENDING
+  ACCEPTED
+  REFUSED
+}
+
+model QuizSession {
+  id          Int       @id @default(autoincrement())
+  token       String    @unique @default(cuid())
+  userId      Int
+  adminId     Int
+  sector      Int       // 1, 2, 3, 4
+  status      String    @default("PENDING") // PENDING, STARTED, COMPLETED, EXPIRED
+  startedAt   DateTime?
+  completedAt DateTime?
+  score       Int?
+  answers     Json?
+  createdAt   DateTime  @default(now())
+
+  user  User @relation("UserQuizzes", fields: [userId], references: [id], onDelete: Cascade)
+  admin User @relation("AdminQuizzes", fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([adminId])
+  @@index([token])
+}
+
+// =============================
+// Hosting (Self-hébergement)
+// =============================
+
+enum HostedAssetKind {
+  CSS
+  JS
+}
+
+model HostedSite {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  companyId   Int
+  slug        String    @unique
+  name        String
+  description String?
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+  createdById Int
+  updatedById Int
+  billId      Int?      @unique
+
+  pages        HostedPage[]
+  assets       HostedAsset[]
+  forms        HostedForm[]
+  variables    HostedVariable[]
+  customRoutes HostedCustomRoute[]
+  company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdBy User       @relation("HostedSiteCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  updatedBy User       @relation("HostedSiteUpdatedBy", fields: [updatedById], references: [id], onDelete: Restrict)
+  bill      Bill?      @relation(fields: [billId], references: [id], onDelete: SetNull)
+
+  @@index([companyId])
+}
+
+model HostedPage {
+  id          Int      @id @default(autoincrement())
+  siteId      Int
+  route       String   @default("")
+  title       String
+  htmlContent String   @db.Text @default("")
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  site HostedSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@unique([siteId, route])
+  @@index([siteId])
+}
+
+model HostedAsset {
+  id        Int             @id @default(autoincrement())
+  siteId    Int
+  filename  String
+  kind      HostedAssetKind
+  content   String          @db.Text @default("")
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  site HostedSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@unique([siteId, filename])
+  @@index([siteId])
+}
+
+enum HostedFormFieldType {
+  TEXT
+  TEXTAREA
+  EMAIL
+  NUMBER
+  BOOLEAN
+  SELECT
+  RADIO
+  DATE
+}
+
+enum HostedVariableKind {
+  STATIC
+  DYNAMIC
+}
+
+enum HostedNotificationKind {
+  TEMPORARY
+  PERMANENT
+  BLOCKING
+}
+
+model HostedForm {
+  id               Int                    @id @default(autoincrement())
+  siteId           Int
+  name             String
+  description      String?
+  isActive         Boolean                @default(true)
+  opensAt          DateTime?
+  closesAt         DateTime?
+  maxResponses     Int?
+  notifKind        HostedNotificationKind @default(TEMPORARY)
+  notifTitle       String?
+  notifMessage     String                 @default("Merci pour votre réponse !")
+  notifDurationSec Int                    @default(5)
+  discordWebhookUrl String?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+
+  site         HostedSite          @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  fields       HostedFormField[]
+  responses    HostedFormResponse[]
+  customRoutes HostedCustomRoute[]
+
+  @@index([siteId])
+}
+
+model HostedFormField {
+  id        Int                 @id @default(autoincrement())
+  formId    Int
+  key       String
+  label     String
+  type      HostedFormFieldType
+  required  Boolean             @default(false)
+  options   Json?
+  order     Int                 @default(0)
+  createdAt DateTime            @default(now())
+
+  form HostedForm @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@unique([formId, key])
+  @@index([formId])
+}
+
+model HostedFormResponse {
+  id        Int      @id @default(autoincrement())
+  formId    Int
+  data      Json
+  isRead    Boolean  @default(false)
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now())
+
+  form HostedForm @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@index([formId])
+  @@index([formId, isRead])
+}
+
+model HostedVariable {
+  id            Int                @id @default(autoincrement())
+  siteId        Int
+  key           String
+  value         String             @db.Text @default("")
+  kind          HostedVariableKind @default(STATIC)
+  sourceUrl     String?
+  sourcePath    String?
+  refreshMs     Int?
+  cachedValue   String?            @db.Text
+  lastFetchedAt DateTime?
+  updatedAt     DateTime           @updatedAt
+
+  site HostedSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@unique([siteId, key])
+  @@index([siteId])
+}
+
+enum HostedRouteType {
+  SERVICE
+  FORM_RESPONSES
+}
+
+model HostedCustomRoute {
+  id          Int             @id @default(autoincrement())
+  siteId      Int
+  key         String
+  type        HostedRouteType
+  isActive    Boolean         @default(false)
+  description String?
+  fields      Json            @default("[]")
+  formId      Int?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  site HostedSite  @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  form HostedForm? @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@unique([siteId, key])
+  @@index([siteId])
+}
+
+enum EmployeeHREventType {
+  AVERTISSEMENT
+  FELICITATION
+  PRIME
+  NOTE
+}
+
+model EmployeeHREvent {
+  id                  Int                   @id @default(autoincrement())
+  companyEmployeeId   Int
+  type                EmployeeHREventType
+  title               String
+  description         String?               @db.Text
+  amount              Decimal?              @db.Decimal(10, 2)
+  isoWeek             Int?
+  isoYear             Int?
+  occurredAt          DateTime              @default(now())
+  expiresAt           DateTime?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  createdByEmployeeId Int?
+  companyEmployee     CompanyEmployee       @relation(fields: [companyEmployeeId], references: [id], onDelete: Cascade)
+  createdByEmployee   CompanyEmployee?      @relation("HREventCreatedBy", fields: [createdByEmployeeId], references: [id], onDelete: SetNull)
+  attachments         EmployeeHRAttachment[]
+
+  @@index([companyEmployeeId])
+  @@index([companyEmployeeId, isoYear, isoWeek])
+}
+
+model EmployeeHRAttachment {
+  id        Int             @id @default(autoincrement())
+  eventId   Int
+  publicId  String          @unique
+  fileName  String
+  mimeType  String
+  byteSize  Int
+  diskPath  String
+  createdAt DateTime        @default(now())
+  event     EmployeeHREvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+}
+
+// =============================
+// Ingest Fallback (Redis KO)
+// =============================
+
+model IngestFallback {
+  id         String    @id @default(uuid())
+  companyId  String
+  url        String    @db.Text
+  method     String
+  headers    Json
+  bodyString String    @db.LongText
+  enqueuedAt DateTime
+  createdAt  DateTime  @default(now())
+  attempts   Int       @default(0)
+  lastError  String?   @db.Text
+  resolved   Boolean   @default(false)
+  resolvedAt DateTime?
+
+  @@index([resolved, attempts])
+  @@index([createdAt])
+}
+
+// =============================
+// Announcements (Admin)
+// =============================
+
+model Announcement {
+  id          Int      @id @default(autoincrement())
+  title       String
+  body        String   @db.Text
+  isActive    Boolean  @default(false)
+  actions     Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById Int
+  createdBy   User     @relation("AnnouncementAuthor", fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([isActive])
+  @@index([createdById])
+}
+
+// =============================================================================
+// TchatV2 — Coexiste avec chat V1 (tables chat_*). Préfixe v2_ garanti zéro collision.
+// =============================================================================
+
+// TASK 1.5 ─────────────────────────────────────────────────────────────────────
+
+model V2Guild {
+  id                BigInt   @id @db.BigInt
+  name              String   @db.VarChar(100)
+  description       String?  @db.Text
+  iconHash          String?  @db.VarChar(128)
+  bannerHash        String?  @db.VarChar(128)
+  ownerId           Int
+  owner             User     @relation("V2GuildOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  systemChannelId   BigInt?  @db.BigInt
+  afkChannelId      BigInt?  @db.BigInt
+  afkTimeout        Int      @default(300)
+  verificationLevel Int      @default(0)
+  companyId         Int?     @unique
+  company           Company? @relation("V2GuildCompany", fields: [companyId], references: [id], onDelete: SetNull)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  roles    V2Role[]
+  channels V2Channel[]
+  members  V2Member[]
+  invites  V2Invite[]
+  bans     V2Ban[]
+  webhooks V2Webhook[]
+  auditLog      V2AuditLog[]
+  emojis        V2GuildEmoji[]
+  notifSettings V2GuildNotifSetting[]
+
+  @@map("v2_guild")
+}
+
+model V2GuildEmoji {
+  id        BigInt   @id @db.BigInt
+  guildId   BigInt   @db.BigInt
+  guild     V2Guild  @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  name      String   @db.VarChar(64)
+  imageKey  String   @db.VarChar(128)
+  createdAt DateTime @default(now())
+
+  @@index([guildId])
+  @@map("v2_guild_emoji")
+}
+
+model V2GuildNotifSetting {
+  id         BigInt    @id @default(autoincrement()) @db.BigInt
+  userId     Int
+  user       User      @relation("V2GuildNotifSettings", fields: [userId], references: [id], onDelete: Cascade)
+  guildId    BigInt    @db.BigInt
+  guild      V2Guild   @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  level      Int       @default(0)
+  mutedUntil DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@unique([userId, guildId])
+  @@index([guildId])
+  @@map("v2_guild_notif_setting")
+}
+
+model V2Role {
+  id          BigInt   @id @db.BigInt
+  guildId     BigInt   @db.BigInt
+  guild       V2Guild  @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  name        String   @db.VarChar(100)
+  color       Int      @default(0)
+  hoist       Boolean  @default(false)
+  position    Int      @default(0)
+  permissions BigInt   @default(0) @db.BigInt
+  managed       Boolean  @default(false)
+  companyRankId Int?
+  companyRank       Rank?    @relation("V2RoleCompanyRank", fields: [companyRankId], references: [id], onDelete: SetNull)
+  mentionable   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  memberRoles  V2MemberRole[]
+
+  @@index([guildId, position])
+  @@map("v2_role")
+}
+
+model V2Member {
+  id                    BigInt    @id @default(autoincrement()) @db.BigInt
+  guildId               BigInt    @db.BigInt
+  guild                 V2Guild   @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  userId                Int
+  user                  User      @relation("V2Members", fields: [userId], references: [id], onDelete: Cascade)
+  nickname              String?   @db.VarChar(32)
+  avatarHash            String?   @db.VarChar(128)
+  timeoutUntil          DateTime?
+  cachedGuildPermissions BigInt   @default(0) @db.BigInt
+  joinedAt              DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  memberRoles V2MemberRole[]
+
+  @@unique([guildId, userId])
+  @@index([guildId])
+  @@index([userId])
+  @@map("v2_member")
+}
+
+model V2MemberRole {
+  memberId BigInt   @db.BigInt
+  member   V2Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  roleId   BigInt   @db.BigInt
+  role     V2Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([memberId, roleId])
+  @@map("v2_member_role")
+}
+
+model V2Channel {
+  id                BigInt    @id @db.BigInt
+  guildId           BigInt?   @db.BigInt
+  guild             V2Guild?  @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  parentId          BigInt?   @db.BigInt
+  type              Int
+  name              String    @db.VarChar(100)
+  topic             String?   @db.VarChar(1024)
+  position          Int       @default(0)
+  nsfw              Boolean   @default(false)
+  rateLimitPerUser  Int       @default(0)
+  lastMessageId     BigInt?   @db.BigInt
+  lastPinTimestamp  DateTime?
+  deletedAt         DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  overwrites      V2PermissionOverwrite[]
+  messages        V2Message[]
+  pinnedMessages  V2PinnedMessage[]
+  invites         V2Invite[]
+  webhooks        V2Webhook[]
+  threadMetadata  V2ThreadMetadata?
+  readStates      V2ChannelReadState[]
+  dmRecipients    V2DmRecipient[]       @relation("V2DmRecipients")
+  forumTags       V2ForumTag[]          @relation("V2ForumTags")
+  forumSubscriptions V2ForumSubscription[] @relation("V2ForumSubscriptions")
+  forumPostSubscriptions V2ForumPostSubscription[] @relation("V2ForumPostSubscriptions")
+  userNotifications  V2UserChannelNotification[] @relation("V2UserChannelNotifications")
+
+  @@index([guildId, position])
+  @@index([parentId])
+  @@map("v2_channel")
+}
+
+model V2DmRecipient {
+  id        BigInt    @id @db.BigInt
+  channelId BigInt    @db.BigInt
+  channel   V2Channel @relation("V2DmRecipients", fields: [channelId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User      @relation("V2DmRecipients", fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt  DateTime  @default(now())
+  hiddenAt  DateTime?
+
+  @@unique([channelId, userId])
+  @@index([userId])
+  @@map("v2_dm_recipient")
+}
+
+model V2PermissionOverwrite {
+  id        BigInt    @id @db.BigInt
+  channelId BigInt    @db.BigInt
+  channel   V2Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  // targetId pointe vers un role (type=0) ou un member (type=1) — polymorphique, sans FK Prisma
+  targetId  BigInt    @db.BigInt
+  type      Int
+  allow     BigInt    @default(0) @db.BigInt
+  deny      BigInt    @default(0) @db.BigInt
+
+  @@unique([channelId, targetId, type])
+  @@index([channelId])
+  @@map("v2_permission_overwrite")
+}
+
+model V2ThreadMetadata {
+  channelId           BigInt    @id @db.BigInt
+  channel             V2Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  archived            Boolean   @default(false)
+  autoArchiveDuration Int       @default(1440)
+  archiveTimestamp    DateTime?
+  locked              Boolean   @default(false)
+  pinned              Boolean   @default(false)
+  createMessageId     BigInt?   @db.BigInt
+  deletedAt           DateTime?
+
+  @@map("v2_thread_metadata")
+}
+
+// TASK 1.6 ─────────────────────────────────────────────────────────────────────
+
+model V2Message {
+  id                BigInt    @id @db.BigInt
+  channelId         BigInt    @db.BigInt
+  channel           V2Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  authorId          Int
+  author            User      @relation("V2Messages", fields: [authorId], references: [id], onDelete: Restrict)
+  type              Int       @default(0)
+  content           String    @db.VarChar(2000)
+  editedAt          DateTime?
+  pinned            Boolean   @default(false)
+  tts               Boolean   @default(false)
+  nonce             String?   @db.VarChar(64)
+  flags             Int       @default(0)
+  referencedMessageId BigInt? @db.BigInt
+  deletedAt         DateTime?
+  // Champs dénormalisés pour éviter les JOIN chauds
+  authorUsername    String    @db.VarChar(64)
+  authorAvatarHash  String?   @db.VarChar(128)
+  authorNickname    String?   @db.VarChar(32)
+  mentionsJson      String?   @db.Text
+  reactionsSummary  String?   @db.Text
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  attachments  V2Attachment[]
+  embeds       V2Embed[]
+  reactions    V2Reaction[]
+  mentions     V2MessageMention[]
+  pinnedIn     V2PinnedMessage[]
+  edits        V2MessageEdit[]
+  poll         V2Poll?
+
+  @@index([channelId, id(sort: Desc)])
+  @@index([authorId])
+  @@fulltext([content])
+  @@map("v2_message")
+}
+
+model V2Attachment {
+  id          BigInt    @id @db.BigInt
+  messageId   BigInt?   @db.BigInt
+  message     V2Message? @relation(fields: [messageId], references: [id], onDelete: SetNull)
+  filename    String    @db.VarChar(255)
+  contentType String    @db.VarChar(128)
+  size        Int
+  url         String    @db.VarChar(512)
+  key         String    @db.VarChar(512)
+  width       Int?
+  height      Int?
+  userId      Int?      // P0.5 — propriétaire (nullable pour legacy)
+  companyId   Int?      // P0.5 — tenant (nullable pour legacy)
+  scanStatus  String?   @default("pending") @db.VarChar(16) // pending|confirmed|rejected
+  createdAt   DateTime  @default(now())
+
+  @@index([messageId])
+  @@index([userId])
+  @@index([companyId])
+  @@map("v2_attachment")
+}
+
+model V2Embed {
+  id          BigInt    @id @db.BigInt
+  messageId   BigInt    @db.BigInt
+  message     V2Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  type        String    @default("rich") @db.VarChar(32)
+  url         String?   @db.VarChar(512)
+  title       String?   @db.VarChar(256)
+  description String?   @db.Text
+  color       Int?
+  imageUrl    String?   @db.VarChar(512)
+  thumbnailUrl String?  @db.VarChar(512)
+  authorName  String?   @db.VarChar(256)
+  authorUrl   String?   @db.VarChar(512)
+  footerText  String?   @db.VarChar(2048)
+  rawJson     String?   @db.LongText
+  createdAt   DateTime  @default(now())
+
+  @@index([messageId])
+  @@map("v2_embed")
+}
+
+model V2Reaction {
+  id        BigInt    @id @db.BigInt
+  messageId BigInt    @db.BigInt
+  message   V2Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User      @relation("V2Reactions", fields: [userId], references: [id], onDelete: Cascade)
+  emoji     String    @db.VarChar(64)
+  createdAt DateTime  @default(now())
+
+  @@unique([messageId, userId, emoji])
+  @@index([messageId])
+  @@map("v2_reaction")
+}
+
+model V2MessageMention {
+  id          BigInt    @id @db.BigInt
+  messageId   BigInt    @db.BigInt
+  message     V2Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  targetId    BigInt    @db.BigInt
+  type        String    @db.VarChar(16)
+
+  @@index([messageId])
+  @@index([targetId, type])
+  @@map("v2_message_mention")
+}
+
+model V2PinnedMessage {
+  channelId BigInt    @db.BigInt
+  channel   V2Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  messageId BigInt    @db.BigInt
+  message   V2Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  pinnedAt  DateTime  @default(now())
+  pinnedBy  Int
+
+  @@id([channelId, messageId])
+  @@index([channelId, pinnedAt(sort: Desc)])
+  @@map("v2_pinned_message")
+}
+
+model V2MessageEdit {
+  id        BigInt    @id @db.BigInt
+  messageId BigInt    @db.BigInt
+  message   V2Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  content   String    @db.VarChar(2000)
+  editorId  Int
+  editor    User      @relation("V2MessageEdits", fields: [editorId], references: [id], onDelete: Restrict)
+  editedAt  DateTime  @default(now())
+
+  @@index([messageId, editedAt(sort: Desc)])
+  @@map("v2_message_edit")
+}
+
+// TASK 1.7 ─────────────────────────────────────────────────────────────────────
+
+model V2Invite {
+  code       String    @id @db.VarChar(16)
+  guildId    BigInt    @db.BigInt
+  guild      V2Guild   @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  channelId  BigInt?   @db.BigInt
+  channel    V2Channel? @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  inviterId  Int
+  inviter    User      @relation("V2Invites", fields: [inviterId], references: [id], onDelete: Cascade)
+  maxUses    Int       @default(0)
+  uses       Int       @default(0)
+  maxAge     Int       @default(86400)
+  temporary  Boolean   @default(false)
+  expiresAt  DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([guildId])
+  @@index([expiresAt])
+  @@map("v2_invite")
+}
+
+model V2Ban {
+  guildId   BigInt   @db.BigInt
+  guild     V2Guild  @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User     @relation("V2Bans", fields: [userId], references: [id], onDelete: Cascade)
+  reason    String?  @db.VarChar(512)
+  createdAt DateTime @default(now())
+
+  @@id([guildId, userId])
+  @@index([guildId])
+  @@map("v2_ban")
+}
+
+model V2Webhook {
+  id        BigInt    @id @db.BigInt
+  guildId   BigInt    @db.BigInt
+  guild     V2Guild   @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  channelId BigInt    @db.BigInt
+  channel   V2Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  name      String    @db.VarChar(80)
+  avatarHash String?  @db.VarChar(128)
+  token     String    @db.VarChar(128)
+  signingSecret String? @db.VarChar(128) // P0.2 — secret HMAC-SHA256, nullable pour webhooks legacy
+  createdBy Int
+  creator   User      @relation("V2Webhooks", fields: [createdBy], references: [id], onDelete: Restrict)
+  createdAt DateTime  @default(now())
+
+  @@index([guildId])
+  @@index([channelId])
+  @@map("v2_webhook")
+}
+
+model V2AuditLog {
+  id         BigInt   @id @db.BigInt
+  guildId    BigInt   @db.BigInt
+  guild      V2Guild  @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  actorId    Int?
+  actor      User?    @relation("V2AuditLogs", fields: [actorId], references: [id], onDelete: SetNull)
+  targetId   BigInt?  @db.BigInt
+  actionType Int
+  changes    String?  @db.LongText
+  reason     String?  @db.VarChar(512)
+  createdAt  DateTime @default(now())
+
+  @@index([guildId, createdAt(sort: Desc)])
+  @@index([actorId])
+  @@map("v2_audit_log")
+}
+
+model V2MigrationMap {
+  entityType String @db.VarChar(20)
+  v1Id       String @db.VarChar(64)
+  v2Id       BigInt @db.BigInt
+
+  @@id([entityType, v1Id])
+  @@index([v2Id])
+  @@map("v2_migration_map")
+}
+
+model V2ChannelReadState {
+  id                String   @id @default(cuid())
+  userId            Int
+  user              User     @relation("V2ChannelReadStates", fields: [userId], references: [id], onDelete: Cascade)
+  channelId         BigInt   @db.BigInt
+  channel           V2Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  lastReadMessageId BigInt?  @db.BigInt
+  lastReadAt        DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([userId, channelId])
+  @@index([channelId])
+  @@map("v2_channel_read_state")
+}
+
+model V2PushSubscription {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation("V2PushSubscriptions", fields: [userId], references: [id], onDelete: Cascade)
+  endpoint    String   @db.VarChar(500)
+  p256dh      String   @db.VarChar(256)
+  auth        String   @db.VarChar(64)
+  deviceType  String   @default("web") @db.VarChar(20)
+  lastUsedAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, endpoint])
+  @@index([userId])
+  @@map("v2_push_subscription")
+}
+
+model V2UserChannelNotification {
+  id          BigInt    @id @default(autoincrement()) @db.BigInt
+  userId      Int
+  user        User      @relation("V2UserChannelNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  channelId   BigInt    @db.BigInt
+  channel     V2Channel @relation("V2UserChannelNotifications", fields: [channelId], references: [id], onDelete: Cascade)
+  level       Int       @default(0)            // 0=DEFAULT, 1=ALL, 2=MENTIONS, 3=NONE
+  mutedUntil  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, channelId])
+  @@index([channelId])
+  @@map("v2_user_channel_notification")
+}
+
+// P2.7 ─────────────────────────────────────────────────────────────────────────
+
+model V2ForumTag {
+  id        BigInt    @id @db.BigInt
+  channelId BigInt    @db.BigInt
+  channel   V2Channel @relation("V2ForumTags", fields: [channelId], references: [id], onDelete: Cascade)
+  name      String    @db.VarChar(64)
+  emoji     String?   @db.VarChar(64)
+  moderated Boolean   @default(false)
+  createdAt DateTime  @default(now())
+
+  threadTags V2ThreadTag[]
+
+  @@index([channelId])
+  @@map("v2_forum_tag")
+}
+
+model V2ThreadTag {
+  threadId BigInt     @db.BigInt
+  tagId    BigInt     @db.BigInt
+  tag      V2ForumTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([threadId, tagId])
+  @@map("v2_thread_tag")
+}
+
+model V2Poll {
+  id        BigInt      @id @db.BigInt
+  messageId BigInt      @unique @db.BigInt
+  message   V2Message   @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  question  String      @db.VarChar(300)
+  multiple  Boolean     @default(false)
+  expiresAt DateTime?
+  createdAt DateTime    @default(now())
+
+  options V2PollOption[]
+  votes   V2PollVote[]
+
+  @@map("v2_poll")
+}
+
+model V2PollOption {
+  id     BigInt @id @db.BigInt
+  pollId BigInt @db.BigInt
+  poll   V2Poll @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  text   String @db.VarChar(100)
+
+  votes V2PollVote[]
+
+  @@index([pollId])
+  @@map("v2_poll_option")
+}
+
+model V2PollVote {
+  id       BigInt       @id @db.BigInt
+  pollId   BigInt       @db.BigInt
+  poll     V2Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  optionId BigInt       @db.BigInt
+  option   V2PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  userId   Int
+  user     User         @relation("V2PollVotes", fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+
+  @@unique([pollId, userId, optionId])
+  @@index([pollId, optionId])
+  @@map("v2_poll_vote")
+}
+
+model V2ForumSubscription {
+  userId    Int
+  user      User      @relation("V2ForumSubscriptions", fields: [userId], references: [id], onDelete: Cascade)
+  channelId BigInt    @db.BigInt
+  channel   V2Channel @relation("V2ForumSubscriptions", fields: [channelId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+
+  @@id([userId, channelId])
+  @@index([channelId])
+  @@map("v2_forum_subscription")
+}
+
+model V2ForumPostSubscription {
+  userId   Int
+  threadId BigInt    @db.BigInt
+  user     User      @relation("V2ForumPostSubscriptions", fields: [userId], references: [id], onDelete: Cascade)
+  thread   V2Channel @relation("V2ForumPostSubscriptions", fields: [threadId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, threadId])
+  @@index([threadId])
+  @@index([userId])
+  @@map("v2_forum_post_subscription")
+}

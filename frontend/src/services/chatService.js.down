@@ -1,0 +1,349 @@
+// frontend/src/services/chatService.js
+
+import apiClient from '@/services/api';
+import { getCurrentCompanyId } from '@/contexts/CompanyContext';
+
+/** @typedef {'DIRECT'|'GROUP'|'COMPANY'|'TICKET'} ConversationKind */
+/** @typedef {'BILLING'|'TECHNICAL'|'GENERAL'|'CONTACT'|'OTHER'} TicketCategory */
+
+const prefix = '/chat';
+
+/** @param {string|number|bigint} v */
+const toId = (v) => (typeof v === 'bigint' ? v.toString() : String(v ?? '').trim());
+
+/** Centralise les erreurs axios -> Error(message) */
+function unwrap(e) {
+    if (e?.response?.data?.message) throw new Error(e.response.data.message);
+    throw e;
+}
+
+/* =========================
+ * Conversations
+ * =======================*/
+
+/**
+ * Créer une conversation générique (DIRECT/GROUP/COMPANY) — pas de permission requise
+ * @param {Object} dto
+ * @param {ConversationKind} dto.kind
+ * @param {number=} dto.companyId  // requis si kind === 'COMPANY'
+ * @param {string=} dto.title
+ * @param {string=} dto.description
+ * @param {number[]=} dto.userIds
+ * @param {number[]=} dto.roleIds
+ */
+export async function createConversation(dto) {
+    try {
+        const res = await apiClient.post(`${prefix}/conversations`, dto);
+        return res.data;
+    } catch (e) { unwrap(e); }
+}
+
+/**
+ * Créer un ticket (kind='TICKET') — pas de permission requise
+ * @param {Object} dto
+ * @param {number=} dto.companyId  // si manquant, on prend la company sélectionnée
+ * @param {TicketCategory} dto.ticketCategory
+ * @param {string=} dto.title
+ * @param {string=} dto.description
+ * @param {number[]=} dto.userIds
+ * @param {number[]=} dto.roleIds
+ */
+export async function createTicket(dto) {
+    try {
+        const { firstMessage, category, ticketCategory, ...rest } = dto || {};
+        const body = {
+            ...rest,
+            ticketCategory: ticketCategory ?? category,
+            companyId: (rest.companyId ?? getCurrentCompanyId()) ?? undefined,
+        };
+
+        const res = await apiClient.post(`${prefix}/tickets`, body);
+        const conversation = res.data;
+
+        // si on a reçu un 'firstMessage', on l'envoie directement
+        if (firstMessage && String(firstMessage).trim()) {
+            const message = await postMessage(conversation.id, String(firstMessage).trim());
+            // retour pratique pour les modales
+            return { conversation, message, conversationId: conversation.id };
+        }
+
+        // fallback: compat pour anciens appels qui lisent conversation.id
+        return { conversation, conversationId: conversation.id };
+    } catch (e) { unwrap(e); }
+}
+
+/**
+ * Récupérer une conversation (si TICKET et non-membre → nécessite permissions côté backend)
+ * @param {string|number|bigint} conversationId
+ */
+export async function getConversation(conversationId) {
+    try {
+        const res = await apiClient.get(`${prefix}/conversations/${toId(conversationId)}`);
+        return res.data;
+    } catch (e) { unwrap(e); }
+}
+
+/**
+ * Lister les conversations de l'utilisateur (par membership)
+ * @param {Object} params
+ * @param {ConversationKind=} params.kind
+ * @param {number=} params.companyId
+ * @param {string=} params.q
+ * @param {string=} params.cursor
+ * @param {number=} params.limit
+ * @param {'next'|'prev'=} params.dir
+ */
+export async function listConversations(params = {}) {
+    try {
+        const res = await apiClient.get(`${prefix}/conversations`, { params });
+        return res.data;
+    } catch (e) { unwrap(e); }
+}
+
+/**
+ * Mettre à jour une conversation
+ * @param {string|number|bigint} conversationId
+ * @param {{title?: string, description?: string, ticketCategory?: TicketCategory}} patch
+ */
+export async function patchConversation(conversationId, patch) {
+    try {
+        const res = await apiClient.patch(`${prefix}/conversations/${toId(conversationId)}`, patch);
+        return res.data;
+    } catch (e) { unwrap(e); }
+}
+
+/* =========================
+ * Membres
+ * =======================*/
+
+/**
+ * Lister les membres d'une conversation (users & roles)
+ * @param {string|number|bigint} conversationId
+ */
+export async function getMembers(conversationId) {
+    try {
+        const res = await apiClient.get(`${prefix}/conversations/${toId(conversationId)}/members`);
+        return res.data; // { users:number[], roles:number[], version:number }
+    } catch (e) { unwrap(e); }
+}
+
+/**
+ * Ajouter des membres (users/roles)
+ * @param {string|number|bigint} conversationId
+ * @param {{userIds?: number[], roleIds?: number[]}} body
+ */
+export async function addMembers(conversationId, body) {
+    try {
+        const res = await apiClient.post(`${prefix}/conversations/${toId(conversationId)}/members`, body);
+        return res.data;
+    } catch (e) { unwrap(e); }
+}
+
+/**
+ * Retirer des membres (users/roles)
+ * @param {string|number|bigint} conversationId
+ * @param {{userIds?: number[], roleIds?: number[]}} body
+ */
+export async function removeMembers(conversationId, body) {
+    try {
+        // axios permet un body avec DELETE via { data }
+        const res = await apiClient.delete(`${prefix}/conversations/${toId(conversationId)}/members`, { data: body });
+        return res.data;
+    } catch (e) { unwrap(e); }
+}
+
+/* =========================
+ * Messages
+ * =======================*/
+
+/**
+ * Envoyer un message
+ * @param {string|number|bigint} conversationId
+ * @param {string} content
+ */
+export async function postMessage(conversationId, content) {
+    try {
+        const res = await apiClient.post(`${prefix}/conversations/${toId(conversationId)}/messages`, { content });
+        return res.data; // message DTO
+    } catch (e) { unwrap(e); }
+}
+
+/**
+ * Lister les messages d'une conversation (cursor-based)
+ * @param {string|number|bigint} conversationId
+ * @param {{cursor?: string, limit?: number, dir?: 'next'|'prev'}} params
+ */
+export async function listMessages(conversationId, params = {}) {
+    try {
+        const res = await apiClient.get(`${prefix}/conversations/${toId(conversationId)}/messages`, { params });
+        return res.data; // { items:[], nextCursor, prevCursor }
+    } catch (e) { unwrap(e); }
+}
+
+/* =========================
+ * Reports & Snapshots
+ * =======================*/
+
+/**
+ * Signaler un message
+ * @param {string|number|bigint} messageId
+ * @param {{comment?: string}} body
+ */
+export async function reportMessage(messageId, body = {}) {
+    try {
+        const res = await apiClient.post(`${prefix}/messages/${toId(messageId)}/report`, body);
+        return res.data;
+    } catch (e) { unwrap(e); }
+}
+
+/**
+ * Signaler une conversation
+ * @param {string|number|bigint} conversationId
+ * @param {{comment?: string}} body
+ */
+export async function reportConversation(conversationId, body = {}) {
+    try {
+        const res = await apiClient.post(`${prefix}/conversations/${toId(conversationId)}/report`, body);
+        return res.data;
+    } catch (e) { unwrap(e); }
+}
+
+/**
+ * Récupérer le snapshot d'un message (protégé backend par REPORTS_VIEW)
+ * @param {string|number|bigint} messageId
+ */
+export async function getMessageSnapshot(messageId) {
+    try {
+        const res = await apiClient.get(`${prefix}/messages/${toId(messageId)}/snapshot`);
+        return res.data;
+    } catch (e) { unwrap(e); }
+}
+
+/**
+ * Récupérer le snapshot d'une conversation (protégé backend par REPORTS_VIEW)
+ * @param {string|number|bigint} conversationId
+ */
+export async function getConversationSnapshot(conversationId) {
+    try {
+        const res = await apiClient.get(`${prefix}/conversations/${toId(conversationId)}/snapshot`);
+        return res.data;
+    } catch (e) { unwrap(e); }
+}
+
+/* =========================
+ * Read state (non-lus)
+ * =======================*/
+
+/**
+ * État de lecture de l'utilisateur sur une conversation
+ * @param {string|number|bigint} conversationId
+ */
+export async function getReadState(conversationId) {
+    try {
+        const res = await apiClient.get(`${prefix}/conversations/${toId(conversationId)}/read-state`);
+        return res.data; // { lastReadMessageId, lastReadAt }
+    } catch (e) { unwrap(e); }
+}
+
+/**
+ * Marquer comme lu (jusqu’à upToMessageId). Si absent, backend prend le dernier.
+ * @param {string|number|bigint} conversationId
+ * @param {string|number|bigint=} upToMessageId
+ */
+export async function patchReadState(conversationId, upToMessageId) {
+    try {
+        const res = await apiClient.patch(`${prefix}/conversations/${toId(conversationId)}/read`, {
+            upToMessageId: upToMessageId != null ? toId(upToMessageId) : undefined,
+        });
+        return res.data;
+    } catch (e) { unwrap(e); }
+}
+
+/* =========================
+ * Tickets
+ * =======================*/
+
+export async function migrateTicket(conversationId, ticketCategory) { return patchConversation(conversationId, { ticketCategory }); }
+export async function closeTicket(conversationId) { return patchConversation(conversationId, { status: 'CLOSED' }); }
+
+/**
+ * Lister les tickets où l'utilisateur est membre.
+ * Si tu passes un companyId, le backend peut filtrer par entreprise (selon tes routes).
+ * @param {{companyId?: number, cursor?: string, limit?: number}} params
+ */
+export async function listTickets(params = {}) {
+    try {
+        const res = await apiClient.get(`${prefix}/tickets`, { params });
+        return res.data;
+    } catch (e) { unwrap(e); }
+}
+
+/* =========================
+ * Helpers composés (création + 1er message)
+ * =======================*/
+
+/**
+ * Démarrer une discussion avec 1..N personnes ET envoyer le premier message.
+ * - kind est déterminé automatiquement: DIRECT (1 user) ou GROUP (plusieurs)
+ * @param {{ userIds: number[], title?: string, description?: string }} dto
+ * @param {string} firstMessage  // requis et non-vide
+ * @returns {Promise<{ conversation: any, message: any }>}
+ */
+export async function startConversation(dto, firstMessage) {
+    const text = (firstMessage ?? '').trim();
+    if (!text) throw new Error('Le premier message est requis.');
+
+    const userIds = Array.isArray(dto?.userIds) ? dto.userIds : [];
+    if (userIds.length === 0) throw new Error('Au moins une personne est requise.');
+
+    const kind = userIds.length === 1 ? 'DIRECT' : 'GROUP';
+
+    const conversation = await createConversation({
+        kind,
+        title: dto?.title ?? undefined,
+        description: dto?.description ?? undefined,
+        userIds,
+    });
+
+    const message = await postMessage(conversation.id, text);
+    return { conversation, message };
+}
+
+/**
+ * Ouvrir un ticket avec une catégorie + envoyer le premier message.
+ * - companyId : si absent, on prend la company sélectionnée
+ * @param {{ category: TicketCategory, companyId?: number, title?: string, description?: string, userIds?: number[], roleIds?: number[] }} dto
+ * @param {string} firstMessage  // requis et non-vide
+ * @returns {Promise<{ conversation: any, message: any }>}
+ */
+export async function openTicket(dto, firstMessage) {
+    const text = (firstMessage ?? '').trim();
+    if (!text) throw new Error('Le premier message est requis.');
+    if (!dto?.category) throw new Error('Une catégorie de ticket est requise.');
+
+    const conversation = await createTicket({
+        companyId: dto.companyId ?? getCurrentCompanyId() ?? undefined,
+        ticketCategory: dto.category,
+        title: dto?.title ?? undefined,
+        description: dto?.description ?? undefined,
+        userIds: dto?.userIds ?? [],
+        roleIds: dto?.roleIds ?? [],
+    });
+
+    const message = await postMessage(conversation.id, text);
+    return { conversation, message };
+}
+
+export async function askAI(question) {
+    const res = await apiClient.post('/ai/ask', { question });
+    // On tolère plusieurs formats côté bot
+    const data = res?.data ?? {};
+    return (
+        data.answer ||
+        data.text ||
+        data.content ||
+        data.output ||
+        data.message?.content ||
+        JSON.stringify(data)
+    );
+}

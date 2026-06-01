@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Builds
+frontend/dist/
+frontend/dist-ssr/
+
+# Environment
+backend/.env
+frontend/.env
+*.env.local
+
+# Logs
+*.log
+
+# Uploads / runtime
+backend/uploads/
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+
+# PM2 (déploiement local)
+backend/ecosystem.config.js

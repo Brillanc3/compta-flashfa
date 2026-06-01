@@ -1,0 +1,71 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    # Montée progressive jusqu'à 5 000 connexions
+    - duration: 60
+      arrivalRate: 50
+      name: Warm-up
+    - duration: 120
+      arrivalRate: 200
+      name: Ramp-up to 5k
+    - duration: 180
+      arrivalRate: 0
+      pause: 0
+      name: Sustained load
+
+  engines:
+    socketio: {}
+
+  socketio:
+    path: "/socket.io/v2"
+    transports:
+      - websocket
+
+  payload:
+    path: "../../fixtures/socket-load.csv"
+    fields:
+      - token
+      - channelId
+      - guildId
+
+  defaults:
+    headers:
+      x-artillery-test: "1"
+
+  ensure:
+    p95: 200     # ms — seuil MESSAGE_CREATE roundtrip
+    maxErrorRate: 0
+
+scenarios:
+  - name: "Client normal — join + send message"
+    engine: socketio
+    flow:
+      # Auth via handshake
+      - emit:
+          channel: connect
+          data:
+            auth:
+              token: "{{ token }}"
+
+      # Rejoindre un channel
+      - emit:
+          channel: CHANNEL_FOCUS
+          data:
+            channelId: "{{ channelId }}"
+            guildId:   "{{ guildId }}"
+
+      # Boucle : envoyer un message toutes les 30s
+      - loop:
+          - emit:
+              channel: TYPING_START
+              data:
+                channelId: "{{ channelId }}"
+                guildId:   "{{ guildId }}"
+          - think: 3
+          - emit:
+              channel: MESSAGE_SEND
+              data:
+                channelId: "{{ channelId }}"
+                content:   "Artillery load test message {{ $randomString() }}"
+          - think: 27
+        count: 10

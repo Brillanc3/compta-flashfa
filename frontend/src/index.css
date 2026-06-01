@@ -1,0 +1,536 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Montserrat:wght@500;600;700&display=swap');
+@import 'react-datepicker/dist/react-datepicker.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root, [data-theme="light"] {
+        /* NOUVELLES VARIABLES CCA (RGB components) */
+        --bg-base-rgb: 248 250 252;
+        --bg-surface-rgb: 255 255 255;
+        --text-primary-rgb: 15 23 42;
+        --text-secondary-rgb: 71 85 105;
+        --border-color-rgb: 203 213 225; /* slate-300 */
+
+        --bg-base: rgb(var(--bg-base-rgb));
+        --bg-surface: rgb(var(--bg-surface-rgb));
+        --text-primary: rgb(var(--text-primary-rgb));
+        --text-secondary: rgb(var(--text-secondary-rgb));
+        --border-color: rgb(var(--border-color-rgb) / 0.05);
+
+        --brand-primary-rgb: 84 116 158;
+        --brand-light-rgb: 138 164 196;
+        --brand-dark-rgb: 53 79 115;
+
+        --brand-primary: rgb(var(--brand-primary-rgb));
+        --brand-light: rgb(var(--brand-light-rgb));
+        --brand-dark: rgb(var(--brand-dark-rgb));
+
+        /* Fullcalendar */
+        --fc-bg-color: #1E293B;
+        --fc-border-color: #334155;
+        --fc-text-color: #CBD5E1;
+        --fc-neutral-bg-color: rgba(71, 85, 105, 0.3);
+        --fc-button-bg-color: #334155;
+        --fc-button-text-color: #F1F5F9;
+        --fc-button-border-color: #475569;
+        --fc-button-hover-bg-color: #475569;
+        --fc-button-active-bg-color: #4F46E5;
+        --fc-today-bg-color: rgba(79, 70, 229, 0.2);
+
+        /* Shadcn UI globals */
+        --background: 210 40% 98%;
+        --foreground: 222.2 84% 4.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 222.2 84% 4.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222.2 84% 4.9%;
+        --primary: 214 32% 47%;
+        --primary-foreground: 210 40% 98%;
+        --secondary: 210 40% 96.1%;
+        --secondary-foreground: 222.2 47.4% 11.2%;
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+        --accent: 210 40% 96.1%;
+        --accent-foreground: 222.2 47.4% 11.2%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
+        --ring: 222.2 84% 4.9%;
+        --chart-1: 12 76% 61%;
+        --chart-2: 173 58% 39%;
+        --chart-3: 197 37% 24%;
+        --chart-4: 43 74% 66%;
+        --chart-5: 27 87% 67%;
+        --radius: 0.5rem;
+
+        /* Neo-SaaS Variables */
+        --neo-black: #020617;
+        --neo-white: #F8FAFC;
+        --neo-blue: #3B82F6;
+        --neo-indigo: #6366F1;
+        --neo-slate: #94A3B8;
+    }
+
+    [data-theme="dark"] {
+        /* NOUVELLES VARIABLES CCA (RGB components) */
+        --bg-base-rgb: 2 6 23;
+        --bg-surface-rgb: 15 23 42;
+        --text-primary-rgb: 248 250 252;
+        --text-secondary-rgb: 148 163 184;
+        --border-color-rgb: 51 65 85;   /* slate-700 */
+
+        --bg-base: rgb(var(--bg-base-rgb));
+        --bg-surface: rgb(var(--bg-surface-rgb));
+        --text-primary: rgb(var(--text-primary-rgb));
+        --text-secondary: rgb(var(--text-secondary-rgb));
+        --border-color: rgb(var(--border-color-rgb) / 0.08);
+
+        --brand-primary-rgb: 138 164 196;
+        --brand-light-rgb: 180 201 224;
+        --brand-dark-rgb: 84 116 158;
+
+        --brand-primary: rgb(var(--brand-primary-rgb));
+        --brand-light: rgb(var(--brand-light-rgb));
+        --brand-dark: rgb(var(--brand-dark-rgb));
+
+        --background: 222.2 84% 4.9%;
+        --foreground: 210 40% 98%;
+        --card: 222.2 84% 4.9%;
+        --card-foreground: 210 40% 98%;
+        --popover: 222.2 84% 4.9%;
+        --popover-foreground: 210 40% 98%;
+        --primary: 212 40% 65%;
+        --primary-foreground: 222.2 47.4% 11.2%;
+        --secondary: 217.2 32.6% 17.5%;
+        --secondary-foreground: 210 40% 98%;
+        --muted: 217.2 32.6% 17.5%;
+        --muted-foreground: 215 20.2% 65.1%;
+        --accent: 217.2 32.6% 17.5%;
+        --accent-foreground: 210 40% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 217.2 32.6% 17.5%;
+        --input: 217.2 32.6% 17.5%;
+        --ring: 212.7 26.8% 83.9%;
+        --chart-1: 220 70% 50%;
+        --chart-2: 160 60% 45%;
+        --chart-3: 30 80% 55%;
+        --chart-4: 280 65% 60%;
+        --chart-5: 340 75% 55%;
+    }
+
+    body {
+        @apply bg-[var(--bg-base)] text-[var(--text-primary)] font-sans antialiased transition-colors duration-300;
+        min-height: 100vh;
+    }
+
+    /* Suppression de la bordure globale intrusive */
+    * {
+        @apply border-transparent;
+    }
+
+    /* Bordures spécifiques pour les éléments interactifs */
+    button, input, select, textarea {
+        @apply border-cca-border/50;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-heading text-[var(--text-primary)];
+    }
+}
+
+/* Thème sombre pour react-datepicker */
+.react-datepicker {
+    background-color: #334155;
+    /* slate-700 */
+    border-color: #475569;
+    /* slate-600 */
+    color: #cbd5e1;
+    /* slate-300 */
+}
+
+.react-datepicker__header {
+    background-color: #1e293b;
+    /* slate-800 */
+    border-bottom-color: #475569;
+}
+
+.react-datepicker__current-month,
+.react-datepicker-time__header,
+.react-datepicker__day-name {
+    color: #f1f5f9;
+    /* slate-100 */
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__time-list-item--selected {
+    background-color: #4f46e5 !important;
+    /* indigo-600 */
+    color: white;
+}
+
+.react-datepicker__day:hover {
+    background-color: #475569;
+}
+
+.react-datepicker__day--disabled {
+    color: #64748b;
+    /* slate-500 */
+}
+
+.react-datepicker__input-container input {
+    width: 100%;
+    background-color: #334155;
+    border: 1px solid #475569;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    color: white;
+}
+
+.react-datepicker__time-container {
+    border-left-color: #475569;
+}
+
+.react-datepicker__time-list-item:hover {
+    background-color: #475569 !important;
+}
+
+.fc .fc-daygrid-day-frame {
+    min-height: 120px;
+}
+
+.input-dark,
+.select-dark,
+.textarea-dark {
+    @apply bg-slate-700 text-white placeholder-slate-400 border border-slate-600 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+.card {
+    padding: 2em;
+}
+
+.read-the-docs {
+    color: #888;
+}
+
+.markdown-placeholder span[style*="absolute"] {
+    font-family: monospace;
+    font-size: 0.9em;
+    letter-spacing: -0.02em;
+}
+
+/* ============================================================
+   GLOBAL GLASS SCROLLBAR THEME
+   Ultra-moderne, cohérent avec le thème glass premium
+   ============================================================ */
+
+/* ---- Webkit Browsers (Chrome, Edge, Brave, Safari, Opera) ---- */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgb(var(--bg-surface-rgb) / 0.35);
+    backdrop-filter: blur(6px);
+    border-radius: 9999px;
+    border: 1px solid rgb(var(--border-color-rgb) / 0.4);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom,
+            rgb(var(--brand-primary-rgb) / 0.55),
+            rgb(var(--brand-dark-rgb) / 0.55)
+        );
+    border-radius: 9999px;
+    border: 1px solid rgb(var(--bg-base-rgb) / 0.5);
+    backdrop-filter: blur(4px);
+    transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom,
+            rgb(var(--brand-light-rgb) / 0.75),
+            rgb(var(--brand-primary-rgb) / 0.75)
+        );
+    border-color: rgb(var(--brand-primary-rgb) / 0.6);
+}
+
+/* ---- Make scrollbars look smoother inside panels ---- */
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+/* ============================================================
+   FIREFOX SUPPORT
+   (Firefox uses a different scrollbar model)
+   ============================================================ */
+html {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--brand-primary-rgb) / 0.6) rgb(var(--bg-surface-rgb) / 0.35);
+}
+
+@supports (backdrop-filter: blur(4px)) {
+    html {
+        scrollbar-color: rgb(var(--brand-primary-rgb) / 0.6) transparent;
+    }
+}
+
+/* Glass panel universal */
+.glass-panel {
+    background: rgba(15, 23, 42, 0.55);
+    /* slate-900/55 */
+    border: 1px solid rgba(51, 65, 85, 0.55);
+    /* slate-700/55 */
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+}
+
+/* Glass hover effect */
+.glass-hover:hover {
+    background: rgba(30, 41, 59, 0.45);
+    /* slate-800/45 */
+    backdrop-filter: blur(24px);
+}
+
+/* Halo background lighting */
+.glass-halo {
+    pointer-events: none;
+    opacity: 0.35;
+    background:
+        radial-gradient(circle at top left, rgba(99, 102, 241, 0.18), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(8, 47, 73, 0.40), transparent 55%);
+}
+
+@keyframes chatMsg {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-chatMsg {
+    animation: chatMsg 0.25s ease-out;
+}
+
+.sidebar-collapsed .nav-item .sidebar-tooltip {
+    position: absolute;
+    left: 72px;
+    top: 50%;
+    transform: translateY(-50%) translateX(4px);
+    white-space: nowrap;
+    background: rgba(15, 23, 42, 0.96);
+    color: #e5e7eb;
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: 9999px;
+    border: 1px solid rgba(148, 163, 184, 0.6);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.65);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 40;
+}
+
+.sidebar-collapsed .nav-item:hover .sidebar-tooltip {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+}
+
+
+/* ============================================================
+   EMBEDDED MOBILE IFRAME OFFSET
+   Décale le site de 50px en haut et réduit la hauteur utile
+   uniquement quand l'app est embarquée dans un iframe mobile
+   ============================================================ */
+html[data-embedded-mobile-viewport="true"] {
+    --embedded-mobile-viewport-offset: 50px;
+    --embedded-mobile-viewport-height: calc(100vh - var(--embedded-mobile-viewport-offset));
+}
+
+@supports (height: 100dvh) {
+    html[data-embedded-mobile-viewport="true"] {
+        --embedded-mobile-viewport-height: calc(100dvh - var(--embedded-mobile-viewport-offset));
+    }
+}
+
+html[data-embedded-mobile-viewport="true"],
+html[data-embedded-mobile-viewport="true"] body {
+    min-height: 100%;
+    background-color: #0f172a;
+}
+
+html[data-embedded-mobile-viewport="true"] #root {
+    box-sizing: border-box;
+    min-height: 100vh;
+    padding-top: var(--embedded-mobile-viewport-offset);
+    background-color: #0f172a;
+}
+
+@supports (height: 100dvh) {
+    html[data-embedded-mobile-viewport="true"] #root {
+        min-height: 100dvh;
+    }
+}
+
+html[data-embedded-mobile-viewport="true"] .sticky.top-0,
+html[data-embedded-mobile-viewport="true"] .fixed.top-0 {
+    top: var(--embedded-mobile-viewport-offset) !important;
+}
+
+html[data-embedded-mobile-viewport="true"] .min-h-screen,
+html[data-embedded-mobile-viewport="true"] .min-h-\[100dvh\] {
+    min-height: var(--embedded-mobile-viewport-height) !important;
+}
+
+html[data-embedded-mobile-viewport="true"] .h-screen,
+html[data-embedded-mobile-viewport="true"] .h-\[100dvh\] {
+    height: var(--embedded-mobile-viewport-height) !important;
+}
+
+/* ========= CONTRATS – Rendu A4 Markdown ========= */
+
+.a4-contract-content {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Titres */
+.a4-contract-content h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    margin-top: 0;
+}
+
+.a4-contract-content h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 1.2rem 0 0.6rem;
+}
+
+.a4-contract-content h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 1rem 0 0.5rem;
+}
+
+/* Listes */
+.a4-contract-content ul {
+    list-style: disc;
+    margin-left: 1.5rem;
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+}
+
+.a4-contract-content ol {
+    list-style: decimal;
+    margin-left: 1.5rem;
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+}
+
+.a4-contract-content li {
+    margin: 0.15rem 0;
+}
+
+/* Blockquote */
+.a4-contract-content blockquote {
+    border-left: 4px solid #cbd5f5;
+    padding-left: 0.75rem;
+    margin-left: 0;
+    margin-right: 0;
+    color: #4b5563;
+    font-style: italic;
+}
+/* Override Logo Company Customization */
+.custom-logo-override {
+    content: var(--company-logo-url);
+    object-fit: contain;
+}
+
+/* ============================================================
+   LANDING PAGE SPECIFIC UTILITIES
+   ============================================================ */
+
+.bg-aurora {
+    position: relative;
+    overflow: hidden;
+}
+
+.bg-aurora::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.08), transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60;
+}
+
+.glass-card {
+    @apply bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-2xl;
+}
+
+.border-beam {
+    position: relative;
+}
+
+.border-beam::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(var(--beam-angle, 0deg), transparent 20%, #3b82f6, transparent 80%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: beam 4s linear infinite;
+}
+
+@keyframes beam {
+    from { --beam-angle: 0deg; }
+    to { --beam-angle: 360deg; }
+}
+
+@property --beam-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@layer utilities {
+    .bg-neo-black { background-color: var(--neo-black); }
+    .text-neo-white { color: var(--neo-white); }
+    .text-neo-blue { color: var(--neo-blue); }
+    .border-neo-white-10 { border-color: rgba(248, 250, 252, 0.1); }
+    
+    .glass-morphism {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .text-glow-blue {
+        text-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+    }
+}
+
