@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE `Client` ADD COLUMN `cni` VARCHAR(191) NULL,
-    ADD COLUMN `iban` VARCHAR(191) NULL;
