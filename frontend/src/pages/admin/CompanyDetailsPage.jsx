@@ -20,6 +20,7 @@ import {
     ArrowUp,
     ArrowDown,
     Star,
+    FileUp,
 } from 'lucide-react';
 
 import Modal from '@/components/Modal';
@@ -78,6 +79,10 @@ import {
     listCompanyFullUsers,
     listUsers,
     setCompanyFullAccess,
+    injectCompanyCsv,
+    cancelCompanyInjection,
+    listCompanyInjectedTransactions,
+    bulkCancelCompanyInjections,
 } from '@/services/adminService';
 
 const formatUSD = (n) =>
@@ -512,6 +517,151 @@ export default function CompanyDetailsPage() {
     const cId = Number(companyId);
 
     const [activeTab, setActiveTab] = useState('overview');
+
+    // CSV Injection
+    const [companyAccount, setCompanyAccount] = useState('68670');
+    const [csvInput, setCsvInput] = useState('');
+    const [csvResults, setCsvResults] = useState([]);
+    const [parsing, setParsing] = useState(false);
+
+    // Gestion Injections existantes
+    const [injectedData, setInjectedData] = useState([]);
+    const [loadingInjected, setLoadingInjected] = useState(false);
+    const [selectedInjectedIds, setSelectedInjectedIds] = useState([]);
+
+    const fetchInjectedData = useCallback(async () => {
+        setLoadingInjected(true);
+        try {
+            const data = await listCompanyInjectedTransactions(cId);
+            setInjectedData(data || []);
+            setSelectedInjectedIds([]);
+        } catch (e) {
+            toast.error('Erreur lors du chargement des injections.');
+        } finally {
+            setLoadingInjected(false);
+        }
+    }, [cId]);
+
+    useEffect(() => {
+        if (activeTab === 'injected_data') {
+            fetchInjectedData();
+        }
+    }, [activeTab, fetchInjectedData]);
+
+    const handleBulkCancel = async (ids = selectedInjectedIds) => {
+        if (ids.length === 0) return;
+        if (!window.confirm(`Confirmer la suppression de ${ids.length} transactions ?`)) return;
+
+        try {
+            await bulkCancelCompanyInjections(cId, ids);
+            toast.success(`${ids.length} injections supprimées.`);
+            fetchInjectedData();
+        } catch (e) {
+            toast.error(e?.message || 'Erreur lors de la suppression.');
+        }
+    };
+
+    const toggleInjectedSelect = (id) => {
+        setSelectedInjectedIds(prev =>
+            prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+        );
+    };
+
+    const toggleAllInjected = () => {
+        if (selectedInjectedIds.length === injectedData.length) {
+            setSelectedInjectedIds([]);
+        } else {
+            setSelectedInjectedIds(injectedData.map(d => d.id));
+        }
+    };
+
+    const parseCsv = async () => {
+        try {
+            setParsing(true);
+            const data = await injectCompanyCsv(cId, {
+                action: 'PARSE',
+                csvData: csvInput,
+                companyAccount
+            });
+            setCsvResults(data || []);
+            toast.success('Analyse terminée.');
+        } catch (e) {
+            toast.error(e?.message || 'Erreur lors de l’analyse.');
+        } finally {
+            setParsing(false);
+        }
+    };
+
+    const injectBulk = async (mode) => {
+        let toInject = [];
+        if (mode === 'ALL') {
+            toInject = csvResults.filter(r => r.status === 'EN ATTENTE');
+        } else if (mode === 'NEW') {
+            toInject = csvResults.filter(r => r.status === 'EN ATTENTE');
+        } else if (mode === 'PENDING') {
+            toInject = csvResults.filter(r => r.status === 'EN ATTENTE');
+        }
+
+        if (toInject.length === 0) {
+            toast.error('Aucun paiement à injecter.');
+            return;
+        }
+
+        try {
+            const data = await injectCompanyCsv(cId, {
+                action: 'INJECT',
+                items: toInject,
+                companyAccount
+            });
+
+            const newResults = csvResults.map(res => {
+                const updated = data.find(d => d.reason === res.reason && d.date === res.date);
+                return updated ? { ...res, status: updated.status, id: updated.id } : res;
+            });
+            setCsvResults(newResults);
+            toast.success(`${data.filter(d => d.status === 'INJECTÉ').length} paiements injectés.`);
+        } catch (e) {
+            toast.error(e?.message || 'Erreur lors de l’injection.');
+        }
+    };
+
+    const injectSingle = async (row, index) => {
+        try {
+            const data = await injectCompanyCsv(cId, {
+                action: 'INJECT',
+                items: [row],
+                companyAccount
+            });
+
+            const newResults = [...csvResults];
+            if (data[0]) {
+                newResults[index] = { ...newResults[index], status: data[0].status };
+                setCsvResults(newResults);
+                if (data[0].status === 'INJECTÉ') {
+                    toast.success('Paiement injecté.');
+                }
+            }
+        } catch (e) {
+            toast.error(e?.message || 'Erreur lors de l’injection.');
+        }
+    };
+
+    const cancelSingle = async (index) => {
+        const row = csvResults[index];
+        if (row.status === 'INJECTÉ' && row.id) {
+            try {
+                await cancelCompanyInjection(cId, row.id);
+                const newResults = [...csvResults];
+                newResults[index] = { ...newResults[index], status: 'EN ATTENTE', id: null };
+                setCsvResults(newResults);
+                toast.success('Injection annulée.');
+            } catch (e) {
+                toast.error(e?.message || 'Erreur lors de l’annulation.');
+            }
+        } else {
+            setCsvResults(prev => prev.filter((_, i) => i !== index));
+        }
+    };
 
     const [company, setCompany] = useState(null);
     const [loadingCompany, setLoadingCompany] = useState(true);
@@ -1242,6 +1392,8 @@ export default function CompanyDetailsPage() {
         { key: 'clients', label: 'Clients', icon: ListChecks },
         { key: 'logs', label: 'Logs', icon: ScrollText },
         { key: 'contacts', label: 'Contacts', icon: Settings2 },
+        { key: 'csv_injection', label: 'Injecter CSV', icon: FileUp },
+        { key: 'injected_data', label: 'Données Injectées', icon: ListChecks },
     ]), []);
 
     if (!Number.isFinite(cId)) {
@@ -2432,6 +2584,248 @@ export default function CompanyDetailsPage() {
                         company={{ id: cId, name: companyName }}
                     />
                 </Card>
+            )}
+
+            {/* ------------------------- INJECT CSV ------------------------- */}
+            {activeTab === 'csv_injection' && (
+                <div className="space-y-4">
+                    <Card title="Injecter CSV">
+                        <div className="space-y-4">
+                            <div>
+                                <div className="text-xs text-slate-400 mb-1">Numéro de compte (ex: 68670)</div>
+                                <input
+                                    value={companyAccount}
+                                    onChange={(e) => setCompanyAccount(e.target.value)}
+                                    className="w-full sm:w-48 rounded-md border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm text-slate-200"
+                                />
+                            </div>
+                            <div>
+                                <div className="text-xs text-slate-400 mb-1">Copier-coller le CSV ici (Raison;Compte;Date;Montant;Carte;Initiateur)</div>
+                                <textarea
+                                    rows={6}
+                                    value={csvInput}
+                                    onChange={(e) => setCsvInput(e.target.value)}
+                                    placeholder="Raison;Compte;Date;Montant;Carte;Initiateur"
+                                    className="w-full rounded-md border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm text-slate-200 font-mono"
+                                />
+                            </div>
+                            <div className="flex justify-end">
+                                <button
+                                    type="button"
+                                    onClick={parseCsv}
+                                    disabled={parsing || !csvInput.trim()}
+                                    className="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-500 disabled:opacity-50 flex items-center gap-2"
+                                >
+                                    {parsing ? <Spinner size="sm" /> : <FileUp size={16} />}
+                                    Injecter
+                                </button>
+                            </div>
+                        </div>
+                    </Card>
+
+                    {csvResults.length > 0 && (
+                        <Card
+                            title={`Résultats (${csvResults.length})`}
+                            right={
+                                <div className="flex gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => injectBulk('ALL')}
+                                        className="text-xs px-2 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-500"
+                                    >
+                                        Tout injecter
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => injectBulk('NEW')}
+                                        className="text-xs px-2 py-1 bg-emerald-600 text-white rounded hover:bg-emerald-500"
+                                    >
+                                        Injecter (non-trouvés)
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => injectBulk('PENDING')}
+                                        className="text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-500"
+                                    >
+                                        Injecter (non-injectés)
+                                    </button>
+                                </div>
+                            }
+                        >
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="border-b border-slate-700 text-xs text-slate-400 uppercase">
+                                            <th className="px-3 py-2">Raison</th>
+                                            <th className="px-3 py-2">Compte</th>
+                                            <th className="px-3 py-2">Date</th>
+                                            <th className="px-3 py-2 text-right">Montant</th>
+                                            <th className="px-3 py-2 text-center">Type</th>
+                                            <th className="px-3 py-2 text-center">Statut</th>
+                                            <th className="px-3 py-2 text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-700/50">
+                                        {csvResults.map((row, idx) => (
+                                            <tr key={idx} className="text-sm text-slate-300 hover:bg-slate-800/40 transition-colors">
+                                                <td className="px-3 py-2 max-w-xs truncate" title={row.reason}>{row.reason}</td>
+                                                <td className="px-3 py-2 font-mono text-xs">{row.account}</td>
+                                                <td className="px-3 py-2 whitespace-nowrap">
+                                                    {new Date(row.date).toLocaleString('fr-FR', {
+                                                        day: '2-digit',
+                                                        month: '2-digit',
+                                                        year: 'numeric',
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                        second: '2-digit'
+                                                    })}
+                                                </td>
+                                                <td className="px-3 py-2 text-right font-mono">
+                                                    {new Intl.NumberFormat('fr-FR').format(Math.floor(Number(row.amount)))}
+                                                </td>
+                                                <td className="px-3 py-2 text-center">
+                                                    <span className={[
+                                                        'text-[10px] uppercase font-bold px-1.5 py-0.5 rounded border',
+                                                        row.type === 'REVENUE' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'
+                                                    ].join(' ')}>
+                                                        {row.type === 'REVENUE' ? 'Revenu' : 'Dépense'}
+                                                    </span>
+                                                </td>
+                                                <td className="px-3 py-2 text-center">
+                                                    <span className={[
+                                                        'inline-flex items-center px-2 py-0.5 text-xs rounded border',
+                                                        row.status === 'EN ATTENTE' ? 'bg-blue-500/20 text-blue-200 border-blue-500/30' :
+                                                        row.status === 'INJECTÉ' ? 'bg-emerald-500/20 text-emerald-200 border-emerald-500/30' :
+                                                        row.status === 'DOUBLON' ? 'bg-red-500/20 text-red-200 border-red-500/30' :
+                                                        'bg-slate-500/20 text-slate-200 border-slate-500/30'
+                                                    ].join(' ')}>
+                                                        {row.status}
+                                                    </span>
+                                                </td>
+                                                <td className="px-3 py-2 text-center">
+                                                    <div className="flex items-center justify-center gap-2">
+                                                        {row.status === 'EN ATTENTE' && (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => injectSingle(row, idx)}
+                                                                className="text-[10px] uppercase font-bold px-2 py-1 bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 rounded hover:bg-indigo-600 hover:text-white transition-colors"
+                                                            >
+                                                                Injecter
+                                                            </button>
+                                                        )}
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => cancelSingle(idx)}
+                                                            className="text-[10px] uppercase font-bold px-2 py-1 bg-slate-700/20 text-slate-400 border border-slate-600/30 rounded hover:bg-red-600 hover:text-white hover:border-red-600 transition-colors"
+                                                        >
+                                                            Annuler
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </Card>
+                    )}
+                </div>
+            )}
+
+            {/* ------------------------- DONNÉES INJECTÉES ------------------------- */}
+            {activeTab === 'injected_data' && (
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <div className="text-sm text-slate-400">
+                            {injectedData.length} transaction(s) injectée(s) trouvée(s)
+                        </div>
+                        <div className="flex gap-2">
+                            {selectedInjectedIds.length > 0 && (
+                                <button
+                                    onClick={handleBulkCancel}
+                                    className="px-3 py-1.5 text-xs font-bold uppercase rounded bg-red-600/20 text-red-400 border border-red-500/30 hover:bg-red-600 hover:text-white transition-colors"
+                                >
+                                    Annuler la sélection ({selectedInjectedIds.length})
+                                </button>
+                            )}
+                            <button
+                                onClick={toggleAllInjected}
+                                className="px-3 py-1.5 text-xs font-bold uppercase rounded bg-slate-700/40 text-slate-300 border border-slate-600/30 hover:bg-slate-700 transition-colors"
+                            >
+                                {selectedInjectedIds.length === injectedData.length ? 'Tout désélectionner' : 'Tout sélectionner'}
+                            </button>
+                        </div>
+                    </div>
+
+                    <Card>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="text-[11px] uppercase font-bold text-slate-400 border-b border-slate-700/50 bg-slate-900/40">
+                                        <th className="px-3 py-2 w-10 text-center">
+                                            <input
+                                                type="checkbox"
+                                                checked={injectedData.length > 0 && selectedInjectedIds.length === injectedData.length}
+                                                onChange={toggleAllInjected}
+                                            />
+                                        </th>
+                                        <th className="px-3 py-2">Date</th>
+                                        <th className="px-3 py-2">Description</th>
+                                        <th className="px-3 py-2 text-right">Montant</th>
+                                        <th className="px-3 py-2">Catégorie</th>
+                                        <th className="px-3 py-2 text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-700/50">
+                                    {loadingInjected ? (
+                                        <tr>
+                                            <td colSpan="6" className="px-3 py-8 text-center"><Spinner /></td>
+                                        </tr>
+                                    ) : injectedData.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="6" className="px-3 py-8 text-center text-slate-500">Aucune donnée injectée trouvée.</td>
+                                        </tr>
+                                    ) : (
+                                        injectedData.map((row) => (
+                                            <tr key={row.id} className="text-sm text-slate-300 hover:bg-slate-800/40 transition-colors">
+                                                <td className="px-3 py-2 text-center">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedInjectedIds.includes(row.id)}
+                                                        onChange={() => toggleInjectedSelect(row.id)}
+                                                    />
+                                                </td>
+                                                <td className="px-3 py-2 whitespace-nowrap">
+                                                    {new Date(row.date).toLocaleString('fr-FR', {
+                                                        day: '2-digit', month: '2-digit', year: 'numeric',
+                                                        hour: '2-digit', minute: '2-digit'
+                                                    })}
+                                                </td>
+                                                <td className="px-3 py-2 truncate max-w-xs" title={row.description}>{row.description}</td>
+                                                <td className="px-3 py-2 text-right font-mono">
+                                                    {new Intl.NumberFormat('fr-FR').format(Math.floor(Number(row.amount)))}
+                                                </td>
+                                                <td className="px-3 py-2">
+                                                    <span className="text-[10px] px-1.5 py-0.5 rounded border border-slate-700 bg-slate-800/40">
+                                                        {row.category?.name}
+                                                    </span>
+                                                </td>
+                                                <td className="px-3 py-2 text-center">
+                                                    <button
+                                                        onClick={() => handleBulkCancel([row.id])}
+                                                        className="text-[10px] uppercase font-bold px-2 py-1 bg-red-600/20 text-red-400 border border-red-500/30 rounded hover:bg-red-600 hover:text-white transition-colors"
+                                                    >
+                                                        Annuler
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </Card>
+                </div>
             )}
         </div>
     );

@@ -884,3 +884,43 @@ export const deleteCustomService = async (serviceId) => {
         handleError('Erreur deleteCustomService', error);
     }
 };
+
+/** Injecte du CSV (PARSE ou INJECT) */
+export const injectCompanyCsv = async (companyId, payload) => {
+    try {
+        const { data } = await apiClient.post(`/admin/companies/${companyId}/inject-csv`, payload);
+        return data;
+    } catch (error) {
+        handleError('Erreur injectCompanyCsv', error);
+    }
+};
+
+/** Annule une injection CSV */
+export const cancelCompanyInjection = async (companyId, transactionId) => {
+    try {
+        const { data } = await apiClient.post(`/admin/companies/${companyId}/cancel-injection`, { transactionId });
+        return data;
+    } catch (error) {
+        handleError('Erreur cancelCompanyInjection', error);
+    }
+};
+
+/** Liste les transactions injectées via CSV */
+export const listCompanyInjectedTransactions = async (companyId) => {
+    try {
+        const { data } = await apiClient.get(`/admin/companies/${companyId}/injected-transactions`);
+        return data;
+    } catch (error) {
+        handleError('Erreur listCompanyInjectedTransactions', error);
+    }
+};
+
+/** Suppression groupée d’injections CSV */
+export const bulkCancelCompanyInjections = async (companyId, transactionIds) => {
+    try {
+        const { data } = await apiClient.post(`/admin/companies/${companyId}/bulk-cancel-injections`, { transactionIds });
+        return data;
+    } catch (error) {
+        handleError('Erreur bulkCancelCompanyInjections', error);
+    }
+};
