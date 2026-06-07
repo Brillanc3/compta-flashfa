@@ -1,6 +1,6 @@
 // src/pages/admin/CompanyDetailsPage.jsx
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import {
@@ -936,18 +936,24 @@ export default function CompanyDetailsPage() {
     };
     useEffect(() => { refreshCompany(); }, [refreshCompany]);
 
+    // Garde via ref (et non [allModules.length]) : sinon le chargement des
+    // modules change l'identité du callback, ce qui relance le useEffect de
+    // l'onglet "overview" et refait partir fetchFullUsers une 2e fois.
+    const modulesLoadedRef = useRef(false);
     const ensureModulesLoaded = useCallback(async () => {
-        if (allModules.length > 0) return;
+        if (modulesLoadedRef.current) return;
+        modulesLoadedRef.current = true;
         setModulesLoading(true);
         try {
             const data = await getAllModules();
             setAllModules(Array.isArray(data) ? data : []);
         } catch (e) {
+            modulesLoadedRef.current = false; // échec → autorise un nouvel essai
             toast.error(e?.message || 'Impossible de charger les modules.');
         } finally {
             setModulesLoading(false);
         }
-    }, [allModules.length]);
+    }, []);
 
     const fetchEmployees = useCallback(async () => {
         if (!Number.isFinite(cId)) return;
