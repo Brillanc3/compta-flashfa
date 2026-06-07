@@ -2933,6 +2933,13 @@ module.exports = {
 
     // Suspension comptabilité
     setAccountingSuspension,
+
+    // CSV Injection
+    processCsvInjection,
+    injectCsvLine,
+    listInjectedTransactions,
+    bulkCancelInjections,
+    cancelInjection,
 };
 
 async function listCustomServices(companyId) {
@@ -3048,5 +3055,186 @@ async function setAccountingSuspension(companyId, suspendedAt) {
         where: { id: Number(companyId) },
         data: { accountingSuspendedAt: value },
         select: { id: true, name: true, accountingSuspendedAt: true },
+    });
+}
+
+/* =============================================================================
+ * CSV Injection (transactions)
+ * ========================================================================== */
+
+/**
+ * Extrait le numéro de facture d'une raison (ex: "facture N°12345")
+ */
+function extractInvoiceNumber(reason) {
+    if (!reason) return null;
+    const match = reason.match(/N°\s*(\d+)/i);
+    return match ? parseInt(match[1], 10) : null;
+}
+
+/**
+ * Analyse et prépare l'injection CSV.
+ */
+async function processCsvInjection(companyId, csvData, companyAccount = '68670') {
+    const lines = csvData.split('\n').filter(l => l.trim() && !l.startsWith('Raison;'));
+    const results = [];
+
+    // On récupère les catégories par défaut pour le type
+    const categories = await prisma.transactionCategory.findMany();
+    const revCat = categories.find(c => c.name === 'CHIFFRE_AFFAIRES') || categories.find(c => c.type === 'REVENUE');
+    const expCat = categories.find(c => c.name === 'AUTRES_NON_DEDUC') || categories.find(c => c.type === 'EXPENSE');
+
+    for (const line of lines) {
+        const [reason, account, dateStr, amountStr, card, initiator] = line.split(';');
+        if (!reason || !account) continue;
+
+        const date = new Date(dateStr);
+        const amount = parseFloat(amountStr);
+        const invoiceNumber = extractInvoiceNumber(reason);
+
+        // Logique Entrée/Sortie selon les consignes
+        const parts = account.split('->').map(p => p.trim());
+        const src = parts[0];
+        const dst = parts[1];
+        let type = 'REVENUE'; // Par défaut Entrée
+
+        if (dst === companyAccount) {
+            type = 'EXPENSE'; // ? -> 68670 ou 68670 -> 68670 = Sortie
+        } else if (src === companyAccount) {
+            type = 'REVENUE'; // 68670 -> ? ou 68670 -> 70558 = Entrée
+        }
+
+        // Check doublon
+        let duplicate = null;
+        if (invoiceNumber) {
+            // Chercher une transaction liée à une facture avec cet externalBillId
+            duplicate = await prisma.transaction.findFirst({
+                where: {
+                    companyId: Number(companyId),
+                    bill: { externalBillId: invoiceNumber }
+                },
+                include: { bill: true }
+            });
+        }
+
+        if (!duplicate) {
+            // Chercher par raison similaire (premier segment avant ':') et date +/- 5 min
+            const fiveMins = 5 * 60 * 1000;
+            const reasonBase = reason.split(':')[0].trim();
+            duplicate = await prisma.transaction.findFirst({
+                where: {
+                    companyId: Number(companyId),
+                    amount: amount,
+                    description: { contains: reasonBase },
+                    date: {
+                        gte: new Date(date.getTime() - fiveMins),
+                        lte: new Date(date.getTime() + fiveMins)
+                    }
+                }
+            });
+        }
+
+        results.push({
+            reason,
+            account,
+            date: date.toISOString(),
+            amount,
+            invoiceNumber,
+            type,
+            status: duplicate ? 'DOUBLON' : 'EN ATTENTE',
+            duplicateId: duplicate?.id || null
+        });
+    }
+
+    return results;
+}
+
+/**
+ * Injecte une ligne de CSV (crée la transaction)
+ */
+async function injectCsvLine(companyId, lineData, companyAccount = '68670') {
+    const { reason, date, amount, invoiceNumber, type } = lineData;
+    const cid = Number(companyId);
+
+    // On cherche la facture si invoiceNumber présent
+    let bill = null;
+    if (invoiceNumber) {
+        bill = await prisma.bill.findUnique({
+            where: { externalBillId: invoiceNumber }
+        });
+    }
+
+    // Catégorie
+    const categories = await prisma.transactionCategory.findMany();
+    const cat = type === 'REVENUE'
+        ? (categories.find(c => c.name === 'CHIFFRE_AFFAIRES') || categories.find(c => c.type === 'REVENUE'))
+        : (categories.find(c => c.name === 'AUTRES_NON_DEDUC') || categories.find(c => c.type === 'EXPENSE'));
+
+    if (!cat) throw new Error(`Aucune catégorie trouvée pour le type ${type}`);
+
+    // Création transaction
+    return prisma.transaction.create({
+        data: {
+            companyId: cid,
+            date: new Date(date),
+            amount: amount,
+            description: reason,
+            categoryId: cat.id,
+            billId: bill?.id || null,
+            isCsvInjection: true
+        }
+    });
+}
+
+/**
+ * Liste les transactions injectées via CSV
+ */
+async function listInjectedTransactions(companyId) {
+    const cid = Number(companyId);
+    return prisma.transaction.findMany({
+        where: {
+            companyId: cid,
+            isCsvInjection: true
+        },
+        include: {
+            category: true,
+            bill: true
+        },
+        orderBy: { date: 'desc' }
+    });
+}
+
+/**
+ * Supprime en masse des injections CSV
+ */
+async function bulkCancelInjections(companyId, transactionIds) {
+    const cid = Number(companyId);
+    const tIds = Array.isArray(transactionIds) ? transactionIds.map(Number) : [];
+
+    if (tIds.length === 0) return { count: 0 };
+
+    return prisma.transaction.deleteMany({
+        where: {
+            id: { in: tIds },
+            companyId: cid,
+            isCsvInjection: true
+        }
+    });
+}
+
+/**
+ * Annule une injection (supprime la transaction)
+ */
+async function cancelInjection(companyId, transactionId) {
+    const cId = Number(companyId);
+    const tId = Number(transactionId);
+
+    const tx = await prisma.transaction.findFirst({
+        where: { id: tId, companyId: cId, isCsvInjection: true }
+    });
+
+    if (!tx) throw new Error('Transaction introuvable.');
+
+    return prisma.transaction.delete({
+        where: { id: tId }
     });
 }

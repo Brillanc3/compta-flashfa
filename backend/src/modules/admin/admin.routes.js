@@ -149,6 +149,35 @@ async function adminRoutes(fastify, options) {
         ],
     }, controller.listCompanyTransactions);
 
+    // --- CSV Injection ---
+    fastify.post('/companies/:companyId/inject-csv', {
+        preHandler: [
+            checkPermission(PERMISSIONS.ADMIN_PANEL_ACCESS),
+            checkPermission(PERMISSIONS.ADMIN_COMPANY_MANAGE, HIERARCHY),
+        ],
+    }, controller.injectCsv);
+
+    fastify.post('/companies/:companyId/cancel-injection', {
+        preHandler: [
+            checkPermission(PERMISSIONS.ADMIN_PANEL_ACCESS),
+            checkPermission(PERMISSIONS.ADMIN_COMPANY_MANAGE, HIERARCHY),
+        ],
+    }, controller.cancelInjection);
+
+    fastify.get('/companies/:companyId/injected-transactions', {
+        preHandler: [
+            checkPermission(PERMISSIONS.ADMIN_PANEL_ACCESS),
+            checkPermission(PERMISSIONS.ADMIN_COMPANY_VIEW_DETAILS, HIERARCHY),
+        ],
+    }, controller.listInjectedTransactions);
+
+    fastify.post('/companies/:companyId/bulk-cancel-injections', {
+        preHandler: [
+            checkPermission(PERMISSIONS.ADMIN_PANEL_ACCESS),
+            checkPermission(PERMISSIONS.ADMIN_COMPANY_MANAGE, HIERARCHY),
+        ],
+    }, controller.bulkCancelInjections);
+
     fastify.get('/companies/:companyId/bills', {
         preHandler: [
             checkPermission(PERMISSIONS.ADMIN_PANEL_ACCESS),

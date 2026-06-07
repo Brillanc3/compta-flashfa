@@ -1080,6 +1080,7 @@ model Bill {
   @@index([accountingTargetCompanyId], map: "Bill_accountingTargetCompanyId_fkey")
   @@index([accountingNotifyUserId], map: "Bill_accountingNotifyUserId_fkey")
   @@index([isParentBill, status, accountingDueAt], map: "Bill_isParentBill_status_dueAt_idx")
+  @@index([companyId, createdAt(sort: Desc)])
 }
 
 model BillShare {
@@ -1169,6 +1170,7 @@ model Log {
   @@index([companyId], map: "Log_companyId_fkey")
   @@index([category, logType])
   @@index([companyId, category, logType, date])
+  @@index([companyId, createdAt(sort: Desc)])
 }
 
 model Module {

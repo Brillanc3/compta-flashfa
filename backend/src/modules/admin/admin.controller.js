@@ -1615,6 +1615,12 @@ module.exports = {
 
     // Suspension comptabilité
     setAccountingSuspension,
+
+    // CSV Injection
+    injectCsv,
+    cancelInjection,
+    listInjectedTransactions,
+    bulkCancelInjections,
 };
 
 /* =============================================================================
@@ -1682,5 +1688,76 @@ async function setAccountingSuspension(request, reply) {
     } catch (err) {
         console.error('[AdminController] setAccountingSuspension:', err);
         reply.code(400).send({ message: err.message || 'Erreur lors de la mise à jour de la suspension.' });
+    }
+}
+
+/* =============================================================================
+ * CSV Injection
+ * ========================================================================== */
+
+async function injectCsv(request, reply) {
+    try {
+        const { companyId } = request.params;
+        const { csvData, companyAccount, action, items } = request.body;
+
+        if (action === 'PARSE') {
+            const results = await service.processCsvInjection(companyId, csvData, companyAccount);
+            return reply.send(results);
+        }
+
+        if (action === 'INJECT') {
+            const results = [];
+            for (const item of items) {
+                try {
+                    const tx = await service.injectCsvLine(companyId, item, companyAccount);
+                    results.push({ ...item, status: 'INJECTÉ', id: tx.id });
+                } catch (e) {
+                    results.push({ ...item, status: 'ERREUR', error: e.message });
+                }
+            }
+            return reply.send(results);
+        }
+
+        reply.code(400).send({ message: 'Action invalide.' });
+    } catch (error) {
+        console.error('[AdminController] injectCsv:', error);
+        reply.code(500).send({ message: error.message || "Erreur lors de l'injection CSV." });
+    }
+}
+
+async function cancelInjection(request, reply) {
+    try {
+        const { companyId } = request.params;
+        const { transactionId } = request.body;
+
+        await service.cancelInjection(companyId, transactionId);
+        reply.send({ success: true });
+    } catch (error) {
+        console.error('[AdminController] cancelInjection:', error);
+        reply.code(500).send({ message: error.message || "Erreur lors de l'annulation de l'injection." });
+    }
+}
+
+async function listInjectedTransactions(request, reply) {
+    try {
+        const { companyId } = request.params;
+        const transactions = await service.listInjectedTransactions(companyId);
+        reply.send(transactions);
+    } catch (error) {
+        console.error('[AdminController] listInjectedTransactions:', error);
+        reply.code(500).send({ message: error.message || "Erreur lors de la récupération des transactions injectées." });
+    }
+}
+
+async function bulkCancelInjections(request, reply) {
+    try {
+        const { companyId } = request.params;
+        const { transactionIds } = request.body;
+
+        const result = await service.bulkCancelInjections(companyId, transactionIds);
+        reply.send({ success: true, count: result.count });
+    } catch (error) {
+        console.error('[AdminController] bulkCancelInjections:', error);
+        reply.code(500).send({ message: error.message || "Erreur lors de la suppression groupée." });
     }
 }
