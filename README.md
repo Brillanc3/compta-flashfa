@@ -3,7 +3,7 @@
 Application de gestion / comptabilité **FlashFA** : un backend Node.js (Fastify + Prisma)
 à architecture *sharded* temps réel, et un frontend React (Vite + MUI).
 
-Démo ici : [Compta Caillou's Clarity Accounting]([#stack-technique](https://react.jipeg-corporation.eu/))
+Démo ici : [Compta Caillou's Clarity Accounting](https://react.jipeg-corporation.eu/)
 
 > Monorepo : `backend/` (API & temps réel) et `frontend/` (interface web).
 
