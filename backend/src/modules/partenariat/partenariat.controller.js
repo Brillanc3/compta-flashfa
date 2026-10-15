@@ -13,6 +13,7 @@
  */
 
 const partenariatService = require('./partenariat.service');
+const prisma = require('../../db');
 
 /* -------------------------------------------------------------------------- */
 /* 🔧 UTILITAIRES                                                              */

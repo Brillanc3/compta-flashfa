@@ -9,6 +9,7 @@ const {
     resetPasswordWithToken
 } = require('./auth.service');
 const bcrypt = require("bcrypt");
+const prisma = require('../../db');
 
 /**
  * POST /auth/login
