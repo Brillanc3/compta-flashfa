@@ -35,6 +35,7 @@ async function employeeRoutes(fastify, options) {
 
     // ===== Rangs
     fastify.get('/ranks', viewOpts, controller.getRanks);
+    fastify.get('/rank/:rankId', viewOpts, controller.getRankDetails);
     fastify.post('/ranks', manageOpts, controller.createRank);
     fastify.patch('/rank/:rankId', manageOpts, controller.updateRank);
     fastify.delete('/rank/:rankId', manageOpts, controller.deleteRank);

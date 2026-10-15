@@ -45,10 +45,11 @@ async function createVehicle(request, reply) {
 
 async function updateVehicle(request, reply) {
     try {
+        const companyId = getCompanyId(request);
         const userId = request.user.userId;
         const id = Number(request.params.id);
 
-        const updated = await service.updateVehicle(id, userId, request.body);
+        const updated = await service.updateVehicle(companyId, id, userId, request.body);
         return reply.send(updated);
     } catch (err) {
         return reply.code(400).send({ error: err.message });
@@ -57,8 +58,9 @@ async function updateVehicle(request, reply) {
 
 async function deleteVehicle(request, reply) {
     try {
+        const companyId = getCompanyId(request);
         const id = Number(request.params.id);
-        const deleted = await service.deleteVehicle(id);
+        const deleted = await service.deleteVehicle(companyId, id);
         return reply.send({ success: true, deleted });
     } catch (err) {
         return reply.code(400).send({ error: err.message });

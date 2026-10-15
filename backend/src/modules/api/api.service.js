@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const prisma = require('../../db');
+const { hashApiKey, apiKeyHint } = require('../../lib/apiKeyHash');
 
 const VALID_ACTIONS = ['GET', 'POST', 'PATCH', 'DELETE'];
 
@@ -9,16 +10,17 @@ function httpError(statusCode, message) {
   return err;
 }
 
-function maskKey(key) {
-  if (!key) return null;
-  return key.slice(0, 8) + '••••••••••••••••••••••••' + key.slice(-4);
+// keyHint vaut "<8 premiers>...<4 derniers>" : on garde l'affichage masqué historique
+function maskKey(keyHint) {
+  if (!keyHint) return null;
+  return keyHint.replace('...', '••••••••••••••••••••••••');
 }
 
 function formatKey(k) {
   return {
     id: k.id,
     name: k.name,
-    maskedKey: maskKey(k.key),
+    maskedKey: maskKey(k.keyHint),
     scopes: k.scopes,
     isActive: k.isActive,
     createdAt: k.createdAt,
@@ -60,7 +62,8 @@ async function create({ companyId, name, scopes }) {
     data: {
       companyId,
       name: trimmedName,
-      key: rawKey,
+      keyHash: hashApiKey(rawKey),
+      keyHint: apiKeyHint(rawKey),
       scopes: { actions: validatedActions, modules: validatedModules },
     },
   });
@@ -69,7 +72,7 @@ async function create({ companyId, name, scopes }) {
     id: created.id,
     name: created.name,
     key: rawKey,
-    maskedKey: maskKey(rawKey),
+    maskedKey: maskKey(apiKeyHint(rawKey)),
     scopes: created.scopes,
     isActive: created.isActive,
     createdAt: created.createdAt,

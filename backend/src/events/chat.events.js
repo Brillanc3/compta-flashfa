@@ -15,7 +15,7 @@ const {
 
 const { EVENTS } = require("../modules/chat/chat.events");
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const { jwtSecret: JWT_SECRET } = require('../config/secrets');
 
 module.exports = async function chatEventsRoute(fastify) {
     fastify.get("/chat/events", async (request, reply) => {

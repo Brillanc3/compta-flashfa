@@ -5,6 +5,23 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
+/**
+ * Un utilisateur peut modifier un événement s'il en est l'auteur, s'il est admin,
+ * ou s'il s'agit d'un événement de l'entreprise dont il est membre (companyId
+ * déjà vérifié par le contrôleur). Un événement prédéfini reste réservé aux admins.
+ */
+function assertCanEditEvent(event, userId, companyId, isAdmin) {
+    if (isAdmin) return;
+    const isAuthor = event.authorId === userId;
+    const isCompanyEvent = !!event.companyId && event.companyId === companyId;
+    if (!isAuthor && !isCompanyEvent) {
+        throw new Error("Vous n'avez pas la permission de modifier cet événement");
+    }
+    if (event.isPredefined) {
+        throw new Error("Impossible de modifier un événement prédéfini");
+    }
+}
+
 const UPLOADS_DIR = path.join(__dirname, '..', '..', '..', 'uploads', 'mycalendar');
 
 if (!fs.existsSync(UPLOADS_DIR)) {
@@ -56,7 +73,7 @@ async function getPendingInvitations(userId) {
 /**
  * Create a new event
  */
-async function createEvent(data, authorId, companyId = null) {
+async function createEvent(data, authorId, companyId = null, isAdmin = false) {
     const { title, description, startTime, endTime, color, repetition, categoryId, guests, isPredefined } = data;
 
     const event = await prisma.myCalendarEvent.create({
@@ -70,7 +87,7 @@ async function createEvent(data, authorId, companyId = null) {
             authorId,
             companyId: companyId || null,
             categoryId: (categoryId && categoryId !== "") ? parseInt(categoryId) : null,
-            isPredefined: !!isPredefined
+            isPredefined: isAdmin && !!isPredefined
         }
     });
 
@@ -100,14 +117,7 @@ async function updateEvent(id, data, userId, companyId = null, isAdmin = false) 
     const event = await prisma.myCalendarEvent.findUnique({ where: { id: parseInt(id) } });
     if (!event) throw new Error("Événement introuvable");
 
-    // Check permissions
-    if (!isAdmin && event.authorId !== userId && event.companyId !== companyId) {
-        throw new Error("Vous n'avez pas la permission de modifier cet événement");
-    }
-
-    if (event.isPredefined && !isAdmin) {
-        throw new Error("Impossible de modifier un événement prédéfini");
-    }
+    assertCanEditEvent(event, userId, companyId, isAdmin);
 
     const { title, description, startTime, endTime, color, repetition, categoryId } = data;
 
@@ -175,9 +185,10 @@ async function deleteEvent(id, userId, companyId = null, isAdmin = false) {
 /**
  * Process and save event image (WebP)
  */
-async function saveEventImage(eventId, fileData) {
+async function saveEventImage(eventId, fileData, userId, companyId = null, isAdmin = false) {
     const event = await prisma.myCalendarEvent.findUnique({ where: { id: parseInt(eventId) } });
     if (!event) throw new Error("Événement introuvable");
+    assertCanEditEvent(event, userId, companyId, isAdmin);
 
     const filename = `${crypto.randomBytes(16).toString('hex')}.webp`;
     const relativePath = `uploads/mycalendar/${filename}`;
@@ -284,7 +295,9 @@ async function deleteCategory(id, userId, companyId = null) {
     const category = await prisma.myCalendarCategory.findUnique({ where: { id: parseInt(id) } });
     if (!category) throw new Error("Catégorie introuvable");
 
-    if (category.userId !== userId && category.companyId !== companyId) {
+    const isOwner = category.userId === userId;
+    const isCompanyCategory = !!category.companyId && category.companyId === companyId;
+    if (!isOwner && !isCompanyCategory) {
         throw new Error("Vous n'avez pas la permission de supprimer cette catégorie");
     }
 

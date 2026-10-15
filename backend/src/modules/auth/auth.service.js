@@ -3,8 +3,7 @@ const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const prisma = require('../../db');
 
-const JWT_SECRET = process.env.JWT_SECRET;
-const REFRESH_SALT = process.env.REFRESH_TOKEN_SALT || 'refresh_salt_default';
+const { jwtSecret: JWT_SECRET, refreshTokenSalt: REFRESH_SALT } = require('../../config/secrets');
 
 const ACCESS_TOKEN_TTL_SECONDS = 15 * 60; // 15 minutes
 const REFRESH_TOKEN_TTL_DAYS = 30; // 30 jours

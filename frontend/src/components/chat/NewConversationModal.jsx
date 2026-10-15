@@ -8,7 +8,7 @@ import { WebSocketContext } from '../../contexts/WebSocketContext';
 import { useCompany } from '../../contexts/CompanyContext';
 import { createConversation } from '@/services/chatService.js';
 import { getCompanyEmployees } from '@/services/companyService.js';
-import { getCompanyRanks } from '@/services/rankService.js';
+import { getRanks } from '@/services/employeesService.js';
 import Modal from '../Modal';
 import { ArrowLeft, MessageSquare, Tag } from 'lucide-react';
 
@@ -46,7 +46,7 @@ const NewConversationModal = ({ onClose }) => {
                 try {
                     const [employeesData, ranksData] = await Promise.all([
                         getCompanyEmployees(selectedCompany.id),
-                        getCompanyRanks(selectedCompany.id),
+                        getRanks(selectedCompany.id),
                     ]);
                     const employeeOpts = Array.isArray(employeesData) ? employeesData.map(e => ({ value: `user-${e.user.id}`, label: e.user.name, type: 'user' })) : [];
                     const rankOpts = Array.isArray(ranksData) ? ranksData.map(r => ({ value: `rank-${r.id}`, label: r.name, type: 'rank' })) : [];

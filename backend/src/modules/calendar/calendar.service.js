@@ -144,9 +144,24 @@ async function createEvent(actor, data) {
     const actorPermissions = aggregatePermissions(actor);
     let subjectId = dataUserId || actor.id;
     const finalCompanyId = companyId === undefined ? null : companyId;
+    const isAdmin = hasPermission(actorPermissions, 'ADMIN.CALENDAR.MANAGE');
+
+    // Un événement d'entreprise ne peut être créé que par un employé actif de cette entreprise
+    if (finalCompanyId && !isAdmin) {
+        const employment = await prisma.companyEmployee.findFirst({
+            where: { companyId: parseInt(finalCompanyId, 10), userId: actor.id, status: 'ACTIVE' },
+            select: { id: true },
+        });
+        if (!employment) throw new Error("Accès refusé : vous n'êtes pas membre de cette entreprise.");
+    }
+
+    // Un événement personnel (hors entreprise) ne peut être créé que pour soi-même
+    if (!finalCompanyId && !createdBySystem && Number(subjectId) !== actor.id && !isAdmin) {
+        throw new Error("Accès refusé : impossible de créer un événement personnel pour un autre utilisateur.");
+    }
 
     if (createdBySystem) {
-        if (!hasPermission(actorPermissions, 'ADMIN.CALENDAR.MANAGE')) {
+        if (!isAdmin) {
             throw new Error("Accès refusé : permission ADMIN.CALENDAR.MANAGE requise.");
         }
     } else if (finalCompanyId) {
@@ -272,18 +287,35 @@ async function _internal_deleteEvent(eventId) {
 }
 
 // --- Services Catégories ---
+// Seuls ces champs sont modifiables : companyId vient toujours de l'en-tête vérifié.
+const pickCategoryData = (data = {}) => {
+    const out = {};
+    if (data.name !== undefined) out.name = data.name;
+    if (data.color !== undefined) out.color = data.color;
+    return out;
+};
+
+async function findCompanyCategory(companyId, categoryId) {
+    if (!companyId) throw new Error("L'ID de l'entreprise est requis.");
+    const category = await prisma.eventCategory.findFirst({ where: { id: categoryId, companyId } });
+    if (!category) throw new Error("Catégorie introuvable.");
+    return category;
+}
+
 async function getCategories(companyId) {
     if (!companyId) return [];
     return prisma.eventCategory.findMany({ where: { companyId } });
 }
 async function createCategory(companyId, data) {
     if (!companyId) throw new Error("L'ID de l'entreprise est requis pour créer une catégorie.");
-    return prisma.eventCategory.create({ data: { ...data, companyId } });
+    return prisma.eventCategory.create({ data: { ...pickCategoryData(data), companyId } });
 }
-async function updateCategory(categoryId, data) {
-    return prisma.eventCategory.update({ where: { id: categoryId }, data });
+async function updateCategory(companyId, categoryId, data) {
+    await findCompanyCategory(companyId, categoryId);
+    return prisma.eventCategory.update({ where: { id: categoryId }, data: pickCategoryData(data) });
 }
-async function deleteCategory(categoryId) {
+async function deleteCategory(companyId, categoryId) {
+    await findCompanyCategory(companyId, categoryId);
     return prisma.eventCategory.delete({ where: { id: categoryId } });
 }
 

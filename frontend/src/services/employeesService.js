@@ -13,6 +13,16 @@ export const getRanks = async (companyId) => {
 };
 
 /**
+ * Détail d'un rang : permissions et employés actifs.
+ */
+export const getRankDetails = async (rankId) => {
+    try {
+        const { data } = await apiClient.get(`/employees/rank/${rankId}`);
+        return data;
+    } catch (error) { throw error.response?.data || error; }
+};
+
+/**
  * Crée un nouveau rang en utilisant la configuration de rémunération flexible.
  */
 export const createRank = async (companyId, rankData) => {

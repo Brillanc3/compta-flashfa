@@ -479,6 +479,29 @@ async function getRanks(companyId) {
     });
 }
 
+/**
+ * Détail d'un rang de l'entreprise : permissions et employés actifs.
+ */
+async function getRankDetails(companyId, rankId) {
+    const rank = await prisma.rank.findFirst({
+        where: { id: rankId, companyId },
+        include: {
+            permissionTemplates: true,
+            employees: {
+                where: { status: 'ACTIVE' },
+                select: { id: true, user: { select: { id: true, name: true, username: true } } },
+                orderBy: { id: 'asc' },
+            },
+        },
+    });
+    if (!rank) {
+        const e = new Error('Rang introuvable.');
+        e.statusCode = 404;
+        throw e;
+    }
+    return rank;
+}
+
 function safeModuleName(name) {
     // évite toute tentative de traversal, et garantit un chemin stable
     return String(name).toLowerCase().replace(/[^a-z0-9_-]/g, "");
@@ -2421,6 +2444,7 @@ async function useLinkCode({ currentUserId, code }) {
 module.exports = {
     // Ranks
     getRanks,
+    getRankDetails,
     getRankFormSettings,
     createRank,
     updateRank,

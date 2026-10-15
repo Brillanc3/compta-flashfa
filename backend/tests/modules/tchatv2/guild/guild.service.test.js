@@ -15,9 +15,10 @@ beforeEach(() => {
     mockPrisma = {
         v2Guild:   { create: vi.fn(), findUnique: vi.fn(), findFirst: vi.fn() },
         v2Role:    { create: vi.fn() },
-        v2Member:  { create: vi.fn() },
+        v2Member:  { create: vi.fn(), findUnique: vi.fn() },
         v2Channel: { create: vi.fn() },
         rank:      { findMany: vi.fn() },
+        companyEmployee: { findMany: vi.fn().mockResolvedValue([]), findFirst: vi.fn() },
         $transaction: vi.fn((ops) => Promise.all(ops)),
     };
 
@@ -28,7 +29,7 @@ beforeEach(() => {
 
     _req.cache[dbPath]    = { id: dbPath,    filename: dbPath,    loaded: true, exports: { prisma: mockPrisma } };
     _req.cache[snowPath]  = { id: snowPath,  filename: snowPath,  loaded: true, exports: { nextV2: vi.fn().mockReturnValue(BigInt('123456789')) } };
-    _req.cache[cachePath] = { id: cachePath, filename: cachePath, loaded: true, exports: { delPattern: vi.fn(), key: (...a) => a.join(':') } };
+    _req.cache[cachePath] = { id: cachePath, filename: cachePath, loaded: true, exports: { del: vi.fn(), delPattern: vi.fn(), key: (...a) => a.join(':') } };
     delete _req.cache[svcPath];
 
     ({ createGuild } = _req(path.join(ROOT, 'modules/tchatv2/guild/guild.service')));

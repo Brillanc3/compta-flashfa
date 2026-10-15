@@ -4,7 +4,7 @@ const { Server }        = require('socket.io');
 const { createAdapter } = require('@socket.io/redis-adapter');
 const jwt               = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'votre_secret_par_defaut';
+const { jwtSecret: JWT_SECRET } = require('../../../config/secrets');
 const metrics    = require('../monitoring/metrics');
 
 /**

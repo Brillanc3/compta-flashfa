@@ -106,9 +106,9 @@ const createCategory = async (request, reply) => {
 
 const updateCategory = async (request, reply) => {
     try {
+        const companyId = parseInt(request.headers['x-company-id'], 10);
         const categoryId = parseInt(request.params.categoryId, 10);
-        // TODO: Ajouter une vérification que la catégorie appartient bien à companyId si nécessaire
-        const category = await service.updateCategory(categoryId, request.body);
+        const category = await service.updateCategory(companyId, categoryId, request.body);
         reply.send(category);
     } catch (error) {
         request.log.error({ msg: "Erreur updateCategory", error: error.message });
@@ -118,9 +118,9 @@ const updateCategory = async (request, reply) => {
 
 const deleteCategory = async (request, reply) => {
     try {
+        const companyId = parseInt(request.headers['x-company-id'], 10);
         const categoryId = parseInt(request.params.categoryId, 10);
-        // TODO: Ajouter une vérification que la catégorie appartient bien à companyId si nécessaire
-        await service.deleteCategory(categoryId);
+        await service.deleteCategory(companyId, categoryId);
         reply.code(204).send();
     } catch (error) {
         request.log.error({ msg: "Erreur deleteCategory", error: error.message });

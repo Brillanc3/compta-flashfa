@@ -2,7 +2,9 @@
 
 const path = require("path");
 const fs = require("fs");
+const jwt = require("jsonwebtoken");
 const prisma = require("../../db");
+const { jwtSecret: JWT_SECRET } = require("../../config/secrets");
 const service = require("./pawnshop.service");
 const { PERMISSIONS } = require("./pawnshop.permissions");
 
@@ -876,6 +878,9 @@ async function getPublicConfig(req, reply) {
     } catch (e) { return sendError(reply, e); }
 }
 
+const CNI_UPLOAD_TOKEN_TYPE = "pawnshop_public_cni";
+const CNI_UPLOAD_TOKEN_TTL = "15m";
+
 async function submitPublicEstimation(req, reply) {
     try {
         const slug = req.params.slug;
@@ -903,6 +908,7 @@ async function submitPublicEstimation(req, reply) {
         }
 
         let client = null;
+        let isNewClient = false;
         if (phoneNumber) {
             client = await prisma.client.findFirst({ where: { companyId, phoneNumber } });
         }
@@ -913,10 +919,13 @@ async function submitPublicEstimation(req, reply) {
             client = await prisma.client.create({
                 data: { companyId, name: finalName, phoneNumber: phoneNumber || null, iban: iban || null, cni: cniNumber || null },
             });
+            isNewClient = true;
         } else {
+            // Formulaire public : on complète un client existant sans jamais écraser
+            // ses coordonnées (n'importe qui peut saisir le numéro de téléphone d'un autre).
             const updates = {};
-            if (iban) updates.iban = iban;
-            if (cniNumber) updates.cni = cniNumber;
+            if (iban && !client.iban) updates.iban = iban;
+            if (cniNumber && !client.cni) updates.cni = cniNumber;
             if (Object.keys(updates).length > 0) await prisma.client.update({ where: { id: client.id }, data: updates });
         }
 
@@ -949,7 +958,14 @@ async function submitPublicEstimation(req, reply) {
             },
         });
 
-        return reply.code(201).send({ id: estimation.id, clientId: client.id, message: "Estimation soumise avec succès." });
+        // Jeton à usage court pour l'upload de la pièce d'identité liée à cette soumission
+        const cniUploadToken = jwt.sign(
+            { type: CNI_UPLOAD_TOKEN_TYPE, companyId, clientId: client.id, estimationId: estimation.id, isNewClient },
+            JWT_SECRET,
+            { expiresIn: CNI_UPLOAD_TOKEN_TTL }
+        );
+
+        return reply.code(201).send({ id: estimation.id, clientId: client.id, cniUploadToken, message: "Estimation soumise avec succès." });
     } catch (e) { return sendError(reply, e); }
 }
 
@@ -963,10 +979,26 @@ async function uploadPublicClientCni(req, reply) {
             const e = new Error("Page non disponible."); e.statusCode = 404; throw e;
         }
 
+        // Le jeton est délivré par submitPublicEstimation pour ce client et cette société uniquement
+        let token;
+        try {
+            token = jwt.verify(String(req.headers["x-upload-token"] || ""), JWT_SECRET);
+        } catch {
+            token = null;
+        }
+        if (!token || token.type !== CNI_UPLOAD_TOKEN_TYPE || token.clientId !== clientId || token.companyId !== config.companyId) {
+            const e = new Error("Jeton d'envoi invalide ou expiré."); e.statusCode = 403; throw e;
+        }
+
         // Verify client belongs to this company
         const client = await prisma.client.findFirst({ where: { id: clientId, companyId: config.companyId } });
         if (!client) {
             const e = new Error("Client introuvable."); e.statusCode = 404; throw e;
+        }
+
+        // Un client existant garde sa pièce d'identité : seul le magasin peut la remplacer
+        if (!token.isNewClient && client.cniImagePublicId) {
+            const e = new Error("Une pièce d'identité est déjà enregistrée pour ce client. Contactez le magasin pour la modifier."); e.statusCode = 409; throw e;
         }
 
         const data = await req.file();

@@ -150,7 +150,7 @@ app.register(require('../plugins/sse-streams'));
 
 app.register(fastifyCookie);
 app.register(fastifySession, {
-    secret: process.env.SESSION_SECRET || 'replace_with_strong_secret',
+    secret: require('../config/secrets').sessionSecret,
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,

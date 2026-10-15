@@ -1137,56 +1137,6 @@ async function getServiceTimesForEmployeeList(employees, dateRange) {
 }
 
 
-function safeModuleName(name) {
-    return String(name || "")
-        .trim()
-        .toLowerCase()
-        .replace(/[^a-z0-9_-]/g, "");
-}
-
-function deepMerge(base, patch) {
-    if (!patch || typeof patch !== "object") return base;
-    const out = Array.isArray(base) ? [...base] : { ...(base || {}) };
-
-    for (const [k, v] of Object.entries(patch)) {
-        const baseVal = base ? base[k] : undefined;
-
-        if (
-            v &&
-            typeof v === "object" &&
-            !Array.isArray(v) &&
-            baseVal &&
-            typeof baseVal === "object" &&
-            !Array.isArray(baseVal)
-        ) {
-            out[k] = deepMerge(baseVal, v);
-        } else {
-            out[k] = v;
-        }
-    }
-    return out;
-}
-
-function tryLoadModuleSettings(moduleNameRaw) {
-    const moduleName = safeModuleName(moduleNameRaw);
-    if (!moduleName) return null;
-
-    try {
-        // /src/modules/<module>/<module>.settings.js
-        const settingsPath = path.join(__dirname, "..", moduleName, `${moduleName}.settings.js`);
-        const def = require(settingsPath);
-
-        // Contrat minimal
-        if (!def || !def.key || !def.fields || !def.defaults || typeof def.sanitize !== "function") {
-            return null;
-        }
-
-        return def;
-    } catch {
-        return null;
-    }
-}
-
 /**
  * Récupère les paramètres d'une entreprise (nom, clés, etc.)
  */

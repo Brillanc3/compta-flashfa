@@ -12,7 +12,7 @@ const {
     GATEWAY_CHANNEL,
 } = require('./gateway.emitter');
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const { jwtSecret: JWT_SECRET } = require('../../config/secrets');
 
 function verifyAccessToken(token) {
     if (!token) return null;

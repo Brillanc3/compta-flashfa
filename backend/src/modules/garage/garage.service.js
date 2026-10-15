@@ -61,7 +61,15 @@ async function createVehicle(companyId, userId, data) {
    - Met à jour l'info
    - Met à jour rétroactivement les mouvements
 --------------------------------------------------------- */
-async function updateVehicle(id, userId, data) {
+async function findCompanyVehicle(companyId, id) {
+    const vehicle = await prisma.vehicle.findFirst({ where: { id, companyId } });
+    if (!vehicle) throw new Error('Véhicule introuvable.');
+    return vehicle;
+}
+
+async function updateVehicle(companyId, id, userId, data) {
+    await findCompanyVehicle(companyId, id);
+
     const updated = await prisma.vehicle.update({
         where: { id },
         data: {
@@ -89,7 +97,9 @@ async function updateVehicle(id, userId, data) {
    - NE supprime PAS les mouvements !
    - Supprime juste le lien vehicleRefId
 --------------------------------------------------------- */
-async function deleteVehicle(id) {
+async function deleteVehicle(companyId, id) {
+    await findCompanyVehicle(companyId, id);
+
     const deleted = await prisma.vehicle.delete({ where: { id } });
 
     // On nettoie les liens

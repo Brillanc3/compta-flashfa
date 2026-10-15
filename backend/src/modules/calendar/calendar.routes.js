@@ -68,7 +68,7 @@ async function calendarRoutes(fastify, options) {
     fastify.put('/events/:eventId/finish', controller.finishEvent);
     fastify.delete('/events/:eventId', controller.deleteEvent);
 
-    fastify.get('/categories', controller.getCategories);
+    fastify.get('/categories', viewCalendar, controller.getCategories);
     fastify.post('/categories', manageCategoriesOpts, controller.createCategory);
     fastify.put('/categories/:categoryId', manageCategoriesOpts, controller.updateCategory);
     fastify.delete('/categories/:categoryId', manageCategoriesOpts, controller.deleteCategory);

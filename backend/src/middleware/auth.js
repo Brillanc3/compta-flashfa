@@ -1,7 +1,7 @@
 // /backend/src/middleware/auth.js
 const jwt = require('jsonwebtoken');
 const prisma = require('../db');
-const JWT_SECRET = process.env.JWT_SECRET || 'votre_secret_par_defaut';
+const { jwtSecret: JWT_SECRET } = require('../config/secrets');
 
 /* ================== Auth de base ================== */
 const authenticate = async (request, reply) => {

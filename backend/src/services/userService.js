@@ -3,6 +3,7 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const { UserStatus } = require('@prisma/client');
+const prisma = require('../db');
 
 /**
  * Trouve un utilisateur par son characterId ou le crée s'il n'existe pas.

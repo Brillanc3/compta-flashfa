@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const eventBus = require('../lib/eventBusRedis');
 
 // ⚠️ Unification avec le service d'auth
-const JWT_SECRET = process.env.JWT_SECRET || 'votre_secret_par_defaut';
+const { jwtSecret: JWT_SECRET } = require('../config/secrets');
 
 /**
  * Route SSE : /api/auth/events?token=<JWT>

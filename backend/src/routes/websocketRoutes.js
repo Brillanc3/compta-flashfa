@@ -5,7 +5,7 @@ const { URLSearchParams } = require('url');
 const { addUserConnection, removeUserConnection } = require('../services/webSocket.service');
 const { addMessage } = require('../services/chatService');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'votre_secret_par_defaut';
+const { jwtSecret: JWT_SECRET } = require('../config/secrets');
 
 async function websocketRoutes(fastify, options) {
     fastify.get('/ws', { websocket: true }, (connection, request) => {

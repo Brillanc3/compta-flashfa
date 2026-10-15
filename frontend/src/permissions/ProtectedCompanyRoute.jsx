@@ -1,6 +1,6 @@
 // frontend/src/permissions/ProtectedCompanyRoute.jsx
 import React, { useMemo } from "react";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCompany } from "@/contexts/CompanyContext";
 import { usePermissions } from "@/contexts/PermissionsContext";
@@ -29,8 +29,9 @@ export default function ProtectedCompanyRoute({
                                                   requireCompany = true,
                                                   children,
                                               }) {
-    const { isAuthenticated } = useAuth();
-    const { activeCompanyId } = useCompany();
+    const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+    const { activeCompanyId, companies, loading: isCompanyLoading } = useCompany();
+    const location = useLocation();
     const {
         isReady,
         isLoading,
@@ -54,12 +55,40 @@ export default function ProtectedCompanyRoute({
         );
     }, [permissions, has, companyId]);
 
-    // 1) Auth obligatoire
-    if (!isAuthenticated) {
-        return <Navigate to="/login" replace />;
+    // 0) Session en cours de restauration (F5) -> loading, sinon on redirigerait
+    //    vers /login avant que le refresh token ait été échangé.
+    if (isAuthLoading) {
+        return (
+            <div className="w-full h-[40vh] flex items-center justify-center text-slate-300">
+                Chargement...
+            </div>
+        );
     }
 
-    // 2) Tant que la company active n'est pas déterminée -> loading (pas de redirect).
+    // 1) Auth obligatoire (on mémorise la page pour y revenir après connexion)
+    if (!isAuthenticated) {
+        return <Navigate to="/login" state={{ from: location }} replace />;
+    }
+
+    // 2) Page d'entreprise sans aucune entreprise : on l'explique au lieu de charger sans fin.
+    if (requireCompany && !isCompanyLoading && (!companies || companies.length === 0)) {
+        return (
+            <div className="w-full h-[40vh] flex flex-col items-center justify-center gap-3 text-center text-slate-300 px-4">
+                <p className="text-lg font-semibold text-white">Aucune entreprise</p>
+                <p className="max-w-md text-slate-400">
+                    Cette page est réservée aux membres d'une entreprise. Rejoignez une entreprise pour y accéder.
+                </p>
+                <Link
+                    to="/dashboard"
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
+                >
+                    Retourner à l'accueil
+                </Link>
+            </div>
+        );
+    }
+
+    // 2b) Tant que la company active n'est pas déterminée -> loading (pas de redirect).
     //    Pages globales : sans entreprise, on attend seulement que les permissions
     //    globales soient prêtes (isReady, étape 3).
     if (!companyId && requireCompany) {

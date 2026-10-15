@@ -1,4 +1,5 @@
 const prisma = require('../db');
+const { hashApiKey } = require('../lib/apiKeyHash');
 
 /**
  * Modules réservés aux utilisateurs authentifiés (JWT) : administration,
@@ -18,7 +19,7 @@ const authenticateApiKey = async (request, reply) => {
   const method = request.method.toUpperCase();
 
   const record = await prisma.companyApiKey.findUnique({
-    where: { key: rawKey },
+    where: { keyHash: hashApiKey(rawKey) },
     select: { id: true, companyId: true, isActive: true, scopes: true },
   });
 
