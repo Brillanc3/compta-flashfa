@@ -774,7 +774,8 @@ export default function CompanyDetailsPage() {
             setAccountingPrice(data?.accountingPrice != null ? String(data.accountingPrice) : '');
             setGroupId(data?.groupId != null ? String(data.groupId) : '');
             setSuspensionInput(data?.accountingSuspendedAt ? new Date(data.accountingSuspendedAt).toISOString().slice(0, 16) : '');
-            setApiKeyValue(data?.apiKey ? String(data.apiKey) : '');
+            // La clé d'ingest n'est plus renvoyée (seulement apiKeyHint) : champ vide = saisie d'une nouvelle clé.
+            setApiKeyValue('');
             setOnboardingKeyValue(data?.onboardingKey ? String(data.onboardingKey) : '');
         } catch (e) {
             toast.error(e?.message || "Impossible de charger l'entreprise.");
@@ -817,9 +818,9 @@ export default function CompanyDetailsPage() {
 
     const apiEndpoint = useMemo(() => {
         const origin = typeof window !== 'undefined' ? window.location.origin : '';
-        const key = String(apiKeyValue || company?.apiKey || '{apiKey}');
+        const key = String(apiKeyValue || '{apiKey}');
         return `${origin}/api/ingest/${cId}/${key}`;
-    }, [apiKeyValue, company?.apiKey, cId]);
+    }, [apiKeyValue, cId]);
 
     const onboardingEndpoint = useMemo(() => {
         const origin = typeof window !== 'undefined' ? window.location.origin : '';
@@ -938,9 +939,11 @@ export default function CompanyDetailsPage() {
     const regenerateApiKeyValue = async () => {
         try {
             setRegeneratingApiKey(true);
-            await regenerateApiKey(cId);
-            toast.success('API key régénérée.');
+            const res = await regenerateApiKey(cId);
             await refreshCompany();
+            // Seule occasion où la clé est visible : on l'affiche dans le champ pour la copier.
+            setApiKeyValue(res?.apiKey ? String(res.apiKey) : '');
+            toast.success('API key régénérée. Copiez-la maintenant : elle ne sera plus affichée.');
         } catch (e) {
             toast.error(e?.message || "Impossible de regenerer l'API key.");
         } finally {
@@ -1594,13 +1597,13 @@ export default function CompanyDetailsPage() {
                             <div className="rounded-lg border border-slate-700 bg-slate-900/40 p-3 space-y-3">
                                 <div className="text-sm font-medium text-slate-100">API key</div>
                                 <div className="text-xs text-slate-400">
-                                    Modifie la clé utilisée par l'endpoint d'ingest.
+                                    Modifie la clé utilisée par l'endpoint d'ingest. Clé actuelle : {company?.apiKeyHint || 'aucune'}.
                                 </div>
                                 <input
                                     value={apiKeyValue}
                                     onChange={(e) => setApiKeyValue(e.target.value)}
                                     className="w-full rounded-md border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm text-slate-200"
-                                    placeholder="API key"
+                                    placeholder="Nouvelle API key"
                                 />
                                 <div className="text-xs text-slate-500 break-all">
                                     Endpoint API : {apiEndpoint}

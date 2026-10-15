@@ -9,6 +9,8 @@ import { useConfirmation } from '@/contexts/ConfirmationContext';
 
 const ApiKeyManager = ({ settings, onUpdate }) => {
     const [isRegenerating, setIsRegenerating] = useState(false);
+    // Clé en clair : renvoyée une seule fois par l'API, à la régénération (jamais stockée).
+    const [revealedKey, setRevealedKey] = useState('');
     const { confirm } = useConfirmation();
 
     const handleRegenerate = async () => {
@@ -20,7 +22,8 @@ const ApiKeyManager = ({ settings, onUpdate }) => {
 
             setIsRegenerating(true);
             const data = await regenerateApiKey(settings.id);
-            onUpdate({ apiKey: data.apiKey });
+            setRevealedKey(data.apiKey);
+            onUpdate({ apiKeyHint: data.apiKeyHint });
             toast.success("Nouvelle clé API générée !");
         } catch {
             // Annulation utilisateur ou erreur
@@ -36,7 +39,7 @@ const ApiKeyManager = ({ settings, onUpdate }) => {
     };
 
     const appBaseUrl = import.meta.env.VITE_API_BASE_URL || window.location.origin;
-    const fullApiKeyLink = `${appBaseUrl}/api/ingest/${settings.id}/${settings.apiKey}`;
+    const fullApiKeyLink = `${appBaseUrl}/api/ingest/${settings.id}/${revealedKey || '{apiKey}'}`;
 
     return (
         <div className="bg-slate-800 shadow rounded-lg divide-y divide-slate-700 flex flex-col">
@@ -61,17 +64,22 @@ const ApiKeyManager = ({ settings, onUpdate }) => {
                 <div className="mt-4">
                     <label className="text-sm font-medium text-slate-300">Clé API</label>
                     <div className="flex items-center bg-slate-900 p-3 rounded-md">
-                        <pre className="flex-1 text-slate-300 font-mono text-sm">
-                            <code>{settings.apiKey || 'Aucune clé générée.'}</code>
+                        <pre className="flex-1 text-slate-300 font-mono text-sm overflow-x-auto">
+                            <code>{revealedKey || settings.apiKeyHint || 'Aucune clé générée.'}</code>
                         </pre>
                         <button
-                            onClick={() => copyToClipboard(settings.apiKey)}
+                            onClick={() => copyToClipboard(revealedKey)}
                             title="Copier la clé"
-                            disabled={!settings.apiKey}
+                            disabled={!revealedKey}
                         >
-                            <ContentCopyIcon className={`h-5 w-5 ${settings.apiKey ? 'text-slate-400' : 'text-slate-600'}`} />
+                            <ContentCopyIcon className={`h-5 w-5 ${revealedKey ? 'text-slate-400' : 'text-slate-600'}`} />
                         </button>
                     </div>
+                    <p className="mt-2 text-xs text-slate-500">
+                        {revealedKey
+                            ? 'Copiez cette clé maintenant : elle ne sera plus affichée.'
+                            : "Seule une partie de la clé est affichée. Régénérez-la pour en obtenir une nouvelle."}
+                    </p>
                 </div>
             </div>
 
@@ -95,7 +103,7 @@ const ApiKeyManager = ({ settings, onUpdate }) => {
 ApiKeyManager.propTypes = {
     settings: PropTypes.shape({
         id: PropTypes.number.isRequired,
-        apiKey: PropTypes.string,
+        apiKeyHint: PropTypes.string,
     }).isRequired,
     onUpdate: PropTypes.func.isRequired,
 };
