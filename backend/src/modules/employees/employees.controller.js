@@ -106,6 +106,20 @@ const getRanks = async (request, reply) => {
     }
 };
 
+const getRankDetails = async (request, reply) => {
+    try {
+        const companyId = parseCompanyIdFromHeader(request);
+        const rankId = Number(request.params.rankId);
+        if (!Number.isInteger(rankId) || rankId <= 0) {
+            return reply.code(400).send({ message: 'rankId invalide.', status: 400 });
+        }
+        const data = await service.getRankDetails(companyId, rankId);
+        reply.send(data);
+    } catch (err) {
+        sendError(reply, err, 'Erreur lors de la récupération du grade.');
+    }
+};
+
 const createRank = async (request, reply) => {
     try {
         const companyId = parseCompanyIdFromHeader(request);
@@ -358,6 +372,7 @@ module.exports = {
 
     // Rangs
     getRanks,
+    getRankDetails,
     createRank,
     updateRank,
     deleteRank,

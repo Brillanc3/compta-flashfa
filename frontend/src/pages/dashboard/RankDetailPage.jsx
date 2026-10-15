@@ -2,44 +2,28 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getCompanyRanks } from '../../services/rankService'; // Nous allons devoir créer un service pour obtenir un rang par ID
+import { getRankDetails } from '../../services/employeesService';
 import {useCompany} from "@/contexts/CompanyContext.jsx";
-
-// NOTE: Pour que cette page fonctionne, nous devrons créer une nouvelle route et un nouveau contrôleur
-// sur le backend pour récupérer les détails d'un seul rang, y compris les employés.
-// Pour l'instant, nous simulons la récupération en filtrant la liste complète.
 
 const RankDetailPage = () => {
     const { rankId } = useParams();
     const {activeCompanyId} = useCompany();
-    const companyId = activeCompanyId;
     const [rank, setRank] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const fetchData = useCallback(async () => {
+        if (!activeCompanyId) return;
         try {
             setLoading(true);
-            // Idéalement : const rankData = await getRankById(companyId, rankId);
-            // Solution temporaire : on charge tous les rangs et on filtre.
-            const allRanks = await getCompanyRanks(companyId);
-            const currentRank = allRanks.find(r => r.id === parseInt(rankId, 10));
-
-            if (currentRank) {
-                // TODO: La liste des employés n'est pas encore dans les données.
-                // Il faudra mettre à jour l'API pour l'inclure.
-                // Pour l'instant, on simule.
-                currentRank.employees = [{ id: 1, name: 'John Doe (Exemple)' }, { id: 2, name: 'Jane Doe (Exemple)' }];
-                setRank(currentRank);
-            } else {
-                setError("Rang non trouvé.");
-            }
+            setError(null);
+            setRank(await getRankDetails(rankId));
         } catch (err) {
-            setError(err.message || "Erreur lors du chargement des données.");
+            setError(err?.message || "Erreur lors du chargement des données.");
         } finally {
             setLoading(false);
         }
-    }, [companyId, rankId]);
+    }, [activeCompanyId, rankId]);
 
     useEffect(() => {
         fetchData();
@@ -51,7 +35,7 @@ const RankDetailPage = () => {
 
     return (
         <div className="text-white">
-            <Link to={`/dashboard/company/${companyId}/ranks`} className="text-blue-400 hover:underline mb-6 inline-block">
+            <Link to="/dashboard/company/ranks" className="text-blue-400 hover:underline mb-6 inline-block">
                 &larr; Retour à la gestion des rangs
             </Link>
 
@@ -59,7 +43,9 @@ const RankDetailPage = () => {
                 <h1 className="text-3xl font-bold text-white">{rank.name}</h1>
                 <div className="mt-2 text-gray-400 space-x-4">
                     <span>Position Hiérarchique : <span className="font-semibold text-gray-200">{rank.position}</span></span>
-                    <span>Commission : <span className="font-semibold text-gray-200">{rank.commissionRate * 100}%</span></span>
+                    {rank.salaryCap != null && (
+                        <span>Plafond de salaire : <span className="font-semibold text-gray-200">{Number(rank.salaryCap).toLocaleString('fr-FR')} $</span></span>
+                    )}
                 </div>
 
                 {/* Section des employés rattachés */}
@@ -70,7 +56,10 @@ const RankDetailPage = () => {
                             <ul className="divide-y divide-slate-700">
                                 {rank.employees.map(employee => (
                                     <li key={employee.id} className="py-2">
-                                        {employee.name}
+                                        {employee.user?.name}
+                                        {employee.user?.username && (
+                                            <span className="ml-2 text-sm text-gray-500">@{employee.user.username}</span>
+                                        )}
                                     </li>
                                 ))}
                             </ul>
