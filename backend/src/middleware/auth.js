@@ -142,11 +142,27 @@ async function buildEffectiveCompanyPermissions(userId, companyId) {
     return perms;
 }
 
+/** Permissions de niveau plateforme, jamais accordées à une clé API. */
+function isPlatformPermission(permission) {
+    const p = String(permission || '').toUpperCase();
+    return p.startsWith('ADMIN.') || p.startsWith('API.');
+}
+
 /* ================== Middleware permission ================== */
 const checkPermission = (requiredPermissionTemplate, hierarchy = {}) => {
     return async (request, reply) => {
-        // Clé API authentifiée → les scopes (méthode HTTP) ont déjà été validés dans authenticateApiKey
-        if (request.user?.isApiKey) return;
+        // Clé API authentifiée → les scopes (méthode HTTP / module) ont déjà été validés dans authenticateApiKey.
+        // Elle reste limitée à sa propre entreprise et n'a jamais de droits ADMIN / API.
+        if (request.user?.isApiKey) {
+            if (isPlatformPermission(requiredPermissionTemplate)) {
+                return reply.code(403).send({ message: 'Action non autorisée par clé API.' });
+            }
+            const companyId = parseCompanyId(request);
+            if (companyId && companyId !== request.user.companyId) {
+                return reply.code(403).send({ message: 'Cette clé API ne donne pas accès à cette entreprise.' });
+            }
+            return;
+        }
 
         try {
             const userId = request.user?.userId;

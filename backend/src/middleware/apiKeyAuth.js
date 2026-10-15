@@ -1,6 +1,12 @@
 const prisma = require('../db');
 
 /**
+ * Modules réservés aux utilisateurs authentifiés (JWT) : administration,
+ * gestion des clés API, authentification et compte utilisateur.
+ */
+const FORBIDDEN_MODULES = new Set(['admin', 'api', 'auth', 'onboarding', 'quiz', 'user']);
+
+/**
  * Middleware global : si x-api-key présent, valide la clé et injecte le contexte.
  * Lance une erreur si la clé est invalide/désactivée/scope insuffisant.
  * Si x-api-key absent, laisse passer (l'auth JWT prend le relais).
@@ -35,8 +41,26 @@ const authenticateApiKey = async (request, reply) => {
     });
   }
 
+  // Module ciblé : on lit le pattern de route Fastify (préfixe du module),
+  // plus fiable que l'URL brute (query string, préfixe /api éventuel).
+  const routePath = request.routeOptions?.url || (request.url || '/').split('?')[0];
+  const urlModule = routePath.split('/').filter(Boolean)[0] || '';
+
+  // Modules jamais accessibles par clé API, même si la clé n'a aucune restriction de module
+  if (FORBIDDEN_MODULES.has(urlModule)) {
+    return reply.code(403).send({
+      message: `Module "${urlModule}" non accessible par clé API.`,
+    });
+  }
+
+  // Une clé API ne peut cibler que sa propre entreprise
+  const ctxType = String(request.query?.contextType || '').toUpperCase();
+  const ctxId = Number.parseInt(request.query?.contextId, 10);
+  if (ctxType === 'COMPANY' && Number.isInteger(ctxId) && ctxId !== record.companyId) {
+    return reply.code(403).send({ message: 'Cette clé API ne donne pas accès à cette entreprise.' });
+  }
+
   if (modules.length > 0) {
-    const urlModule = (request.url || '/').split('/').filter(Boolean)[0] || '';
     if (!modules.includes(urlModule)) {
       return reply.code(403).send({
         message: `Module "${urlModule}" non autorisé pour cette clé. Modules disponibles : ${modules.join(', ')}.`,
