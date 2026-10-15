@@ -11,6 +11,7 @@ const crypto = require('crypto');
 process.chdir(__dirname + '/..');
 
 const prisma = require('../src/db');
+const { ingestKeyData } = require('../src/lib/apiKeyHash');
 const { process: processLog } = require('../src/services/logProcessor.service');
 
 // ─── Fictional test data ────────────────────────────────────────────────────
@@ -74,7 +75,7 @@ async function setup() {
     // 1. Create company
     const apiKey = crypto.randomBytes(16).toString('hex');
     const company = await prisma.company.create({
-        data: { name: 'Agent Test', apiKey, isApiActive: true },
+        data: { name: 'Agent Test', ...ingestKeyData(apiKey), isApiActive: true },
     });
 
     // 2. Create ranks

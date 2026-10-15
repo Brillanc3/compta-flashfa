@@ -139,7 +139,8 @@ model Company {
   id                      Int                       @id @default(autoincrement())
   name                    String                    @unique
   onboardingKey           String?                   @unique
-  apiKey                  String?                   @unique
+  apiKeyHash              String?                   @unique @db.VarChar(64)
+  apiKeyHint              String?                   @db.VarChar(32)
   isApiActive             Boolean                   @default(false)
   apiDeactivationReason   String?
   balance                 Decimal                   @default(0.00) @db.Decimal(15, 2)

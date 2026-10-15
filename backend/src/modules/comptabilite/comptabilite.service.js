@@ -3,6 +3,7 @@ const prisma = require('../../db');
 const { Decimal } = require('@prisma/client/runtime/library');
 const { startOfISOWeek, endOfISOWeek, parseISO, setISOWeek, startOfWeek, endOfWeek, setYear, getYear, getISOWeek, differenceInMinutes } = require('date-fns');
 const crypto = require('crypto');
+const { ingestKeyData } = require('../../lib/apiKeyHash');
 const fs = require("fs");
 const path = require("path");
 const {getSalaryBreakdown} = require("../employees/employees.service");
@@ -1147,7 +1148,7 @@ async function getCompanySettings(companyId) {
         select: {
             id: true,
             name: true,
-            apiKey: true,
+            apiKeyHint: true,
             onboardingKey: true,
         },
     });
@@ -1254,9 +1255,10 @@ async function generateApiKey(companyId) {
     const newApiKey = crypto.randomBytes(32).toString('hex');
     await prisma.company.update({
         where: { id: companyId },
-        data: { apiKey: newApiKey },
+        data: ingestKeyData(newApiKey),
     });
-    return { apiKey: newApiKey };
+    // Seule occasion où la clé en clair est renvoyée : elle n'est pas stockée.
+    return { apiKey: newApiKey, apiKeyHint: ingestKeyData(newApiKey).apiKeyHint };
 }
 
 /**

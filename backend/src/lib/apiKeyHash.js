@@ -11,4 +11,9 @@ function apiKeyHint(rawKey) {
     return `${rawKey.slice(0, 8)}...${rawKey.slice(-4)}`;
 }
 
-module.exports = { hashApiKey, apiKeyHint };
+/** Champs Company pour une nouvelle clé d'ingest : hash + indice, jamais la clé en clair. */
+function ingestKeyData(rawKey) {
+    return { apiKeyHash: hashApiKey(rawKey), apiKeyHint: apiKeyHint(rawKey) };
+}
+
+module.exports = { hashApiKey, apiKeyHint, ingestKeyData };
