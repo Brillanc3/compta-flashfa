@@ -2,11 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams, useLocation } from 'react-router-dom';
 import { encryptData, decryptData } from '../utils/security';
 
 const LoginPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    // Page demandée avant la redirection vers /login (gardes de route)
+    const from = location.state?.from;
+    const redirectTo = from?.pathname && from.pathname !== '/login'
+        ? `${from.pathname}${from.search || ''}${from.hash || ''}`
+        : '/dashboard';
     const { login, isAuthenticated, isLoading } = useAuth();
     const [searchParams] = useSearchParams();
 
@@ -51,9 +57,9 @@ const LoginPage = () => {
 
     useEffect(() => {
         if (!isLoading && isAuthenticated) {
-            navigate('/dashboard', { replace: true });
+            navigate(redirectTo, { replace: true });
         }
-    }, [isAuthenticated, isLoading, navigate]);
+    }, [isAuthenticated, isLoading, navigate, redirectTo]);
 
 
     const handleSubmit = async (e) => {
@@ -74,7 +80,7 @@ const LoginPage = () => {
                 localStorage.removeItem('remembered_creds');
             }
 
-            navigate('/dashboard');
+            navigate(redirectTo, { replace: true });
         } catch (err) {
             console.log(err);
             setError(err?.response?.data?.message || err.message || 'Nom d\'utilisateur ou mot de passe incorrect.');
