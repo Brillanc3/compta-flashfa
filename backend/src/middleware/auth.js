@@ -300,4 +300,5 @@ module.exports = {
     checkModuleAccess,
     checkSuspension,
     buildEffectiveCompanyPermissions,
+    JWT_SECRET,
 };

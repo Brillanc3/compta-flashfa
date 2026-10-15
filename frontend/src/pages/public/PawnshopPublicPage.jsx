@@ -264,12 +264,12 @@ export default function PawnshopPublicPage() {
             });
 
             // Upload CNI image if captured
-            if (cniFile && res.data?.clientId) {
+            if (cniFile && res.data?.clientId && res.data?.cniUploadToken) {
                 try {
                     const fd = new FormData();
                     fd.append("file", cniFile, cniFile.name || "cni.png");
                     await apiClient.post(`/pawnshop/public/${slug}/client/${res.data.clientId}/cni`, fd, {
-                        headers: { "Content-Type": "multipart/form-data" },
+                        headers: { "Content-Type": "multipart/form-data", "x-upload-token": res.data.cniUploadToken },
                     });
                 } catch {
                     // CNI upload failure is non-blocking
