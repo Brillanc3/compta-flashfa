@@ -51,8 +51,8 @@ function hasPermission(permsSet, action) {
 }
 
 export function PermissionsProvider({ children }) {
-    const { isAuthenticated } = useAuth();
-    const { activeCompanyId } = useCompany();
+    const { isAuthenticated, user } = useAuth();
+    const { activeCompanyId, companies, loading: companyLoading } = useCompany();
 
     // IMPORTANT: ne jamais faire Number(null) => 0 (0 est falsy et casse la logique)
     const companyId = useMemo(() => {
@@ -131,11 +131,24 @@ export function PermissionsProvider({ children }) {
         return byCompany.get(companyId) ?? null;
     }, [byCompany, companyId]);
 
-    const isReady = Boolean(companyId && active);
+    // Utilisateur sans aucune entreprise : pas de permissions "company" à charger,
+    // on se base sur ses permissions globales (directes + rôles) renvoyées par /auth/me.
+    // Sans ça, isReady restait false indéfiniment (logo en chargement, panel admin masqué).
+    const hasNoCompany = Boolean(
+        isAuthenticated && !companyLoading && !companyId && (companies?.length ?? 0) === 0
+    );
+    const globalPermissions = useMemo(
+        () => (Array.isArray(user?.permissions) ? user.permissions : []),
+        [user]
+    );
+
+    const isReady = Boolean(companyId && active) || hasNoCompany;
 
     const permsSet = useMemo(() => {
-        return active ? toSet(active.permissions) : new Set();
-    }, [active]);
+        if (active) return toSet(active.permissions);
+        if (hasNoCompany) return toSet(globalPermissions);
+        return new Set();
+    }, [active, hasNoCompany, globalPermissions]);
 
     const value = useMemo(
         () => ({
@@ -146,7 +159,7 @@ export function PermissionsProvider({ children }) {
             lastError,
 
             // 📦 données
-            permissions: active?.permissions ?? [],
+            permissions: active?.permissions ?? (hasNoCompany ? globalPermissions : []),
             companyModules: active?.companyModules ?? [],
             permsSet,
 
@@ -165,6 +178,8 @@ export function PermissionsProvider({ children }) {
             loadingCompanyId,
             lastError,
             active,
+            hasNoCompany,
+            globalPermissions,
             permsSet,
             companyId,
             loadPermissions,

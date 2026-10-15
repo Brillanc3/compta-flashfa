@@ -407,7 +407,7 @@ function buildFrontend() {
 
 /* --------------------------- Génération vhost --------------------------- */
 
-function nginxVhost(domain, masterPort) {
+function nginxVhost(domain, masterPort, wsPort) {
   return `# compta-flashfa — généré par npm run setup
 server {
     listen 80;
@@ -424,9 +424,10 @@ server {
         try_files $uri $uri/ /index.html;
     }
 
-    # API backend (Master)
+    # API backend (Master) — le slash final retire le préfixe /api :
+    # les routes du backend sont enregistrées sans /api (/auth/login, ...).
     location /api/ {
-        proxy_pass http://127.0.0.1:${masterPort};
+        proxy_pass http://127.0.0.1:${masterPort}/;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -448,6 +449,19 @@ server {
         proxy_read_timeout 3600s;
     }
 
+    # WebSocket gateway (/ws/gateway) — process dédié sur WEBSOCKET_PORT
+    location /ws/ {
+        proxy_pass http://127.0.0.1:${wsPort};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 3600s;
+    }
+
     # Health check
     location = /healthz {
         proxy_pass http://127.0.0.1:${masterPort};
@@ -456,7 +470,7 @@ server {
 `;
 }
 
-function apacheVhost(domain, masterPort) {
+function apacheVhost(domain, masterPort, wsPort) {
   return `# compta-flashfa — généré par npm run setup
 <VirtualHost *:80>
     ServerName ${domain}
@@ -465,14 +479,22 @@ function apacheVhost(domain, masterPort) {
     ProxyPreserveHost On
     ProxyRequests Off
 
-    # WebSocket (socket.io) — doit précéder les ProxyPass HTTP
+    # WebSockets — doivent précéder les ProxyPass HTTP
     RewriteEngine On
+
+    # Gateway (/ws/gateway) — process dédié sur WEBSOCKET_PORT
+    RewriteCond %{HTTP:Upgrade} websocket [NC]
+    RewriteCond %{HTTP:Connection} upgrade [NC]
+    RewriteRule ^/ws/(.*) ws://127.0.0.1:${wsPort}/ws/$1 [P,L]
+
+    # socket.io (tchat v2) — Master
     RewriteCond %{HTTP:Upgrade} websocket [NC]
     RewriteCond %{HTTP:Connection} upgrade [NC]
     RewriteRule ^/socket\\.io/(.*) ws://127.0.0.1:${masterPort}/socket.io/$1 [P,L]
 
-    ProxyPass /api/ http://127.0.0.1:${masterPort}/api/
-    ProxyPassReverse /api/ http://127.0.0.1:${masterPort}/api/
+    # API : préfixe /api retiré (routes backend enregistrées sans /api)
+    ProxyPass /api/ http://127.0.0.1:${masterPort}/
+    ProxyPassReverse /api/ http://127.0.0.1:${masterPort}/
     ProxyPass /socket.io/ http://127.0.0.1:${masterPort}/socket.io/
     ProxyPassReverse /socket.io/ http://127.0.0.1:${masterPort}/socket.io/
     ProxyPass /healthz http://127.0.0.1:${masterPort}/healthz
@@ -490,15 +512,15 @@ function apacheVhost(domain, masterPort) {
         RewriteBase /
         RewriteCond %{REQUEST_FILENAME} !-f
         RewriteCond %{REQUEST_FILENAME} !-d
-        RewriteCond %{REQUEST_URI} !^/(api|socket\\.io|healthz)
+        RewriteCond %{REQUEST_URI} !^/(api|ws|socket\\.io|healthz)
         RewriteRule . /index.html [L]
     </Directory>
 </VirtualHost>
 `;
 }
 
-function setupNginx(deploy, masterPort) {
-  const conf = nginxVhost(deploy.domain, masterPort);
+function setupNginx(deploy, masterPort, wsPort) {
+  const conf = nginxVhost(deploy.domain, masterPort, wsPort);
   const dest = `/etc/nginx/sites-available/${deploy.domain}.conf`;
   const link = `/etc/nginx/sites-enabled/${deploy.domain}.conf`;
 
@@ -513,8 +535,8 @@ function setupNginx(deploy, masterPort) {
   return true;
 }
 
-function setupApache(deploy, masterPort) {
-  const conf = apacheVhost(deploy.domain, masterPort);
+function setupApache(deploy, masterPort, wsPort) {
+  const conf = apacheVhost(deploy.domain, masterPort, wsPort);
   const dest = `/etc/apache2/sites-available/${deploy.domain}.conf`;
 
   // Modules requis pour le reverse proxy + WebSocket + SPA.
@@ -531,7 +553,7 @@ function setupApache(deploy, masterPort) {
   return true;
 }
 
-function setupWebServer(deploy, masterPort, caps) {
+function setupWebServer(deploy, masterPort, wsPort, caps) {
   title(`Serveur web (${deploy.server})`);
 
   // Installation du serveur web si manquant.
@@ -543,7 +565,7 @@ function setupWebServer(deploy, masterPort, caps) {
     if (!sysRun('apt-get', ['install', '-y', pkg], { priv: true })) { err(`Installation de ${pkg} échouée.`); return false; }
   }
 
-  return deploy.server === 'nginx' ? setupNginx(deploy, masterPort) : setupApache(deploy, masterPort);
+  return deploy.server === 'nginx' ? setupNginx(deploy, masterPort, wsPort) : setupApache(deploy, masterPort, wsPort);
 }
 
 /* -------------------------------- SSL -------------------------------- */
@@ -712,11 +734,11 @@ async function createAdmin(prisma, bcrypt, { name, username, password, company }
 
 /* --------------------------- Étape déploiement --------------------------- */
 
-/** Exécute build front + web server + SSL + systemd. masterPort = port du Master. */
-function runDeployment(deploy, masterPort, caps) {
+/** Exécute build front + web server + SSL + systemd. masterPort / wsPort = ports du Master et du gateway WebSocket. */
+function runDeployment(deploy, masterPort, wsPort, caps) {
   if (!deploy) return;
   buildFrontend();
-  setupWebServer(deploy, masterPort, caps);
+  setupWebServer(deploy, masterPort, wsPort, caps);
   setupSSL(deploy, caps);
   setupSystemd(deploy);
 }
@@ -737,12 +759,13 @@ async function main() {
       const envText = fs.readFileSync(BACKEND_ENV, 'utf8');
       const dbUrl = (envText.match(/^DATABASE_URL="?(.+?)"?$/m) || [])[1];
       const masterPort = (envText.match(/^MASTER_PORT=(\d+)/m) || [])[1] || '2500';
+      const wsPort = (envText.match(/^WEBSOCKET_PORT=(\d+)/m) || [])[1] || '2505';
       if (!dbUrl) { err('DATABASE_URL introuvable. Abandon.'); rl.close(); return; }
 
       if (await askYesNo('Appliquer les migrations Prisma ?', true)) runPrisma(['migrate', 'deploy'], { DATABASE_URL: dbUrl });
 
       const deploy = await collectDeployConfig(caps);
-      runDeployment(deploy, masterPort, caps);
+      runDeployment(deploy, masterPort, wsPort, caps);
 
       if (await askYesNo('Creer un administrateur maintenant ?', true)) await createAdminAndCompany(dbUrl);
       finish(deploy); rl.close(); return;
@@ -781,7 +804,7 @@ async function main() {
   }
 
   // Déploiement (front build + web server + SSL + systemd)
-  runDeployment(deploy, cfg.masterPort, caps);
+  runDeployment(deploy, cfg.masterPort, cfg.wsPort, caps);
 
   // Admin + entreprise
   if (DRY_RUN || await askYesNo('Creer l\'administrateur et l\'entreprise parente maintenant ?', true)) {

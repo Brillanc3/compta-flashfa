@@ -1055,6 +1055,7 @@ const AppContent = () => {
                     path="/admin"
                     element={
                         <ProtectedCompanyRoute
+                            requireCompany={false}
                             permissions={[
                                 'ADMIN.*',
                                 'ADMIN.PANEL.ACCESS',

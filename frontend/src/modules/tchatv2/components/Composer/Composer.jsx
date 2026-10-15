@@ -14,6 +14,7 @@ import MentionPopover, { parseMentionContext, applyMention } from './MentionPopo
 import EmojiPickerPopover from './EmojiPickerPopover';
 import CreateThreadModal from '../Thread/CreateThreadModal';
 import PollComposer from '@/chat/components/PollComposer';
+import { uuid } from '@/utils/uuid';
 
 const EMPTY_ARR = [];
 const MAX_CHARS = 2000;
@@ -148,7 +149,7 @@ export default function Composer({ channelId, guildId, replyTo, onClearReply, us
         const files = Array.from(e.dataTransfer?.files ?? e.target.files ?? []);
         if (!files.length || !channelId) return;
         const entries = files.map(f => ({
-            localId: crypto.randomUUID(),
+            localId: uuid(),
             file: f,
             previewUrl: f.type.startsWith('image/') ? URL.createObjectURL(f) : null,
         }));
@@ -193,7 +194,7 @@ export default function Composer({ channelId, guildId, replyTo, onClearReply, us
             setContent(''); setMCtx(null);
             const el = textareaRef.current;
             if (el) el.style.height = 'auto';
-            uploadAndSend(text, crypto.randomUUID());
+            uploadAndSend(text, uuid());
         }
     }, [content, pendingFiles, uploadAndSend, mentionCtx, replyTo, onClearReply]);
 
@@ -203,7 +204,7 @@ export default function Composer({ channelId, guildId, replyTo, onClearReply, us
         setContent(''); setMCtx(null);
         const el = textareaRef.current;
         if (el) { el.style.height = 'auto'; el.focus(); }
-        uploadAndSend(text, crypto.randomUUID());
+        uploadAndSend(text, uuid());
     }, [content, channelId, uploading, pendingFiles, uploadAndSend]);
 
     const onPickMention = useCallback((item) => {
@@ -246,7 +247,7 @@ export default function Composer({ channelId, guildId, replyTo, onClearReply, us
             .map(it => it.getAsFile())
             .filter(Boolean)
             .map(f => ({
-                localId: crypto.randomUUID(),
+                localId: uuid(),
                 file: f,
                 previewUrl: URL.createObjectURL(f),
             }));
@@ -270,7 +271,7 @@ export default function Composer({ channelId, guildId, replyTo, onClearReply, us
         setMCtx(null);
         const el = textareaRef.current;
         if (el) { el.style.height = 'auto'; }
-        doSend(text, crypto.randomUUID(), pollData);
+        doSend(text, uuid(), pollData);
     }, [content, doSend]);
 
     const over75    = content.length > MAX_CHARS * 0.75;
