@@ -1071,6 +1071,7 @@ const AppContent = () => {
                         path="tickets"
                         element={
                             <ProtectedCompanyRoute
+                                requireCompany={false}
                                 permissions={[
                                     'ADMIN.*',
                                     'ADMIN.TICKETS.*',
@@ -1087,6 +1088,7 @@ const AppContent = () => {
                         path="tickets/:ticketId"
                         element={
                             <ProtectedCompanyRoute
+                                requireCompany={false}
                                 permissions={[
                                     'ADMIN.*',
                                     'ADMIN.TICKETS.*',
@@ -1103,6 +1105,7 @@ const AppContent = () => {
                         path="billing-support"
                         element={
                             <ProtectedCompanyRoute
+                                requireCompany={false}
                                 permissions={[
                                     'ADMIN.*',
                                     'ADMIN.BILLING.SUPPORT.VIEW',
@@ -1118,6 +1121,7 @@ const AppContent = () => {
                         path="companies"
                         element={
                             <ProtectedCompanyRoute
+                                requireCompany={false}
                                 permissions={[
                                     'ADMIN.*'
                                 ]}
@@ -1130,6 +1134,7 @@ const AppContent = () => {
                         path="companies/:companyId"
                         element={
                             <ProtectedCompanyRoute
+                                requireCompany={false}
                                 permissions={[
                                     'ADMIN.*'
                                 ]}
@@ -1142,6 +1147,7 @@ const AppContent = () => {
                         path="quiz"
                         element={
                             <ProtectedCompanyRoute
+                                requireCompany={false}
                                 permissions={[
                                     'ADMIN.*',
                                     'ADMIN.QUIZ.SEND'
@@ -1155,6 +1161,7 @@ const AppContent = () => {
                         path="announcements"
                         element={
                             <ProtectedCompanyRoute
+                                requireCompany={false}
                                 permissions={[
                                     'ADMIN.*',
                                     'ADMIN.ANNOUNCEMENT.VIEW',
@@ -1169,6 +1176,7 @@ const AppContent = () => {
                         path="images"
                         element={
                             <ProtectedCompanyRoute
+                                requireCompany={false}
                                 permissions={['ADMIN.*', 'ADMIN.IMAGE.MANAGE']}
                             >
                                 <AdminImagesPage />
@@ -1179,6 +1187,7 @@ const AppContent = () => {
                         path="tchat-monitoring"
                         element={
                             <ProtectedCompanyRoute
+                                requireCompany={false}
                                 permissions={['ADMIN.*', 'ADMIN.PANEL.ACCESS']}
                             >
                                 <TchatMonitoringPage />
