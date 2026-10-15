@@ -2,6 +2,7 @@
 
 const crypto = require('crypto');
 const prisma = require('../../db');
+const { hashApiKey } = require('../../lib/apiKeyHash');
 const { process: processLog } = require('./ingest.service');
 const ingestQueue = require('../../lib/ingestQueueRedis');
 const { redis } = require('../../shards/redisClient');
@@ -34,7 +35,7 @@ const handleIngestion = async (request, reply) => {
         const company = await prisma.company.findFirst({
             where: {
                 id: companyId,
-                apiKey: apiKey,
+                apiKeyHash: hashApiKey(apiKey),
             },
         });
 

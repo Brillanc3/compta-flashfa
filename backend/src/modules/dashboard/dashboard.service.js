@@ -1,5 +1,6 @@
 // backend/src/modules/dashboard/dashboard.service.js
 const prisma = require('../../db');
+const { ingestKeyData } = require('../../lib/apiKeyHash');
 const { hasPermission: checkUserPermission } = require('../../middleware/auth');
 const fs = require('fs');
 const path = require('path');
@@ -238,7 +239,7 @@ async function getCompanySettings(companyId) {
         select: {
             id: true,
             name: true,
-            apiKey: true,
+            apiKeyHint: true,
             onboardingKey: true,
         },
     });
@@ -345,9 +346,10 @@ async function generateApiKey(companyId) {
     const newApiKey = crypto.randomBytes(32).toString('hex');
     await prisma.company.update({
         where: { id: companyId },
-        data: { apiKey: newApiKey },
+        data: ingestKeyData(newApiKey),
     });
-    return { apiKey: newApiKey };
+    // Seule occasion où la clé en clair est renvoyée : elle n'est pas stockée.
+    return { apiKey: newApiKey, apiKeyHint: ingestKeyData(newApiKey).apiKeyHint };
 }
 
 /**

@@ -261,7 +261,7 @@ const getCompanyDetails = async (request, reply) => {
                 id: true,
                 name: true,
                 onboardingKey: true,
-                apiKey: true,
+                apiKeyHint: true,
                 isApiActive: true,
                 apiDeactivationReason: true,
                 balance: true,

@@ -5,6 +5,7 @@ const { addDays, startOfWeek, endOfWeek, startOfDay, endOfDay } = require('date-
 const { createNotification } = require('../notifications/notifications.service');
 const { emitGatewayEvent } = require('../../core/gateway/gateway.emitter');
 const crypto = require('crypto');
+const { hashApiKey, ingestKeyData } = require('../../lib/apiKeyHash');
 const eventBus = require('../../lib/eventBusRedis'); // adapte le chemin si nécessaire
 const IORedis = require('ioredis');
 const imageService = require('../image/image.service');
@@ -716,7 +717,8 @@ async function listCompanies(params = {}) {
         const or = [
             { name: { contains: q } },
             { onboardingKey: { contains: q } },
-            { apiKey: { contains: q } },
+            // Clé hashée : seule la clé complète peut être retrouvée.
+            { apiKeyHash: hashApiKey(q) },
         ];
         if (/^\d+$/.test(q)) or.push({ id: Number.parseInt(q, 10) });
         where.OR = or;
@@ -1583,10 +1585,11 @@ async function updateApiKey(companyId, customKey) {
     const newKey = customKey || generateKey(32);
     const company = await prisma.company.update({
         where: { id: Number(companyId) },
-        data: { apiKey: newKey },
-        select: { id: true, name: true, apiKey: true },
+        data: ingestKeyData(newKey),
+        select: { id: true, name: true, apiKeyHint: true },
     });
-    return company;
+    // Seule occasion où la clé en clair est renvoyée : elle n'est pas stockée.
+    return { ...company, apiKey: newKey };
 }
 
 /**
