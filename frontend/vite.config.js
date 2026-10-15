@@ -55,7 +55,10 @@ export default defineConfig({
                 manualChunks(id) {
                     if (!id.includes("node_modules")) return;
 
-                    if (id.includes("react") || id.includes("react-router")) {
+                    // Uniquement le cœur React (sans dépendance externe) : un simple
+                    // includes("react") capte aussi @emotion/react, react-* etc. et
+                    // crée un cycle core-react <-> vendor (React undefined au chargement).
+                    if (/[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/.test(id)) {
                         return "core-react";
                     }
 
