@@ -3,6 +3,7 @@
 // Aligne parfaitement le frontend avec ton backend (login, refresh, me, logout)
 
 import apiClient from "./api"; // ton axios configuré
+import { uuid } from "@/utils/uuid";
 
 //-------------------------------------------------------
 // utilitaire pour deviceId persistant
@@ -10,7 +11,7 @@ import apiClient from "./api"; // ton axios configuré
 function getOrCreateDeviceId() {
     let deviceId = localStorage.getItem("deviceId");
     if (!deviceId) {
-        deviceId = crypto.randomUUID();
+        deviceId = uuid();
         localStorage.setItem("deviceId", deviceId);
     }
     return deviceId;
