@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { CompanyEmployeeStatus, UserStatus } = require('@prisma/client');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'votre_secret_par_defaut';
+const { jwtSecret: JWT_SECRET } = require('../config/secrets');
 
 /**
  * Étape 1 : Prépare les informations pour le frontend.

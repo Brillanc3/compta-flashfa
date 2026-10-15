@@ -4,7 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const prisma = require("../../db");
-const { JWT_SECRET } = require("../../middleware/auth");
+const { jwtSecret: JWT_SECRET } = require("../../config/secrets");
 const service = require("./pawnshop.service");
 const { PERMISSIONS } = require("./pawnshop.permissions");
 

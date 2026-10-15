@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { hasWildcardPermission } = require('../middleware/auth');
 const { getUserData } = require('../services/userService'); // Assurez-vous d'importer ce service
-const JWT_SECRET = process.env.JWT_SECRET || 'votre_secret_par_defaut';
+const { jwtSecret: JWT_SECRET } = require('../config/secrets');
 const ACCESS_TOKEN_EXPIRATION = '1h';
 const SESSION_TOKEN_EXPIRATION = '24h';
 
