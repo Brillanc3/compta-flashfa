@@ -221,7 +221,10 @@ model CompanyApiKey {
   id         Int       @id @default(autoincrement())
   companyId  Int
   name       String
-  key        String    @unique
+  /// SHA-256 (hex) de la clé : la clé en clair n'est jamais stockée
+  keyHash    String    @unique @db.VarChar(64)
+  /// Début et fin de la clé, pour l'affichage masqué
+  keyHint    String    @db.VarChar(32)
   scopes     Json
   isActive   Boolean   @default(true)
   createdAt  DateTime  @default(now())
