@@ -11,6 +11,8 @@ import { usePermissions } from "@/contexts/PermissionsContext";
  * Props :
  * - module?: string              → module requis (ex: "employees")
  * - permissions?: string[]       → AU MOINS UNE permission valide (OR logique)
+ * - requireCompany?: boolean     → false pour les pages globales (ex: panel admin) accessibles
+ *                                  sans entreprise active (défaut: true)
  * - children
  *
  * Règles :
@@ -24,6 +26,7 @@ import { usePermissions } from "@/contexts/PermissionsContext";
 export default function ProtectedCompanyRoute({
                                                   module: requiredModule,
                                                   permissions = [],
+                                                  requireCompany = true,
                                                   children,
                                               }) {
     const { isAuthenticated } = useAuth();
@@ -56,8 +59,10 @@ export default function ProtectedCompanyRoute({
         return <Navigate to="/login" replace />;
     }
 
-    // 2) Tant que la company active n'est pas déterminée -> loading (pas de redirect)
-    if (!companyId) {
+    // 2) Tant que la company active n'est pas déterminée -> loading (pas de redirect).
+    //    Pages globales : sans entreprise, on attend seulement que les permissions
+    //    globales soient prêtes (isReady, étape 3).
+    if (!companyId && requireCompany) {
         return (
             <div className="w-full h-[40vh] flex items-center justify-center text-slate-300">
                 Chargement...
